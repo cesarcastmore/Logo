@@ -18,6 +18,7 @@ public:
     explicit Logo(QWidget *parent = 0);
     ~Logo();
 
+    //clases de compiladores
 private slots:
     void on_compileButton_clicked();
     void on_clearButton_clicked();
