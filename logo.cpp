@@ -8,6 +8,7 @@
 #include <stdio.h>
 using namespace std;
 
+
 Logo::Logo(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Logo)
@@ -299,7 +300,7 @@ void Logo::MachineVirtual(){
             case 39:
                 cont++;
                 break;
-            //end draw
+            //end draw 
             case 50:
                 switch(map[cont][1]){
                 case 34:
@@ -312,6 +313,7 @@ void Logo::MachineVirtual(){
 
                 cont++;
                 break;
+           //end Program
             case 99:
                 cont=10000;
                 break;
