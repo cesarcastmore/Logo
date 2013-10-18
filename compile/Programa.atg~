@@ -1,0 +1,266 @@
+#include "Semantica.h"
+#include "wchar.h"
+
+COMPILER PROGRAMA
+
+
+
+Action *action;
+
+void Err(wchar_t* msg) {
+	errors->Error(la->line, la->col, msg);
+}
+
+
+int var, function, entero, flotante, undefined;
+
+int plus, minus, multiply, divide, module, eq, ne, gt, lt, gte, lte, log_and ,log_or ;
+
+void InitDeclarations() { 
+	
+	var=0; function=1;
+	undefined=0;entero=1; flotante=2;
+	plus=1; minus=2;
+	multiply=3; divide=4; module=5;
+	eq=6; ne=7; gt=8; lt=9; gte=10; lte=11;
+	log_and=12; log_or=13;
+	action=new Action();
+}
+
+CHARACTERS
+	digito ='0'..'9'.
+	minus = 'a'..'z'.
+	mayus = 'A'..'Z'.
+TOKENS
+	integer = digito { digito }. 
+	floating = digito { digito }'.' digito { digito }.
+	chain = '\"' ( minus | mayus ) { minus | mayus } '\"'.
+	id = ( minus | mayus ) { minus | mayus | '_' | digito }.
+
+
+IGNORE   '\t' + '\r' + '\n'
+
+PRODUCTIONS
+PROGRAMA = 
+"program"  "{"				(. InitDeclarations(); 
+					action->beginProgram(); .)
+{ GLOBAL  } 
+ BLOQUE '}'			       (. action->endProgram();
+					action->tab->removeAllLocals();
+					action->showCuadruplo(); .)
+.
+
+/*----------------------------------------------------------------------------*/
+GLOBAL = 				(. wchar_t* name; int type; .)
+"global" TIPO<type> 
+IDENTI<name> 				(. action->addGlobal(name, type, var);  .)
+[ '[' integer ']' ] 
+{ ',' IDENTI<name>  			(.  action->addGlobal(name, type, var); .)
+[ '[' integer ']' ] } 			
+';'.
+/*----------------------------------------------------------------------*/
+TIPO<int  &type> =  
+( "int" 				(. type =entero; .)
+| "float" 				(. type=flotante; .)
+).
+/*----------------------------------------------------------------------*/
+BLOQUE = { MODULE }   MAIN .
+/*----------------------------------------------------------------------*/
+MAIN = "main" '(' ')' 
+'{' 					(. action->beginMain(); .)
+ { LOCAL} 
+{ ESTATUTO }  
+'}'					(. action->removeLocals(); .).
+/*------------------------------------------------------------------------------*/
+MODULE = 				(. wchar_t* name; int typemod; .)
+"module" 
+TIPO_MOD<typemod>
+ IDENTI<name>			 	(. action->addGlobal(name,typemod, function); .) 
+'('  [ PARAMETROS ] ')' 
+'{' { LOCAL } { ESTATUTO } '}'		(. action->removeLocals(); .).
+/*--------------------------------------------------------------------------------*/
+TIPO_MOD<int &typemod>= 		(. int type;  .)			
+ TIPO<type>				(.  typemod = type; .)
+| "void"				(. typemod = undefined; .) .
+/*----------------------------------------------------------------------*/
+PARAMETROS = PARAM_COMA { ',' PARAM_COMA }. 
+/*---------------------------------------------------------*/
+PARAM_COMA = 				(. wchar_t* name; int type; .)
+ TIPO<type> IDENTI<name>		(. action->addLocal(name, type, var); .)
+.
+/*---------------------------------------------------------------------------*/
+LOCAL=  				(. wchar_t* name; int type; .)
+TIPO<type> IDENTI<name>  		(. action->addLocal(name, type, var); .)
+[ '[' integer ']' ]   	 		
+{ ',' IDENTI<name>  			(. action->addLocal(name, type, var); .)
+[ '[' integer ']' ]  		
+} ';' .
+/*-------------------------------------------------------------------------*/
+RETORNO = "return" EXP ';'.
+/*----------------------------------------------------------------------*/
+VARCTE =				(. int signo; float number; Direction *dir; int tipo;.) 
+[ '-' 					(. signo=-1; .)
+| '+'					(. signo=1; .)
+] ( integer 				(. swscanf(t->val, L"%f", &number); tipo=entero; .)
+| floating 				(. swscanf(t->val, L"%f", &number); tipo=flotante; .)
+)					(. dir=action->memory->save(3,tipo, number*signo);
+					action->dir->push(dir); .)
+.
+/*----------------------------------------------------------------------*/
+ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO | RETORNO ) .
+/*----------------------------------------------------------------------*/
+CONDICION = 
+"if"			
+'(' EXPRESION ')'			(. action->createGotoFalseCond(); .)
+ '{' { ESTATUTO } '}' 
+[ "else" 				(. action->createGotoFinCond(); .)
+'{' { ESTATUTO } '}' ]			(. action->createEndCond(); .)
+ .
+/*----------------------------------------------------------------------*/
+EXPRESION =   				(. int log; .)
+EXP_LOG 				
+{ LOG_OPE<log>				(. action->addStackOpe(log); .)
+EXP_LOG }				(. action->createCuadroOpeLog(); .)
+. 
+/*-------------------------------------------------------------------------*/
+EXP_LOG = 				(. int rel; .)
+EXP					
+[ RELACIONAL<rel> 			(. action->addStackOpe(rel); .)
+EXP]					(. action->createCuadroOpeRel(); .)
+.
+/*-------------------------------------------------------------------------*/
+ASIGMODULO =				(. wchar_t* name; Variable *obj; .) 
+IDENTI<name> 			
+( 					(. obj=action->find(name, function);.)
+LLAMAR_MODULO 	
+| 			 		(. obj=action->find(name, var); 
+					action->addStackDir(obj->dir->direction,obj->type); .)
+ASIGNACION 			
+).
+/*------------------------------------------------------------------*/
+LLAMAR_MODULO = '(' [  EXP { ',' EXP } ] ')' ';'.
+/*----------------------------------------------------------------------*/
+PARENTESIS =  '(' [  EXP { ',' EXP } ] ')'.
+/*---------------------------------------------------------------------*/
+ASIGNACION = 			(. wchar_t* name; .)
+[ '[' 
+(IDENTI<name>		 
+| integer)
+']' ] '='
+ EXP ';'				(. action->createCuadrAlloca(); .)
+.
+/*-------------------------------------------------------------------*/
+EXP = 					(. int term; .)
+TERMINO 
+[TERM_OP<term>  			(. action->addStackOpe(term); .)
+EXP]					(. action->createCuadroOpeTerm(); .)
+.
+/*--------------------------------------------------------------------*/
+TERMINO =				(. int fact; .) 
+FACTOR 	
+[
+FACTOR_OP<fact> 			(. action->addStackOpe(fact); .)
+TERMINO]				(. action->createCuadroOpeFact(); .)
+.
+/*---------------------------------------------------------------------------------*/
+FACTOR= 				(. wchar_t* name; Variable *obj; int signo; Direction *dir; .)
+(			
+( '(' 					(. action->addFake(); .)
+EXPRESION ')'				(. action->removeFake(); .)
+ ) 	
+| ( VARCTE ) 
+| IDENTI<name>  					
+( 					(. obj=action->find(name, var); 
+					 action->addStackDir(obj->dir->direction,obj->type); .)
+|PARENTESIS 				(. obj=action->find(name, function); .)
+) 
+).
+/*----------------------------------------------------------------------------------*/	
+CICLO = 
+"while" 				(. action->addStackLeapActual(); .)
+'(' EXPRESION ')' 			(. action->createGotoFalWhile(); .)
+'{' { ESTATUTO } 			(. action->createEndWhile(); .)
+'}'.
+/*----------------------------------------------------------------------------------*/
+LECTURA =				(. wchar_t* name; Variable *obj; .)			
+"read" 
+'(' IDENTI<name> 			(. obj=action->find(name, var);
+					action->createCuadrRead(1, obj->type); .) 
+')' ';'.
+/*----------------------------------------------------------------------------------*/
+ESCRITURA = 		
+"print" '(' ( EXP | chain ) 		(. action->createCuadrPrint(); .) 
+{ '|' ( EXP | chain ) 			(. action->createCuadrPrint(); .)
+
+} ')' ';'.
+/*-----------------------------------------------------------------------------------*/
+GRAFICO = 				(.int figure; .)
+"draw" FIGURA<figure> 			(. action->beginDraw(figure); .)
+':' 
+{  ATRIBUTOS }	
+ "end"					(. action->endDraw();.) .
+/*---------------------------------------------------------------------------------------------------------------*/
+FIGURA<int &figure> = 
+("point" 					(.figure=31;.)	
+| "line" 					(.figure=32;.)	
+| "triangle" 					(.figure=33;.)	
+| "square"					(.figure=34;.)	 
+| "circle" 					(.figure=35;.)	
+| "star" 					(.figure=36;.)	
+| "pentagon" 					(.figure=37;.)	
+| "hexagon" 					(.figure=38;.)	
+| "rhomboid" 					(.figure=39;.)	
+).
+/*---------------------------------------------------------------------------------------------------------------*/
+ATRIBUTOS = ( ATRIBUTO_ENTERO |  ATRIBUTO_STRING ) ";".
+/*-----------------------------------------------------------------------------------------------*/
+ATRIBUTO_ENTERO = 				(. int attribute; .)
+( "y_position" 					(. attribute=1;.)
+| "x_position" 					(. attribute=2;.)
+| "rotateRight" 				(. attribute=3;.)
+| "rotateLeft" 					(. attribute=4;.)
+) 				
+'=' EXP						(. action->addAtributeInt(attribute);.).			
+/*------------------------------------------------------------------------------------------------*/
+ATRIBUTO_STRING = 				(. wchar_t* name; int attribute; .)
+( "size" 					(. attribute=5;.)
+| "thick" 					(. attribute=6;.)
+| "colorThick" 					(. attribute=7;.)
+| "colorFigure" 				(. attribute=8;.)
+) '=' 
+CADENA<name>					(. action->addAtributeString(attribute, name);.).
+/*------------------------------------------------------------------------------------*/	
+IDENTI<wchar_t* &name>
+ = id 						(. name =  coco_string_create(t->val); .).
+/*---------------------------------------------------------------------------*/
+RELACIONAL<int &rel>
+=( "==" 					(. rel=eq;.)
+|  "<>" 					(. rel=ne;.)
+| "<=" 						(. rel=lte;.)
+| ">=" 						(. rel=gte;.)
+| '<' 						(. rel=lt;.)
+| '>'						(. rel=gt;;.)
+ ).
+/*---------------------------------------------------------------------------------*/
+LOG_OPE<int &log>
+=
+( "and"						(. log=log_and;.)
+| "or"						(. log=log_or; .)
+).
+/*-----------------------------------------------------------------------------*/
+TERM_OP<int &term>=
+( "+"						(.term=plus;.)
+|  "-"						(.term=minus;.)
+).
+/*-----------------------------------------------------------------------------*/
+FACTOR_OP<int &fact>=
+( "*"						(.fact=multiply;.)
+| "/"						(.fact=divide;.)
+| "%"						(.fact=module;.)
+).
+/*-------------------------------------------------------------------------------*/
+CADENA<wchar_t* &name> =
+chain						(. name =  coco_string_create(t->val); .).
+/*----------------------------------------------------------------------------------------*/
+END PROGRAMA.
+

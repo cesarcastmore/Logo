@@ -1,0 +1,19 @@
+program {
+global float a, c;
+
+module void cesar(){
+a=c*c*c;
+c=a*a*a;
+}
+
+main(){
+float  b, c, d;
+a = 12 * 12 * d;
+draw circle:
+	y_position=12;
+end
+
+}
+
+
+}
