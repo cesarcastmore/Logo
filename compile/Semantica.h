@@ -62,6 +62,56 @@ public:
 	void displayLocals();
 	void displayGlobals();
 };
+
+class Parameter{
+public:	
+	int type;
+	Parameter *next;
+	Parameter();
+	Parameter(int t);
+
+};
+
+class StackParameter{
+public:
+	Parameter *actual;
+	StackParameter();
+	void push(int t);
+	void pop();
+	Parameter* get();
+	void invert();
+	void showStack();
+
+};
+
+
+class Function{
+public: 	
+	int type;//void int float
+	std::wstring name;
+	int parametro;
+	int varLoc;
+	int begin;
+	StackParameter *par;
+	Function *next;
+	Function();
+
+};
+
+class StackFunction{
+public:
+	Function *actual;
+	StackFunction();
+	void push(Function *f);
+	void pop();
+	Function* get();
+	Function* find(const wchar_t* n);
+	void showStack();
+
+};
+
+
+
 class Operator{
 public:
 	int oper;
@@ -149,7 +199,12 @@ public:
 	StackOperator *op;
 	StackDirection *dir;
 	StackLeap *leap;
+	StackFunction *fun;
+	Function *inifun;
+	StackParameter *para;
 	Memory *memory;
+	int cant_loc;
+	int cant_para;
 	Action();
 	void addGlobal(const wchar_t* n , int t, int function);
 	void addLocal(const wchar_t* n, int t, int function);
@@ -184,6 +239,15 @@ public:
 	void beginMain();
 	void endProgram();
 	void createObject();
+	void addTableFunction(Function *f);
+	void addNameFunction(const wchar_t* n);
+	void addParameter(int t);
+	void addNoParameters();
+	void addNoLocals();
+	void addContCuadruplo();
+	void generateRetorno();
+	void addTypeFunction(int t);
+
 	
 };
 

@@ -67,31 +67,41 @@ TIPO<int  &type> =
 /*----------------------------------------------------------------------*/
 BLOQUE = { MODULE }   MAIN .
 /*----------------------------------------------------------------------*/
-MAIN = "main" '(' ')' 
+MAIN = "main" '(' ')' 			(. int can; .)
 '{' 					(. action->beginMain(); .)
  { LOCAL} 
 { ESTATUTO }  
 '}'					(. action->removeLocals(); .).
 /*------------------------------------------------------------------------------*/
-MODULE = 				(. wchar_t* name; int typemod; .)
+MODULE = 				(. wchar_t* name; int typemod; int no; int can; .)
 "module" 
-TIPO_MOD<typemod>
- IDENTI<name>			 	(. action->addGlobal(name,typemod, function); .) 
-'('  [ PARAMETROS ] ')' 
-'{' { LOCAL } { ESTATUTO } '}'		(. action->removeLocals(); .).
+TIPO_MOD<typemod>	
+ IDENTI<name>			 	(. action->addNameFunction(name); 
+					action->addTypeFunction(typemod);.) 
+'('  [ PARAMETROS ] 			(. action->addNoParameters(); .)
+')' 
+'{' { LOCAL }				(. action->addNoLocals();
+					action->addContCuadruplo(); .)
+ { ESTATUTO } 				
+ [ RETORNO ]				(. action->generateRetorno(); .)
+'}'					(. action->removeLocals(); .).
 /*--------------------------------------------------------------------------------*/
 TIPO_MOD<int &typemod>= 		(. int type;  .)			
  TIPO<type>				(.  typemod = type; .)
 | "void"				(. typemod = undefined; .) .
 /*----------------------------------------------------------------------*/
-PARAMETROS = PARAM_COMA { ',' PARAM_COMA }. 
+PARAMETROS =	
+PARAM_COMA 				
+{ ',' PARAM_COMA		
+ }. 
 /*---------------------------------------------------------*/
-PARAM_COMA = 				(. wchar_t* name; int type; .)
- TIPO<type> IDENTI<name>		(. action->addLocal(name, type, var); .)
+PARAM_COMA = 				(. wchar_t* name; int type; int can; .)
+ TIPO<type> IDENTI<name>		(. action->addLocal(name, type, var); 
+					action->addParameter(type); .)
 .
 /*---------------------------------------------------------------------------*/
-LOCAL=  				(. wchar_t* name; int type; .)
-TIPO<type> IDENTI<name>  		(. action->addLocal(name, type, var); .)
+LOCAL= 					(. wchar_t* name; int type; .)
+TIPO<type> IDENTI<name>  		(. action->addLocal(name, type, var);  .)
 [ '[' integer ']' ]   	 		
 { ',' IDENTI<name>  			(. action->addLocal(name, type, var); .)
 [ '[' integer ']' ]  		
@@ -108,7 +118,7 @@ VARCTE =				(. int signo; float number; Direction *dir; int tipo;.)
 					action->dir->push(dir); .)
 .
 /*----------------------------------------------------------------------*/
-ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO | RETORNO ) .
+ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO  ) .
 /*----------------------------------------------------------------------*/
 CONDICION = 
 "if"			
@@ -186,7 +196,7 @@ CICLO =
 LECTURA =				(. wchar_t* name; Variable *obj; .)			
 "read" 
 '(' IDENTI<name> 			(. obj=action->find(name, var);
-					action->createCuadrRead(1, obj->type); .) 
+					action->createCuadrRead(obj->dir->direction, obj->type); .) 
 ')' ';'.
 /*----------------------------------------------------------------------------------*/
 ESCRITURA = 		

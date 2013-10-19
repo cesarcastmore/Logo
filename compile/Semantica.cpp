@@ -124,10 +124,136 @@ void TablaVariables::displayGlobals(){
 }
 
 
+Parameter::Parameter(){
+	next=NULL;
+	type=0;
+}
+	
+Parameter::Parameter(int t){
+	type=t;
+	next=NULL;
+}
+
+
+StackParameter::StackParameter(){
+	actual=new Parameter();
+}
+
+void StackParameter::push(int t){
+	Parameter *new_node;
+	new_node=new Parameter(t);
+	
+   if(!actual){
+   actual=new_node;
+}	 
+      else{
+      new_node->next = actual;
+      actual = new_node;
+      }	
+}
+
+void StackParameter::pop(){
+	actual = actual->next;
+}
+
+Parameter* StackParameter::get(){
+	Parameter *new_node;
+	new_node=new Parameter(actual->type);
+	return new_node;
+}
+
+void StackParameter::invert(){
+	StackParameter *new_stack;
+	new_stack=new StackParameter();
+	Parameter *new_node= new Parameter();
+	new_node=actual;
+	while(actual->next != NULL){
+		new_stack->push(actual->type);
+		actual = actual->next;
+	}
+	actual=new_stack->actual;
+	
+}
+
+
+void StackParameter::showStack(){
+	wcout<<"\tla pila contiene StackParameter\n";
+	Parameter *par=actual;
+	while(par->next != NULL){
+		wcout<<"\tel type es "<< par->type<<"\n";
+		par=par->next;
+	} 
+}
+
+Function::Function(){
+	type=0;
+	parametro=0;
+	varLoc=0;
+	begin=0;
+	par=new StackParameter();
+	next=NULL;
+}
+
+
+StackFunction::StackFunction(){
+	actual=new Function();
+}
+
+void StackFunction::push(Function *function){
+	Function *new_node;
+	new_node=function;
+	
+   if(!actual){
+   actual=new_node;
+}	 
+      else{
+      new_node->next = actual;
+      actual = new_node;
+      }	
+}
+
+void StackFunction::pop(){
+	actual = actual->next;
+}
+
+Function* StackFunction::get(){
+	Function *new_node;
+	new_node=actual;
+	return new_node;
+}
+
+Function* StackFunction::find(const wchar_t* n){
+	std::wstring iden=std::wstring(n);
+	Function *new_node = new Function();
+	new_node=actual;
+	while(new_node != NULL){
+		if(new_node->name == iden)
+		return new_node;
+		new_node=new_node->next;
+	}
+	
+	return new Function();
+	
+	}
+
+void StackFunction::showStack(){
+	wcout<<"la pila contiene StackFunction\n";
+	Function *fun=actual;
+	while(fun->next != NULL){
+		wcout<<"el name es "<< fun->name<<"\n";
+		wcout<<"el type es "<< fun->type<<"\n";
+		wcout<<"el varLoc es "<< fun->varLoc<<"\n";;
+		wcout<<"el begin es "<< fun->begin<<"\n";
+		wcout<<"el parametro es "<< fun->parametro<<"\n";
+		fun->par->showStack();
+		fun=fun->next;
+	} 
+}
+
 
 Direction::Direction(){
 	next=NULL;
-	direction=0;
+	direction=-1;
 	type=0;
 	}
 	
@@ -205,6 +331,7 @@ Operator::Operator(){
 	next=NULL;
 	oper=0;
 }
+
 	
 Operator::Operator(int o){
 	oper=o;
@@ -315,18 +442,18 @@ void StackLeap::showLeap(){
 }	*/
 
 Memory::Memory(){
-	glob_int=1000;
-	glob_flo=3000;
-	glob_bool=5000;
-	local_int=7000;
-	local_flo=9000;
-	local_bool=11000;
-	temp_int=13000;
-	temp_flo=15000;
-	temp_bool=17000;
-	cons_int=19000;
-	cons_flo=21000;
-	cons_bool=23000;
+	glob_int=0000;
+	glob_flo=2000;
+	glob_bool=4000;
+	local_int=6000;
+	local_flo=8000;
+	local_bool=10000;
+	temp_int=12000;
+	temp_flo=14000;
+	temp_bool=16000;
+	cons_int=18000;
+	cons_flo=20000;
+	cons_bool=22000;
 }
 
 
@@ -403,16 +530,16 @@ Direction* Memory::save(int partition, int type, float value){
 
 
 void Memory::clearTemp(){
-	temp_int=13000;
-	temp_flo=15000;
-	temp_bool=17000;
+	temp_int=12000;
+	temp_flo=14000;
+	temp_bool=16000;
 	
 }
 
 void Memory::clearLocal(){
-	local_int=7000;
-	local_flo=9000;
-	local_bool=11000;
+	local_int=6000;
+	local_flo=8000;
+	local_bool=10000;
 	
 }
 
@@ -448,6 +575,8 @@ const char* Cuadruplo::translate(int a){
 		case 18: return "gotoFin";
 		case 19: return "gotoRetorno";
 		case 20: return "gotoMain";
+		case 21: return "gotoRetorno";
+		case 22: return "RET";
 		case 30: return "beginDraw";
 		case 31: return "point";
 		case 32: return "line";
@@ -503,7 +632,12 @@ Action::Action(){
 	leap= new StackLeap();
 	cube=new LogicCube();
 	memory=new Memory();
+	inifun=new Function();
+	para= new StackParameter();
+	fun=new StackFunction();
 	cont=0;
+	cant_loc=0;
+	cant_para=0;
 	}
 	
 void Action::addGlobal(const wchar_t* n, int  t, int f){
@@ -514,6 +648,7 @@ void Action::addGlobal(const wchar_t* n, int  t, int f){
 void Action::addLocal(const wchar_t* n, int  t, int f){
 	Direction *d = memory->save(1, t, -1);
 	tab->addLocal(n,t,f,d);
+	cant_loc++;
 }
 
 Variable* Action::find(const wchar_t* n, int f){
@@ -525,6 +660,8 @@ void Action::removeLocals(){
 	tab->removeAllLocals();
 	memory->clearLocal();
 	memory->clearTemp();
+	cant_loc=0;
+	cant_para=0;
 }
 
 void Action::removeGlobals(){
@@ -847,6 +984,73 @@ void Action::createObject(){
   }
   else wcout<<"cannot open the file\n";
 }
+
+void Action::addNameFunction(const wchar_t* n){
+	inifun=new Function();
+	std::wstring ide=std::wstring(n);
+	inifun->name=ide;
+}
+
+
+void Action::addParameter(int t){
+	para->push(t);
+	cant_para++;
+}
+
+void Action::addTypeFunction(int t){
+	inifun->type=t;
+}
+void Action::addNoParameters(){
+	inifun->parametro=cant_para;
+	para->invert();
+}
+
+void Action::addNoLocals(){
+	inifun->varLoc=cant_loc-cant_para;
+}
+
+void Action::addContCuadruplo(){
+	inifun->begin=cont;
+	inifun->par=para;
+	fun->push(inifun);
+	fun->showStack();
+}
+
+void Action::generateRetorno(){
+	Direction *regresa;
+	regresa=dir->get(); dir->pop();
+	if(inifun->type == 1 or inifun->type == 2)
+	{	
+		if(regresa->type == inifun->type){
+			Cuadruplo *retorno;
+			retorno = new Cuadruplo(21, regresa->direction, -1, -1);
+			record.insert(std::make_pair(cont, retorno));
+			cont++;
+			Cuadruplo *ret;
+			ret = new Cuadruplo(22, -1, -1, -1);
+			record.insert(std::make_pair(cont, ret));
+			cont++;
+		}
+		else if(regresa->type == 0){
+			wcout<<"There are not return value\n";
+		}
+		else if(regresa->type != inifun->type and regresa->type != 0){
+			wcout<<"Return failture: incompatible types\n";
+		    }
+		}
+	
+	else if(inifun->type == 0 and regresa->direction == -1){
+		Cuadruplo *retorno;
+		retorno = new Cuadruplo(22, -1, -1, -1);
+		record.insert(std::make_pair(cont, retorno));
+		cont++;
+	}
+	else {
+		wcout<<"Return unnecessary\n";
+	}
+}
+
+
 
 
 }//termina namespace

@@ -125,23 +125,31 @@ void Parser::IDENTI(wchar_t* &name) {
 }
 
 void Parser::MODULE() {
-		wchar_t* name; int typemod; 
+		wchar_t* name; int typemod; int no; int can; 
 		Expect(18 /* "module" */);
 		TIPO_MOD(typemod);
 		IDENTI(name);
-		action->addGlobal(name,typemod, function); 
+		action->addNameFunction(name); 
+		action->addTypeFunction(typemod);
 		Expect(16 /* "(" */);
 		if (la->kind == 13 /* "int" */ || la->kind == 14 /* "float" */) {
 			PARAMETROS();
 		}
+		action->addNoParameters(); 
 		Expect(17 /* ")" */);
 		Expect(6 /* "{" */);
 		while (la->kind == 13 /* "int" */ || la->kind == 14 /* "float" */) {
 			LOCAL();
 		}
+		action->addNoLocals();
+		action->addContCuadruplo(); 
 		while (StartOf(1)) {
 			ESTATUTO();
 		}
+		if (la->kind == 20 /* "return" */) {
+			RETORNO();
+		}
+		action->generateRetorno(); 
 		Expect(7 /* "}" */);
 		action->removeLocals(); 
 }
@@ -150,6 +158,7 @@ void Parser::MAIN() {
 		Expect(15 /* "main" */);
 		Expect(16 /* "(" */);
 		Expect(17 /* ")" */);
+		int can; 
 		Expect(6 /* "{" */);
 		action->beginMain(); 
 		while (la->kind == 13 /* "int" */ || la->kind == 14 /* "float" */) {
@@ -166,7 +175,7 @@ void Parser::LOCAL() {
 		wchar_t* name; int type; 
 		TIPO(type);
 		IDENTI(name);
-		action->addLocal(name, type, var); 
+		action->addLocal(name, type, var);  
 		if (la->kind == 9 /* "[" */) {
 			Get();
 			Expect(_integer);
@@ -211,10 +220,6 @@ void Parser::ESTATUTO() {
 			CICLO();
 			break;
 		}
-		case 20 /* "return" */: {
-			RETORNO();
-			break;
-		}
 		default: SynErr(63); break;
 		}
 }
@@ -238,17 +243,18 @@ void Parser::PARAMETROS() {
 		}
 }
 
-void Parser::PARAM_COMA() {
-		wchar_t* name; int type; 
-		TIPO(type);
-		IDENTI(name);
-		action->addLocal(name, type, var); 
-}
-
 void Parser::RETORNO() {
 		Expect(20 /* "return" */);
 		EXP();
 		Expect(12 /* ";" */);
+}
+
+void Parser::PARAM_COMA() {
+		wchar_t* name; int type; int can; 
+		TIPO(type);
+		IDENTI(name);
+		action->addLocal(name, type, var); 
+		action->addParameter(type); 
 }
 
 void Parser::EXP() {
@@ -290,7 +296,7 @@ void Parser::LECTURA() {
 		Expect(16 /* "(" */);
 		IDENTI(name);
 		obj=action->find(name, var);
-		action->createCuadrRead(1, obj->type); 
+		action->createCuadrRead(obj->dir->direction, obj->type); 
 		Expect(17 /* ")" */);
 		Expect(12 /* ";" */);
 }
@@ -770,7 +776,7 @@ bool Parser::StartOf(int s) {
 
 	static bool set[9][63] = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x},

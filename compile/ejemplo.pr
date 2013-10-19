@@ -1,17 +1,19 @@
 program {
-global float a, c;
-
+global float b;
 module void cesar(){
-a=c*c*c;
-c=a*a*a;
+int a;
+a=a*a;
 }
 
 main(){
-float  b, c, d;
-a = 12 * 12 * d;
-draw circle:
-	y_position=12;
-end
+int b;
+float a;
+
+a=12.112;
+b=13;
+while(a>b){
+print( a | b);
+}
 
 }
 

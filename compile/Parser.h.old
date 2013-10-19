@@ -93,8 +93,8 @@ void InitDeclarations() {
 	void ESTATUTO();
 	void TIPO_MOD(int &typemod);
 	void PARAMETROS();
-	void PARAM_COMA();
 	void RETORNO();
+	void PARAM_COMA();
 	void EXP();
 	void VARCTE();
 	void LECTURA();
