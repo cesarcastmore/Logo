@@ -1,21 +1,31 @@
 program {
-global float b;
-module void cesar(){
-int a;
-a=a*a;
+global float h;
+
+module void cesar(int a, int b){
+int g; 
+
+h=a/b;
+
+
+}
+
+module float cosa(float f, int a, int c){
+return (f*a)/c;
 }
 
 main(){
-int b;
-float a;
+int a, b;
+if(a >b){
+a=a*b;
+}
+else {
+a=a*a;
+}
+print(a*a | a);
 
-a=12.112;
-b=13;
-while(a>b){
-print( a | b);
 }
 
-}
+
 
 
 }

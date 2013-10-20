@@ -1,19 +1,31 @@
 program {
-global float a, c;
+global float h;
 
-module void cesar(){
-a=c*c*c;
-c=a*a*a;
+module void cesar(int a, int b){
+int g; 
+
+h=a/b;
+
+
+}
+
+module float cosa(float f, int a, int c){
+return (f*a)/c;
 }
 
 main(){
-float  b, c, d;
-a = b * c * d;
-draw circle:
-	y_position=12;
-end
+int a, b;
+if(a >b){
+a=a*b;
+}
+else {
+a=a*a;
+}
+print(a | a);
 
 }
+
+
 
 
 }

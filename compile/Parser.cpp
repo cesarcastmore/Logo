@@ -74,7 +74,8 @@ void Parser::PROGRAMA() {
 		Expect(7 /* "}" */);
 		action->endProgram();
 		action->tab->removeAllLocals();
-		action->showCuadruplo(); 
+		action->showCuadruplo();
+		action->fun->showStack();
 		action->createObject();
 }
 
@@ -83,7 +84,7 @@ void Parser::GLOBAL() {
 		Expect(8 /* "global" */);
 		TIPO(type);
 		IDENTI(name);
-		action->addGlobal(name, type, var);  
+		action->addGlobal(name, type);  
 		if (la->kind == 9 /* "[" */) {
 			Get();
 			Expect(_integer);
@@ -92,7 +93,7 @@ void Parser::GLOBAL() {
 		while (la->kind == 11 /* "," */) {
 			Get();
 			IDENTI(name);
-			action->addGlobal(name, type, var); 
+			action->addGlobal(name, type); 
 			if (la->kind == 9 /* "[" */) {
 				Get();
 				Expect(_integer);
@@ -141,7 +142,7 @@ void Parser::MODULE() {
 		while (la->kind == 13 /* "int" */ || la->kind == 14 /* "float" */) {
 			LOCAL();
 		}
-		action->addNoLocals();
+		action->addNoLocals(); 
 		action->addContCuadruplo(); 
 		while (StartOf(1)) {
 			ESTATUTO();
@@ -158,7 +159,7 @@ void Parser::MAIN() {
 		Expect(15 /* "main" */);
 		Expect(16 /* "(" */);
 		Expect(17 /* ")" */);
-		int can; 
+		int can;   
 		Expect(6 /* "{" */);
 		action->beginMain(); 
 		while (la->kind == 13 /* "int" */ || la->kind == 14 /* "float" */) {
@@ -253,7 +254,7 @@ void Parser::PARAM_COMA() {
 		wchar_t* name; int type; int can; 
 		TIPO(type);
 		IDENTI(name);
-		action->addLocal(name, type, var); 
+		action->addLocal(name, type, para); 
 		action->addParameter(type); 
 }
 
@@ -295,7 +296,7 @@ void Parser::LECTURA() {
 		Expect(27 /* "read" */);
 		Expect(16 /* "(" */);
 		IDENTI(name);
-		obj=action->find(name, var);
+		obj=action->find(name);
 		action->createCuadrRead(obj->dir->direction, obj->type); 
 		Expect(17 /* ")" */);
 		Expect(12 /* ";" */);
@@ -318,10 +319,9 @@ void Parser::ASIGMODULO() {
 		wchar_t* name; Variable *obj; 
 		IDENTI(name);
 		if (la->kind == 16 /* "(" */) {
-			obj=action->find(name, function);
 			LLAMAR_MODULO();
 		} else if (la->kind == 9 /* "[" */ || la->kind == 25 /* "=" */) {
-			obj=action->find(name, var); 
+			obj=action->find(name);
 			action->addStackDir(obj->dir->direction,obj->type); 
 			ASIGNACION();
 		} else SynErr(66);
@@ -531,11 +531,11 @@ void Parser::FACTOR() {
 		} else if (la->kind == _id) {
 			IDENTI(name);
 			if (StartOf(6)) {
-				obj=action->find(name, var); 
+				obj=action->find(name); 
 				action->addStackDir(obj->dir->direction,obj->type); 
 			} else if (la->kind == 16 /* "(" */) {
 				PARENTESIS();
-				obj=action->find(name, function); 
+				obj=action->find(name); 
 			} else SynErr(73);
 		} else SynErr(74);
 }

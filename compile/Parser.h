@@ -5,6 +5,10 @@
 
 #include "Semantica.h"
 #include "wchar.h"
+#include <iostream>
+#include <string>
+#include <map>
+#include <fstream>
 
 
 #include "Scanner.h"
@@ -61,13 +65,13 @@ void Err(wchar_t* msg) {
 }
 
 
-int var, function, entero, flotante, undefined;
+int var, para, entero, flotante, undefined;
 
 int plus, minus, multiply, divide, module, eq, ne, gt, lt, gte, lte, log_and ,log_or ;
 
 void InitDeclarations() { 
 	
-	var=0; function=1;
+	var=0; para=1;
 	undefined=0;entero=1; flotante=2;
 	plus=1; minus=2;
 	multiply=3; divide=4; module=5;

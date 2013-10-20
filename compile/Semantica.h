@@ -43,22 +43,22 @@ public :
 	std::wstring name;
 	Direction *dir;
 	int type; 
-	int function;
+	int slope;
 	Variable();
-	Variable(std::wstring n, int t, int function, Direction *d);	
+	Variable(std::wstring n, int t, int slope, Direction *d);	
 
 };
 
 class TablaVariables{
 public:
 	TablaVariables();
-	void addGlobal(const wchar_t* n , int t, int function, Direction *d);
-	void addLocal(const wchar_t* n, int t, int function, Direction *d);
+	void addGlobal(const wchar_t* n , int t, int slope, Direction *d);
+	void addLocal(const wchar_t* n, int t, int slope, Direction *d);
 	void removeAllLocals();
 	void removeAllGlobals();
-	bool checkOnlyLocal(const wchar_t* n, int f);
-	bool checkOnlyGlobal(const wchar_t* n, int f);
-	Variable* find(const wchar_t* n, int f);
+	bool checkOnlyLocal(const wchar_t* n);
+	bool checkOnlyGlobal(const wchar_t* n);
+	Variable* find(const wchar_t* n);
 	void displayLocals();
 	void displayGlobals();
 };
@@ -183,10 +183,14 @@ public :
 	int cons_int;
 	int cons_flo;
 	int cons_bool;
+	int para_int;
+	int para_flo;
+	int para_bool;
 	Memory();
 	Direction* save(int partition, int type, float value);
 	void clearLocal();
 	void clearTemp();
+	void clearPara();
 
 };
 
@@ -206,11 +210,11 @@ public:
 	int cant_loc;
 	int cant_para;
 	Action();
-	void addGlobal(const wchar_t* n , int t, int function);
-	void addLocal(const wchar_t* n, int t, int function);
+	void addGlobal(const wchar_t* n , int t);
+	void addLocal(const wchar_t* n, int t, int slope);
 	void removeLocals();
 	void removeGlobals();
-	Variable* find(const wchar_t* n, int f);
+	Variable* find(const wchar_t* n);
 	void addStackDir(int d, int t);
 	void addStackOpe(int o);
 	void createCuadroOpeTerm();

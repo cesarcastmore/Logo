@@ -1,5 +1,9 @@
 #include "Semantica.h"
 #include "wchar.h"
+#include <iostream>
+#include <string>
+#include <map>
+#include <fstream>
 
 COMPILER PROGRAMA
 
@@ -12,13 +16,13 @@ void Err(wchar_t* msg) {
 }
 
 
-int var, function, entero, flotante, undefined;
+int var, para, entero, flotante, undefined;
 
 int plus, minus, multiply, divide, module, eq, ne, gt, lt, gte, lte, log_and ,log_or ;
 
 void InitDeclarations() { 
 	
-	var=0; function=1;
+	var=0; para=1;
 	undefined=0;entero=1; flotante=2;
 	plus=1; minus=2;
 	multiply=3; divide=4; module=5;
@@ -47,15 +51,17 @@ PROGRAMA =
 { GLOBAL  } 
  BLOQUE '}'			       (. action->endProgram();
 					action->tab->removeAllLocals();
-					action->showCuadruplo(); .)
+					action->showCuadruplo();
+					action->fun->showCuadruplo();
+					action->createObject();.)
 .
 
 /*----------------------------------------------------------------------------*/
 GLOBAL = 				(. wchar_t* name; int type; .)
 "global" TIPO<type> 
-IDENTI<name> 				(. action->addGlobal(name, type, var);  .)
+IDENTI<name> 				(. action->addGlobal(name, type);  .)
 [ '[' integer ']' ] 
-{ ',' IDENTI<name>  			(.  action->addGlobal(name, type, var); .)
+{ ',' IDENTI<name>  			(.  action->addGlobal(name, type); .)
 [ '[' integer ']' ] } 			
 ';'.
 /*----------------------------------------------------------------------*/
@@ -66,31 +72,42 @@ TIPO<int  &type> =
 /*----------------------------------------------------------------------*/
 BLOQUE = { MODULE }   MAIN .
 /*----------------------------------------------------------------------*/
-MAIN = "main" '(' ')' 
+MAIN = "main" '(' ')' 			(. int can;   .)
 '{' 					(. action->beginMain(); .)
  { LOCAL} 
-{ ESTATUTO }  
-'}'					(. action->removeLocals(); .).
+{ ESTATUTO } 
+'}'					(./*action->tab->displayLocals();*/
+					 action->removeLocals(); .).
 /*------------------------------------------------------------------------------*/
-MODULE = 				(. wchar_t* name; int typemod; .)
+MODULE = 				(. wchar_t* name; int typemod; int no; int can; .)
 "module" 
-TIPO_MOD<typemod>
- IDENTI<name>			 	(. action->addGlobal(name,typemod, function); .) 
-'('  [ PARAMETROS ] ')' 
-'{' { LOCAL } { ESTATUTO } '}'		(. action->removeLocals(); .).
+TIPO_MOD<typemod>	
+ IDENTI<name>			 	(. action->addNameFunction(name); 
+					action->addTypeFunction(typemod);.) 
+'('  [ PARAMETROS ] 			(. action->addNoParameters(); .)
+')' 
+'{' { LOCAL }				(. action->addNoLocals(); 
+					action->addContCuadruplo(); .)
+ { ESTATUTO } 				
+ [ RETORNO ]				(. action->generateRetorno(); .)
+'}'					(. /*action->tab->displayLocals();*/ action->removeLocals(); .).
 /*--------------------------------------------------------------------------------*/
 TIPO_MOD<int &typemod>= 		(. int type;  .)			
  TIPO<type>				(.  typemod = type; .)
 | "void"				(. typemod = undefined; .) .
 /*----------------------------------------------------------------------*/
-PARAMETROS = PARAM_COMA { ',' PARAM_COMA }. 
+PARAMETROS =	
+PARAM_COMA 				
+{ ',' PARAM_COMA		
+ }. 
 /*---------------------------------------------------------*/
-PARAM_COMA = 				(. wchar_t* name; int type; .)
- TIPO<type> IDENTI<name>		(. action->addLocal(name, type, var); .)
+PARAM_COMA = 				(. wchar_t* name; int type; int can; .)
+ TIPO<type> IDENTI<name>		(. action->addLocal(name, type, para); 
+					action->addParameter(type); .)
 .
 /*---------------------------------------------------------------------------*/
-LOCAL=  				(. wchar_t* name; int type; .)
-TIPO<type> IDENTI<name>  		(. action->addLocal(name, type, var); .)
+LOCAL= 					(. wchar_t* name; int type; .)
+TIPO<type> IDENTI<name>  		(.  action->addLocal(name, type, var);  .)
 [ '[' integer ']' ]   	 		
 { ',' IDENTI<name>  			(. action->addLocal(name, type, var); .)
 [ '[' integer ']' ]  		
@@ -107,7 +124,7 @@ VARCTE =				(. int signo; float number; Direction *dir; int tipo;.)
 					action->dir->push(dir); .)
 .
 /*----------------------------------------------------------------------*/
-ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO | RETORNO ) .
+ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO  ) .
 /*----------------------------------------------------------------------*/
 CONDICION = 
 "if"			
@@ -131,11 +148,11 @@ EXP]					(. action->createCuadroOpeRel(); .)
 /*-------------------------------------------------------------------------*/
 ASIGMODULO =				(. wchar_t* name; Variable *obj; .) 
 IDENTI<name> 			
-( 					(. obj=action->find(name, function);.)
+( 					
 LLAMAR_MODULO 	
-| 			 		(. obj=action->find(name, var); 
+| 			 		(.  obj=action->find(name);
 					action->addStackDir(obj->dir->direction,obj->type); .)
-ASIGNACION 			
+ASIGNACION 	
 ).
 /*------------------------------------------------------------------*/
 LLAMAR_MODULO = '(' [  EXP { ',' EXP } ] ')' ';'.
@@ -170,9 +187,9 @@ EXPRESION ')'				(. action->removeFake(); .)
  ) 	
 | ( VARCTE ) 
 | IDENTI<name>  					
-( 					(. obj=action->find(name, var); 
+( 					(. obj=action->find(name); 
 					 action->addStackDir(obj->dir->direction,obj->type); .)
-|PARENTESIS 				(. obj=action->find(name, function); .)
+|PARENTESIS 				(. obj=action->find(name); .)
 ) 
 ).
 /*----------------------------------------------------------------------------------*/	
@@ -184,8 +201,8 @@ CICLO =
 /*----------------------------------------------------------------------------------*/
 LECTURA =				(. wchar_t* name; Variable *obj; .)			
 "read" 
-'(' IDENTI<name> 			(. obj=action->find(name, var);
-					action->createCuadrRead(1, obj->type); .) 
+'(' IDENTI<name> 			(. obj=action->find(name);
+					action->createCuadrRead(obj->dir->direction, obj->type); .) 
 ')' ';'.
 /*----------------------------------------------------------------------------------*/
 ESCRITURA = 		

@@ -15,15 +15,16 @@ std::map<int , Cuadruplo*> record;
 std::map<int , float> contantes;
 
 Variable::Variable(){
+name;
 type=0;
-function=0;
+slope=0;
 dir=new Direction();
 }
 
-Variable::Variable(wstring n, int t, int f, Direction *d){
+Variable::Variable(wstring n, int t, int slope, Direction *d){
 type=t;
 name=n;
-function=f;
+slope=slope;
 dir=d; 
 }
 
@@ -33,11 +34,11 @@ TablaVariables::TablaVariables(){
 	
 }
 
-bool TablaVariables::checkOnlyLocal(const wchar_t* n, int f){
+bool TablaVariables::checkOnlyLocal(const wchar_t* n){
 	std::wstring identif=std::wstring(n);
 	//buscar en local
 		for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it)
-			if(it->first == identif  and f == 0 ){
+			if(it->first == identif){
 				return false; 
 			}
 	return true;
@@ -45,11 +46,11 @@ bool TablaVariables::checkOnlyLocal(const wchar_t* n, int f){
 }
 
 
-bool TablaVariables::checkOnlyGlobal(const wchar_t* n, int f){
+bool TablaVariables::checkOnlyGlobal(const wchar_t* n){
 	std::wstring identif=std::wstring(n);
 	//buscar en global
 		for (std::map<std::wstring , Variable* >::iterator it=tablaGlobals.begin(); it!=tablaGlobals.end(); ++it)
-			if(it->first == identif and it->second->function == f){
+			if(it->first == identif ){
 				return false;
 			}
 	return true;
@@ -57,23 +58,23 @@ bool TablaVariables::checkOnlyGlobal(const wchar_t* n, int f){
 }
 
 
-void TablaVariables::addGlobal(const wchar_t* n, int  t, int f, Direction *d){
+void TablaVariables::addGlobal(const wchar_t* n, int  t, int slope, Direction *d){
 	std::wstring identif=std::wstring(n);
-	if(checkOnlyGlobal(n, f)){
-		Variable *temp = new Variable(n,t,f, d);
+	if(checkOnlyGlobal(n)){
+		Variable *temp = new Variable(n,t, slope, d);
 		tablaGlobals.insert(std::make_pair(identif, temp));	
 	}
-	else wcout<<"There are two variables with the same name \""<<n<<"\"\n";
+	else wcout<<"There are two variables with the same name \""<<n<<"\n";
 }
 
 
-void TablaVariables::addLocal(const wchar_t* n, int t, int f, Direction *d){
+void TablaVariables::addLocal(const wchar_t* n, int t, int slope, Direction *d){
 	std::wstring identif=std::wstring(n);
-	if(checkOnlyLocal(n,f)){
-		Variable *temp = new Variable(n,t,f, d);
+	if(checkOnlyLocal(n)){
+		Variable *temp = new Variable(n,t,slope, d);
 		tablaLocals.insert(std::make_pair(identif, temp));		
 	}
-	else wcout<<"There are two variables with the same name \""<<n<<"\"\n";
+	else wcout<<"There are two variables with the same name \""<<n<<"\n";
 }
 
 		
@@ -87,21 +88,18 @@ void  TablaVariables::removeAllGlobals(){
 }
 
 
-Variable* TablaVariables::find(const wchar_t* n, int f){
+Variable* TablaVariables::find(const wchar_t* n){
 	std::wstring identif=std::wstring(n);
 	
 	for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it)			
-		if(it->first == identif  and f == 0 ) 
+		if(it->first == identif) 
 			return it->second;
 	
 	for (std::map<std::wstring , Variable* >::iterator it=tablaGlobals.begin(); it!=tablaGlobals.end(); ++it)
-		if(it->first == identif and it->second->function == f)
+		if(it->first == identif)
 			return it->second;		
 			
-	if(f == 0)
 	wcout<<"Error: The variable \""<<identif <<"\" has not been initialized yet.\n";
-		else 
-		wcout<<"Error: The function \""<<identif <<"\" has not been initialized yet<<.\n";
 
 
 	return new Variable();
@@ -112,14 +110,14 @@ Variable* TablaVariables::find(const wchar_t* n, int f){
 void TablaVariables::displayLocals(){
   wcout << "tabla local contains:\n";
   for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it)
-    wcout << it->first << " => " << it->second->type << "--" << it->second->function <<'\n';
+    wcout << it->first << " => " << it->second->type << "--" << it->second->slope <<"---direction--"<<it->second->dir->direction<<'\n';
 }
 
 
 void TablaVariables::displayGlobals(){
   cout << "tabla global contains:\n";
   for (std::map<std::wstring , Variable* >::iterator it=tablaGlobals.begin(); it!=tablaGlobals.end(); ++it){
-    wcout << it->first << " => type " << it->second->type << "-- function" << it->second->function <<'\n';
+    wcout << it->first << " => type " << it->second->type << "-- function" << it->second->slope <<'\n';
 	}
 }
 
@@ -454,6 +452,9 @@ Memory::Memory(){
 	cons_int=18000;
 	cons_flo=20000;
 	cons_bool=22000;
+	para_int=24000;
+	para_flo=26000;
+	para_bool=28000;
 }
 
 
@@ -520,10 +521,26 @@ Direction* Memory::save(int partition, int type, float value){
 	}
 	else if(partition == 3 and type == 3){
 		contantes[cons_bool]=value;
-		Direction *new_dir=new Direction(cons_bool-=1, type);
+		Direction *new_dir=new Direction(cons_bool, type);
 		cons_bool++;
 		return new_dir;
 	}
+		else if(partition == 4 and type == 1){
+		Direction *new_dir=new Direction(para_int, type);
+		para_int++;
+		return new_dir;
+	}
+		else if(partition == 4 and type == 2){
+		Direction *new_dir=new Direction(para_flo, type);
+		para_flo++;
+		return new_dir;
+	}
+		else if(partition == 4 and type == 3){
+		Direction *new_dir=new Direction(para_bool, type);
+		para_bool++;
+		return new_dir;
+	}
+	
 	
 	return new Direction(-1, 0);
 }
@@ -540,6 +557,13 @@ void Memory::clearLocal(){
 	local_int=6000;
 	local_flo=8000;
 	local_bool=10000;
+	
+}
+
+void Memory::clearPara(){
+	para_int=24000;
+	para_flo=26000;
+	para_bool=28000;
 	
 }
 
@@ -591,7 +615,7 @@ const char* Cuadruplo::translate(int a){
 		case 99: return "end";
 		
 	}
-	return "0";
+	return "-1";
 }
 
 /*
@@ -640,19 +664,29 @@ Action::Action(){
 	cant_para=0;
 	}
 	
-void Action::addGlobal(const wchar_t* n, int  t, int f){
+void Action::addGlobal(const wchar_t* n, int  t){
 	Direction *d = memory->save(0, t, -1);
-	tab->addGlobal(n,t,f, d);
+	tab->addGlobal(n,t,0, d);
 }
 
-void Action::addLocal(const wchar_t* n, int  t, int f){
-	Direction *d = memory->save(1, t, -1);
-	tab->addLocal(n,t,f,d);
-	cant_loc++;
+void Action::addLocal(const wchar_t* n, int  t, int slope){
+	Direction *d;
+	//si es parametro
+	if(slope == 1){
+		d = memory->save(4, t, -1);
+		cant_para++;
+	}
+	//no es local
+	else if(slope == 0){
+		d = memory->save(1, t, -1);
+		cant_loc++;
+	}
+	tab->addLocal(n,t,slope,d);
+	
 }
 
-Variable* Action::find(const wchar_t* n, int f){
-	Variable* var =tab->find(n,f);
+Variable* Action::find(const wchar_t* n){
+	Variable* var =tab->find(n);
 	return var;
 }
 
@@ -660,8 +694,10 @@ void Action::removeLocals(){
 	tab->removeAllLocals();
 	memory->clearLocal();
 	memory->clearTemp();
+	memory->clearPara();
 	cant_loc=0;
 	cant_para=0;
+	para=new StackParameter();
 }
 
 void Action::removeGlobals(){
@@ -837,7 +873,7 @@ void Action::createCuadrAlloca(){
 		cont++;
 	}
 	else{
-		wcout<<"Allocation failure: incompatible types\n"<<top1<<"--"<<top2<<"\n";
+		wcout<<"Allocation failure: incompatible types\n";
 	}
 	
 }
@@ -872,7 +908,6 @@ void Action::beginDraw(int figure){
 	
 void Action::addAtributeInt(int attribute){
 	int figure=op->get()->oper;
-	wcout<<figure;
 	Direction *entero;
 	entero = dir->get();	dir->pop(); 
 	Cuadruplo *draw;
@@ -994,7 +1029,6 @@ void Action::addNameFunction(const wchar_t* n){
 
 void Action::addParameter(int t){
 	para->push(t);
-	cant_para++;
 }
 
 void Action::addTypeFunction(int t){
@@ -1006,14 +1040,13 @@ void Action::addNoParameters(){
 }
 
 void Action::addNoLocals(){
-	inifun->varLoc=cant_loc-cant_para;
+	inifun->varLoc=cant_loc;
 }
 
 void Action::addContCuadruplo(){
 	inifun->begin=cont;
 	inifun->par=para;
 	fun->push(inifun);
-	fun->showStack();
 }
 
 void Action::generateRetorno(){
@@ -1048,6 +1081,11 @@ void Action::generateRetorno(){
 	else {
 		wcout<<"Return unnecessary\n";
 	}
+	
+	Cuadruplo *vacio;
+	vacio = new Cuadruplo(-1, -1, -1, -1);
+	record.insert(std::make_pair(cont, vacio));
+	cont++;
 }
 
 
