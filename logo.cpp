@@ -6,6 +6,9 @@
 #include <QTextDocument>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fstream>
+#include <string>
+
 using namespace std;
 
 
@@ -84,14 +87,53 @@ void Logo::on_runButton_clicked()
 
 void Logo::MachineVirtual(){
 
-    /*llenar el map desde un archivo
-     el archivo va a tener la siguiente formato
-     #30#-1#-1#-1#
-     #35#1#50#-1#
-     #50#35#-1#-1#
-     ahorita es un arreglo fiticio 
-     es un arreglo
-     */
+    int program[1000][4];
+    int instr=0;
+    string line;
+    ifstream myfile ("/home/castillo/Logo/Objecto.txt");
+    if (myfile.is_open())
+    {
+      while ( getline (myfile,line) )
+      {
+          int lon = line.find("$");
+          string operator_s = line.substr(0,lon);
+
+          line=line.substr(line.find("$")+1);
+          lon=line.find("$");
+          string operando_1s = line.substr(0,lon);
+
+          line=line.substr(line.find("$")+1);
+          lon=line.find("$");
+          string operando_2s = line.substr(0,lon);
+
+          line=line.substr(line.find("$")+1);
+          lon=line.find("$");
+          string resul_s = line.substr(0,lon);
+
+          int operator_i= atoi(operator_s.c_str());
+          int operando_1i= atoi(operando_1s.c_str());
+          int operando_2i= atoi(operando_2s.c_str());
+          int resul_i= atoi(resul_s.c_str());
+
+          program[instr][0]=operator_i;
+          program[instr][1]=operando_1i;
+          program[instr][2]=operando_2i;
+          program[instr][3]=resul_i;
+
+          instr++;
+
+
+          cout<<operator_i<<"|"<<operando_1i<<"|"<<operando_2i<<"|"<<resul_i<<"\n";
+
+
+
+      }
+      myfile.close();
+    }
+
+    else cout << "Unable to open file";
+
+/*
         int map[12][4]={{0,1,-1,-1},
                         {30,-1,-1,-1},
                         {35,1,50,-1},
@@ -103,8 +145,9 @@ void Logo::MachineVirtual(){
                         {34,1,0,-1},
                         {34,2,0,-1},
                         {50,34,-1,-1},
-                       {99,-1,-1,-1}} ;
+                       {99,-1,-1,-1}} ;*/
 
+        //initializa atributos
         int y_position=0;
         int x_position=0;
         QBrush colorFigure(Qt::blue);
@@ -113,11 +156,11 @@ void Logo::MachineVirtual(){
         int cont=0;
         while(cont != 10000){
 
-            int instruccion = map[cont][0];
+            int instruccion = program[cont][0];
 
             switch(instruccion){
             case 0:
-                cont=map[cont][1];
+                cont=program[cont][1];
                 break;
             case 1:
                 cont++;
@@ -176,6 +219,10 @@ void Logo::MachineVirtual(){
             case 19:
                 cont++;
                 break;
+            //GotoMain
+            case 20:
+                cont++;
+                break;
             //begin draw
             case 30:
                 y_position=0;
@@ -198,12 +245,12 @@ void Logo::MachineVirtual(){
                 break;
             //draw a square
             case  34:
-                switch(map[cont][1]){
+                switch(program[cont][1]){
                 case 1:
-                    y_position=map[cont][2];
+                    y_position=program[cont][2];
                     break;
                 case 2:
-                    x_position=map[cont][2];
+                    x_position=program[cont][2];
                     break;
                 case 3:
                     break;
@@ -214,7 +261,7 @@ void Logo::MachineVirtual(){
                 case 6:
                     break;
                 case 7:
-                    switch(map[cont][2]){
+                    switch(program[cont][2]){
                     case 1:
                         colorThick.setColor(Qt::blue);
                         break;
@@ -227,7 +274,7 @@ void Logo::MachineVirtual(){
                     }
                     break;
                 case 8:
-                    switch(map[cont][2]){
+                    switch(program[cont][2]){
                     case 1:
                         colorFigure.setColor(Qt::blue);
                         break;
@@ -244,11 +291,11 @@ void Logo::MachineVirtual(){
                 break;
             //draw circle
             case  35:
-                switch(map[cont][1]){
+                switch(program[cont][1]){
                 case 1:
-                    y_position=map[cont][2];
+                    y_position=program[cont][2];
                 case 2:
-                    x_position=map[cont][2];
+                    x_position=program[cont][2];
                 case 3:
                     break;
                 case 4:
@@ -258,7 +305,7 @@ void Logo::MachineVirtual(){
                 case 6:
                     break;
                 case 7:
-                    switch(map[cont][2]){
+                    switch(program[cont][2]){
                     case 1:
                         colorThick.setColor(Qt::blue);
                         break;
@@ -271,7 +318,7 @@ void Logo::MachineVirtual(){
                     }
                     break;
                 case 8:
-                    switch(map[cont][2]){
+                    switch(program[cont][2]){
                     case 1:
                         colorFigure.setColor(Qt::blue);
                         break;
@@ -303,7 +350,7 @@ void Logo::MachineVirtual(){
                 break;
             //end draw 
             case 50:
-                switch(map[cont][1]){
+                switch(program[cont][1]){
                 case 34:
                     rectangle = scene->addRect(x_position, y_position, 50, 50, colorThick, colorFigure);
                     break;

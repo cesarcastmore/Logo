@@ -1013,7 +1013,7 @@ void Action::createObject(){
   if (myfile.is_open())
   {
 	for (std::map<int , Cuadruplo* >::iterator it=record.begin(); it!=record.end(); ++it){
-		myfile<<"$"<<it->second->op<<"$"<<it->second->oper1<<"$"<<it->second->oper2<<"$"<<it->second->rec<<"$\n";
+		myfile<<it->second->op<<"$"<<it->second->oper1<<"$"<<it->second->oper2<<"$"<<it->second->rec<<"$\n";
 	}
     myfile.close();
   }

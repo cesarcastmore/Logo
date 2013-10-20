@@ -1,6 +1,8 @@
 program {
 main(){
-int a;
-a=a*a;
+draw circle:
+y_position=50;
+x_position=50;
+end
 }
 }
