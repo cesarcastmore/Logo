@@ -187,7 +187,7 @@ public :
 	int para_flo;
 	int para_bool;
 	Memory();
-	Direction* save(int partition, int type, float value);
+	Direction* save(int partition, int type, double value);
 	void clearLocal();
 	void clearTemp();
 	void clearPara();

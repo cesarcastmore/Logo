@@ -10,7 +10,7 @@ using namespace std;
 
 namespace System { 
 
-
+//clases 
 class Parser;
 class Errors;
 
@@ -58,7 +58,7 @@ public:
 	void removeAllGlobals();
 	bool checkOnlyLocal(const wchar_t* n);
 	bool checkOnlyGlobal(const wchar_t* n);
-	Variable* find(const wchar_t* n, int f);
+	Variable* find(const wchar_t* n);
 	void displayLocals();
 	void displayGlobals();
 };
@@ -214,7 +214,7 @@ public:
 	void addLocal(const wchar_t* n, int t, int slope);
 	void removeLocals();
 	void removeGlobals();
-	Variable* find(const wchar_t* n, int f);
+	Variable* find(const wchar_t* n);
 	void addStackDir(int d, int t);
 	void addStackOpe(int o);
 	void createCuadroOpeTerm();

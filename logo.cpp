@@ -11,6 +11,89 @@
 
 using namespace std;
 
+std::map<int , double> memoria;
+
+
+MemoryVirtual::MemoryVirtual(){
+
+}
+
+float MemoryVirtual::get(int dir){
+    return memoria[dir];
+}
+
+void MemoryVirtual::save(int dir, double value){
+    memoria[dir]=value;
+    if((dir >= 0000 and dir < 2000 ) or
+            (dir >= 6000 and dir < 8000) or
+            (dir >= 12000 and dir < 14000 ) or
+            (dir >= 18000 and dir < 20000 ) or
+            (dir >= 24000 and dir < 26000 )){
+     int entero = (double)(value);
+     value=(double)(entero);
+     memoria[dir]=value;
+    }
+    else if((dir >= 2000 and dir < 4000) or
+            (dir >= 8000 and dir < 10000 ) or
+            (dir >= 14000 and dir < 16000 ) or
+            (dir >= 20000 and dir < 22000 ) or
+            (dir >= 26000 and dir < 28000 )
+            ){
+        memoria[dir]=value;
+    }
+}
+
+void MemoryVirtual::save(int dir, bool value){
+    if(value == true){
+        double bo=1.00;
+        memoria[dir]=bo;
+    }
+    else{
+        double bo=0.0;
+        memoria[dir]=bo;
+    }
+}
+
+void MemoryVirtual::save(int dir, int value){
+    int entero = (double)(value);
+    value=(double)(entero);
+    memoria[dir]=value;
+
+}
+
+
+void MemoryVirtual::saveCons(){
+    string line;
+    ifstream myfile ("/home/castillo/Logo/Constantes.txt");
+    if (myfile.is_open())
+    {
+      while ( getline (myfile,line) )
+      {
+          int lon = line.find("$");
+          string dir_s = line.substr(0,lon);
+
+          line=line.substr(line.find("$")+1);
+          lon=line.find("$");
+          string value_s = line.substr(0,lon);
+
+
+          int dir_i= atoi(dir_s.c_str());
+          double value_f=atof(value_s.c_str());
+          save(dir_i, value_f);
+
+
+      }
+      myfile.close();
+    }
+}
+
+void MemoryVirtual::displayMemory(){
+    cout <<"Memory\n";
+    for (std::map<int , double >::iterator it=memoria.begin(); it!=memoria.end(); ++it){
+        cout <<"Memory\n"<< it->first << " => " << it->second << "\n";
+    }
+}
+
 
 Logo::Logo(QWidget *parent) :
     QDialog(parent),
@@ -85,7 +168,13 @@ void Logo::on_runButton_clicked()
 }
 
 
+
 void Logo::MachineVirtual(){
+
+    MemoryVirtual *memo= new MemoryVirtual();
+    cout<<"entrooooo\n";
+    memo->saveCons();
+    memo->displayMemory();
 
     int program[1000][4];
     int instr=0;
@@ -152,6 +241,7 @@ void Logo::MachineVirtual(){
         int x_position=0;
         QBrush colorFigure(Qt::blue);
         QPen colorThick(Qt::yellow);
+        scene->clear();
 
         int cont=0;
         while(cont != 10000){
@@ -247,10 +337,10 @@ void Logo::MachineVirtual(){
             case  34:
                 switch(program[cont][1]){
                 case 1:
-                    y_position=program[cont][2];
+                    y_position=0;
                     break;
                 case 2:
-                    x_position=program[cont][2];
+                    x_position=0;
                     break;
                 case 3:
                     break;
@@ -293,9 +383,9 @@ void Logo::MachineVirtual(){
             case  35:
                 switch(program[cont][1]){
                 case 1:
-                    y_position=program[cont][2];
+                    y_position=(int)(memo->get(program[cont][2]));
                 case 2:
-                    x_position=program[cont][2];
+                    x_position=(int)(memo->get(program[cont][2]));
                 case 3:
                     break;
                 case 4:

@@ -1,7 +1,12 @@
+GUARDOOOOO-12
+GUARDOOOOO-100
 0 => gotoMain, -1, -1, 1
 1 => beginDraw, -1, -1, -1
 2 => circle, 1, 18000, -1
 3 => circle, 2, 18001, -1
-4 => endDraw, 35, -1, -1
-5 => end, -1, -1, -1
+4 => circle, 8, 3, -1
+5 => endDraw, 35, -1, -1
+6 => end, -1, -1, -1
 la pila contiene StackFunction
+18000$-12$
+18001$-100$

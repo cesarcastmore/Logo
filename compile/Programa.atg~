@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+using namespace std;
 
 COMPILER PROGRAMA
 
@@ -52,7 +53,7 @@ PROGRAMA =
  BLOQUE '}'			       (. action->endProgram();
 					action->tab->removeAllLocals();
 					action->showCuadruplo();
-					action->fun->showCuadruplo();
+					action->fun->showStack();
 					action->createObject();.)
 .
 
@@ -115,11 +116,13 @@ TIPO<type> IDENTI<name>  		(.  action->addLocal(name, type, var);  .)
 /*-------------------------------------------------------------------------*/
 RETORNO = "return" EXP ';'.
 /*----------------------------------------------------------------------*/
-VARCTE =				(. int signo; float number; Direction *dir; int tipo;.) 
-[ '-' 					(. signo=-1; .)
-| '+'					(. signo=1; .)
-] ( integer 				(. swscanf(t->val, L"%f", &number); tipo=entero; .)
-| floating 				(. swscanf(t->val, L"%f", &number); tipo=flotante; .)
+VARCTE =				(. double signo=1.00; double number; Direction *dir; int tipo;.) 
+[ '-' 					(. signo=-1.00; .)
+| '+'				
+ ( integer 				(. number=wcstof((coco_string_create(t->val)), NULL); 
+					tipo=entero; .)
+| floating 				(. number=wcstof((coco_string_create(t->val)), NULL);
+					 tipo=flotante; .)
 )					(. dir=action->memory->save(3,tipo, number*signo);
 					action->dir->push(dir); .)
 .

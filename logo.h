@@ -37,4 +37,21 @@ private:
 
 };
 
+
+class MemoryVirtual{
+public:
+    MemoryVirtual();
+    void save(int dir, double value);
+    void save(int dir, bool value);
+    void save(int dir, int value);
+    void saveCons();
+    //int get(int dir);
+    float get(int dir);
+    //bool get(int dir);
+    void displayMemory();
+
+};
+
+
+
 #endif // LOGO_H

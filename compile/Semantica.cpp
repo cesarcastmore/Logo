@@ -12,7 +12,7 @@ namespace System{
 std::map< std::wstring , Variable*> tablaGlobals;
 std::map<std::wstring , Variable*> tablaLocals;		
 std::map<int , Cuadruplo*> record;
-std::map<int , float> contantes;
+std::map<int , double> contantes;
 
 Variable::Variable(){
 name;
@@ -458,7 +458,7 @@ Memory::Memory(){
 }
 
 
-Direction* Memory::save(int partition, int type, float value){
+Direction* Memory::save(int partition, int type, double value){
 	
 	if(partition==0 and type == 1){
 		Direction *new_dir=new Direction(glob_int, type);
@@ -491,13 +491,11 @@ Direction* Memory::save(int partition, int type, float value){
 		return new_dir;
 	}
 	else if(partition == 2 and type == 1){
-		contantes[temp_int]=value;
 		Direction *new_dir=new Direction(temp_int, type);
 		temp_int++;
 		return new_dir;
 	}
 	else if(partition == 2 and type == 2){
-		contantes[temp_flo]=value;
 		Direction *new_dir=new Direction(temp_flo, type);
 		temp_flo++;
 		return new_dir;
@@ -508,12 +506,14 @@ Direction* Memory::save(int partition, int type, float value){
 		return new_dir;
 	}
 	else if(partition == 3 and type == 1){
+		wcout<<"GUARDOOOOO"<<value<<"\n";
 		contantes[cons_int]=value;
 		Direction *new_dir=new Direction(cons_int, type);
 		cons_int++;
 		return new_dir;
 	}
 	else if(partition == 3 and type == 2){
+		wcout<<"GUARDOOOOO"<<value<<"\n";
 		contantes[cons_flo]=value;
 		Direction *new_dir=new Direction(cons_flo, type);
 		cons_flo++;
@@ -931,7 +931,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value, "\"normal\"") == 0)
 			value_i=2;
 		else if(strcmp(value,"\"bigger\"") == 0)
-			value_i=2;
+			value_i=3;
 		else
 			wcout<<"The value"<<value<<" was not find\n";
 		
@@ -943,7 +943,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value, "\"normal\"") == 0)
 			value_i=2;
 		else if(strcmp(value, "\"bigger\"") == 0)
-			value_i=2;
+			value_i=3;
 		else
 			wcout<<"The value"<<value<<" was not find\n";
 	}
@@ -953,7 +953,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value,"\"yellow\"") == 0)
 			value_i=2;
 		else if(strcmp(value,"\"red\"") == 0)
-			value_i=2;
+			value_i=3;
 		else 
 			wcout<<"The value"<<value<<" was not find\n";
 	}
@@ -963,7 +963,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value, "\"yellow\"") == 0)
 			value_i=2;
 		else if(strcmp(value,"\"red\"") == 0)
-			value_i=2;
+			value_i=3;
 		else 
 			wcout<<"The value"<<value<<" was not find\n";
 	}
@@ -1016,6 +1016,17 @@ void Action::createObject(){
 		myfile<<it->second->op<<"$"<<it->second->oper1<<"$"<<it->second->oper2<<"$"<<it->second->rec<<"$\n";
 	}
     myfile.close();
+  }
+  else wcout<<"cannot open the file\n";
+  
+  ofstream file ("/home/castillo/Logo/Constantes.txt");
+  if (file.is_open())
+  {
+	for (std::map<int , double >::iterator it=contantes.begin(); it!=contantes.end(); ++it){
+		wcout<<it->first<<"$"<<it->second<<"$\n";
+		file<<it->first<<"$"<<it->second<<"$\n";
+	}
+    file.close();
   }
   else wcout<<"cannot open the file\n";
 }

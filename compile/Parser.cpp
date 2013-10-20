@@ -270,22 +270,24 @@ void Parser::EXP() {
 }
 
 void Parser::VARCTE() {
-		int signo; float number; Direction *dir; int tipo;
+		double signo=1.00; double number; Direction *dir; int tipo;
 		if (la->kind == 21 /* "-" */ || la->kind == 22 /* "+" */) {
 			if (la->kind == 21 /* "-" */) {
 				Get();
 				signo=-1; 
 			} else {
 				Get();
-				signo=1; 
+				
 			}
 		}
 		if (la->kind == _integer) {
 			Get();
-			swscanf(t->val, L"%f", &number); tipo=entero; 
+			number=wcstof((coco_string_create(t->val)), NULL); 
+			tipo=entero; 
 		} else if (la->kind == _floating) {
 			Get();
-			swscanf(t->val, L"%f", &number); tipo=flotante; 
+			number=wcstof((coco_string_create(t->val)), NULL);
+			tipo=flotante; 
 		} else SynErr(65);
 		dir=action->memory->save(3,tipo, number*signo);
 		action->dir->push(dir); 
