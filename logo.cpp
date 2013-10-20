@@ -89,7 +89,8 @@ void Logo::MachineVirtual(){
      #30#-1#-1#-1#
      #35#1#50#-1#
      #50#35#-1#-1#
-     ahorita es un arreglo fiticio
+     ahorita es un arreglo fiticio 
+     es un arreglo
      */
         int map[12][4]={{0,1,-1,-1},
                         {30,-1,-1,-1},
