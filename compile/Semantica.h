@@ -10,7 +10,7 @@ using namespace std;
 
 namespace System { 
 
-
+//clases 
 class Parser;
 class Errors;
 
