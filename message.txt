@@ -1,3 +1,5 @@
--- line 1 col 1: "program" expected
 0 => gotoMain, -1, -1, 1
-1 => end, -1, -1, -1
+1 => *, 6000, 6000, 12000
+2 => =, 12000, -1, 6000
+3 => end, -1, -1, -1
+la pila contiene StackFunction

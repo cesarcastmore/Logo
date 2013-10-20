@@ -1009,7 +1009,7 @@ void Action::endProgram(){
 }
 
 void Action::createObject(){
-	ofstream myfile ("../Objecto.txt");
+	ofstream myfile ("/home/castillo/Logo/Objecto.txt");
   if (myfile.is_open())
   {
 	for (std::map<int , Cuadruplo* >::iterator it=record.begin(); it!=record.end(); ++it){
