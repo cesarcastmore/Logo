@@ -1,0 +1,45 @@
+program {
+main(){
+int a,b;
+read(a);
+b=12;
+if( a > b){
+ draw circle:
+    y_position=0;
+   x_position=0;
+ end
+}
+else{
+ draw square:
+    y_position=0;
+   x_position=0;
+ end
+}
+}
+}
+
+
+
+
+
+program {
+main(){
+int a,b;
+b=1;
+while( b < 12){
+print(b);
+draw circle:
+   x_position=12*b;
+  y_position=0;
+end
+
+print(b);
+b=b+1;
+}
+}
+}
+
+
+
+
+
