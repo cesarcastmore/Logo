@@ -13,10 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        logo.cpp
+        logo.cpp \
+    input.cpp
 
-HEADERS  += logo.h
+HEADERS  += logo.h \
+    input.h
 
-FORMS    += logo.ui
+FORMS    += logo.ui \
+    input.ui
 
 RESOURCES +=

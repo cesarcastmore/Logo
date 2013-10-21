@@ -34,6 +34,7 @@ private:
     void setMessage();
     void clearMessage();
     void MachineVirtual();
+    void saveRead(int dir, double value);
 
 };
 
@@ -45,11 +46,8 @@ public:
     void save(int dir, bool value);
     void save(int dir, int value);
     void saveCons();
-    //int get(int dir);
-    float get(int dir);
-    //bool get(int dir);
+    double get(int dir);
     void displayMemory();
-
 };
 
 

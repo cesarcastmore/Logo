@@ -1,9 +1,4 @@
 program {
 main(){
-draw circle:
-y_position=-12;
-x_position=-100;
-colorFigure="red";
-end
 }
 }

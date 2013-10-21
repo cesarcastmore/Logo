@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <string>
-
+#include <input.h>
 using namespace std;
 
 std::map<int , double> memoria;
@@ -18,7 +18,7 @@ MemoryVirtual::MemoryVirtual(){
 
 }
 
-float MemoryVirtual::get(int dir){
+double MemoryVirtual::get(int dir){
     return memoria[dir];
 }
 
@@ -94,6 +94,9 @@ void MemoryVirtual::displayMemory(){
     }
 }
 
+void Logo::saveRead(int dir, double value){
+    memoria[dir]=value;
+}
 
 Logo::Logo(QWidget *parent) :
     QDialog(parent),
@@ -173,8 +176,15 @@ void Logo::MachineVirtual(){
 
     MemoryVirtual *memo= new MemoryVirtual();
     cout<<"entrooooo\n";
+
+    //salvar las constante en un archivo
     memo->saveCons();
     memo->displayMemory();
+
+    double re;QString doc, s1, s2;//allocation
+    double value1, value2, temp, resul; int mod1, mod2;//expresiones
+    bool logica;
+     Input *read;//lectura
 
     int program[1000][4];
     int instr=0;
@@ -252,67 +262,169 @@ void Logo::MachineVirtual(){
             case 0:
                 cont=program[cont][1];
                 break;
+            //plus
             case 1:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                resul=value1+value2;
+                memo->save(temp,resul);
                 cont++;
                 break;
-            case 2:
+            //minus
+            case 2:;
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                cout<<"la direccion es "<<temp;
+                resul=value1-value2;
+                memo->save(temp,resul);
                 cont++;
                 break;
+            //multiply
             case 3:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                resul=value1*value2;
+                memo->save(temp,resul);
                 cont++;
                 break;
+            //divide
             case 4:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                resul=value1/value2;
+                memo->save(temp,resul);
                 cont++;
                 break;
-            case 5:
+            //module
+            case 5:;
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                mod1=(int)value1;
+                mod2=(int)value2;
+                resul=mod1%mod2;
+                memo->save(temp,resul);
                 cont++;
                 break;
+            //equal
             case 6:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                logica=(value1==value2);
+                memo->save(temp,logica);
                 cont++;
                 break;
+            //no equal
             case 7:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                logica=(value1!=value2);
+                memo->save(temp,logica);
                 cont++;
                 break;
+            //greater than
             case 8:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                logica=(value1>value2);
+                memo->save(temp,logica);
                 cont++;
                 break;
+            //less than
             case 9:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                logica=(value1<value2);
+                memo->save(temp,logica);
                 cont++;
                 break;
+            //greater or equal than
             case 10:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                logica=(value1>=value2);
+                memo->save(temp,logica);
                 cont++;
                 break;
+            //less or equal than
             case 11:
+                value1=memo->get(program[cont][1]);
+                value2=memo->get(program[cont][2]);
+                temp=program[cont][3];
+                logica=(value1<=value2);
+                memo->save(temp,logica);
                 cont++;
                 break;
+            //and
             case 12:
                 cont++;
                 break;
+            //or
             case 13:
                 cont++;
                 break;
+            //allocation
             case 14:
+                double valor;
+                valor= memo->get(program[cont][1]);
+                int direccion;
+                direccion= program[cont][3];
+                memo->save(direccion, valor);
                 cont++;
                 break;
+            //read
             case 15:
+                value1=program[cont][3];
+                read=new Input(*this , value1, &Logo::saveRead);
+                read->exec();
+                delete read;
                 cont++;
                 break;
+            //write
             case 16:
+               re=memo->get(program[cont][1]);
+               doc=ui->textMessage->toPlainText();
+               s1= QString::number(re);
+               ui->textMessage->setText(doc+ s1 +"\n");
                 cont++;
                 break;
+           //gotoFalse
             case 17:
-                cont++;
+                value1=memo->get(program[cont][1]);
+                value2=0;
+                if(value1 == value2 )
+                    cont=program[cont][3];
+                else
+                    cont++;
                 break;
+           //gotoFin
             case 18:
-                cont++;
+                 cont=program[cont][3];
                 break;
+           //gotoRetorno
             case 19:
-                cont++;
+                 cont=program[cont][3];
                 break;
             //GotoMain
             case 20:
                 cont++;
                 break;
+            case 21:
+                cont++;
+                break;
+            case 22:
+                cont++;
+                break;
+ /****************************************************************************************************/
             //begin draw
             case 30:
                 y_position=0;
@@ -337,10 +449,10 @@ void Logo::MachineVirtual(){
             case  34:
                 switch(program[cont][1]){
                 case 1:
-                    y_position=0;
+                    y_position=(int)(memo->get(program[cont][2]));
                     break;
                 case 2:
-                    x_position=0;
+                    x_position=(int)(memo->get(program[cont][2]));
                     break;
                 case 3:
                     break;
@@ -384,8 +496,10 @@ void Logo::MachineVirtual(){
                 switch(program[cont][1]){
                 case 1:
                     y_position=(int)(memo->get(program[cont][2]));
+                    break;
                 case 2:
                     x_position=(int)(memo->get(program[cont][2]));
+                    break;
                 case 3:
                     break;
                 case 4:
@@ -451,6 +565,7 @@ void Logo::MachineVirtual(){
 
                 cont++;
                 break;
+ /**************************************************************************************************************/
            //end Program
             case 99:
                 cont=10000;
