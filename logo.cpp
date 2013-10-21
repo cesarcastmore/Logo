@@ -9,6 +9,10 @@
 #include <fstream>
 #include <string>
 #include <input.h>
+#include <QGraphicsItem>
+#include <QGraphicsPolygonItem>
+#include <QGraphicsScene>
+
 using namespace std;
 
 std::map<int , double> memoria;
@@ -107,6 +111,13 @@ Logo::Logo(QWidget *parent) :
     scene->setSceneRect(0, 0, 100, 100);
     ui->graphic->setScene(scene);
 
+    polytri << QPointF(-200,50) << QPointF(-100,50) << QPointF(-150,-36.6);
+    polystar << QPointF(100,36) << QPointF(89,73) << QPointF(50,73) << QPointF(81,95) << QPointF(69,131) << QPointF(100,109.1) << QPointF(131,131) << QPointF(119,95) << QPointF(150,73) << QPointF(110,73);
+    polypenta << QPointF(-47.55,-15.45) << QPointF(-29.39,40.45) << QPointF(29.39,40.45) << QPointF(47.55,-15.45) << QPointF(0,-50);
+    polyhex << QPointF(-50,-50) << QPointF(-75,-6.7) << QPointF(-50,36.6) << QPointF(0,36.6) << QPointF(25,-6.7) << QPointF(0,-50);
+    polyrhom << QPointF(-200,-50) << QPointF(-225,0) << QPointF(-125,0) << QPointF(-100,-50);
+
+
 }
 
 Logo::~Logo()
@@ -172,6 +183,49 @@ void Logo::on_runButton_clicked()
 
 
 
+
+void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLeft, int scale, QBrush &colorFig,   QPen &colorThi){
+    switch(figura){
+    case 31:
+        break;
+    case 32:
+        break;
+    case 33:
+        triangle = scene->addPolygon(polytri,colorThi,colorFig);
+        triangle->setPos(x,y);
+        break;
+    case 34:
+       rectangle = scene->addRect(x, y, 50, 50, colorThi, colorFig);
+       rectangle->setRotation(rotateRight);
+        break;
+    case 35:
+        ellipse = scene->addEllipse(x,y,100,100, colorThi, colorFig);
+        break;
+    case 36:
+        star = scene->addPolygon(polystar,colorThi,colorFig);
+        star->setRotation(rotateRight);
+       // star->setRotation(rotateLeft);
+        star->setPos(x,y);
+        //star->setScale(scale);
+        break;
+    case 37:
+        pentagon = scene->addPolygon(polypenta,colorThi,colorFig);
+        pentagon->setPos(x,y);
+        break;
+    case 38:
+        hexagon = scene->addPolygon(polyhex,colorThi,colorFig);
+        hexagon->setPos(x,y);
+        break;
+    case 39:
+        rhomboid = scene->addPolygon(polyrhom,colorThi,colorFig);
+        rhomboid->setPos(x,y);
+        break;
+    }
+
+
+}
+
+
 void Logo::MachineVirtual(){
 
     MemoryVirtual *memo= new MemoryVirtual();
@@ -233,7 +287,7 @@ void Logo::MachineVirtual(){
     else cout << "Unable to open file";
 
 /*
-        int map[12][4]={{0,1,-1,-1},
+        int program[12][4]={{0,1,-1,-1},
                         {30,-1,-1,-1},
                         {35,1,50,-1},
                         {35,1,50,-1},
@@ -247,10 +301,15 @@ void Logo::MachineVirtual(){
                        {99,-1,-1,-1}} ;*/
 
         //initializa atributos
-        int y_position=0;
-        int x_position=0;
-        QBrush colorFigure(Qt::blue);
-        QPen colorThick(Qt::yellow);
+    int x_position=0;
+    int y_position=0;
+    int rotateRight=0;
+    int rotateLeft=0;
+    int scale=0;
+
+    QBrush colorFigure(Qt::yellow);
+    QPen colorThick(Qt::black);
+
         scene->clear();
 
         int cont=0;
@@ -425,40 +484,222 @@ void Logo::MachineVirtual(){
                 cont++;
                 break;
  /****************************************************************************************************/
-            //begin draw
+                //ESTA CASE VA SER PARA INICIALIZAR LA FIGURA Y COLCARLA EN EL SCENE
             case 30:
-                y_position=0;
                 x_position=0;
+                y_position=0;
+                rotateRight=0;
+                rotateLeft=0;
+                scale=0;
                 colorFigure.setColor(Qt::white);
                 colorThick.setColor(Qt::black);
                 cont++;
                 break;
-            //draw point
+ //A PARTIR DE AQUI SE CAMBIAN LOS ATRIBUTOS DEPENDIENTE DE LOS QUE SE HAYA SALECCIONADO
+//draw point
             case 31:
+                switch(program[cont][1]){
+                case 1:
+                    x_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 2:
+                    y_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
+                    break;
+                case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
+                    break;
+                case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorThick.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorThick.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorThick.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                case 8:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorFigure.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorFigure.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorFigure.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //draw line
+//draw line
             case 32:
+                switch(program[cont][1]){
+                case 1:
+                    x_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 2:
+                    y_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
+                    break;
+                case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
+                    break;
+                case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorThick.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorThick.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorThick.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                case 8:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorFigure.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorFigure.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorFigure.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //draw triangule
+//draw triangle
             case 33:
+                switch(program[cont][1]){
+                case 1:
+                    x_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 2:
+                    y_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
+                    break;
+                case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
+                    break;
+                case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorThick.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorThick.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorThick.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                case 8:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorFigure.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorFigure.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorFigure.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //draw a square
+//draw a square
             case  34:
                 switch(program[cont][1]){
                 case 1:
-                    y_position=(int)(memo->get(program[cont][2]));
+                    x_position=(int)memo->get(program[cont][2]);
                     break;
                 case 2:
-                    x_position=(int)(memo->get(program[cont][2]));
+                    y_position=(int)memo->get(program[cont][2]);
                     break;
                 case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
                     break;
                 case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
                     break;
                 case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
                     break;
                 case 6:
                     break;
@@ -474,7 +715,7 @@ void Logo::MachineVirtual(){
                         colorThick.setColor(Qt::red);
                         break;
                     }
-                    break;
+                break;
                 case 8:
                     switch(program[cont][2]){
                     case 1:
@@ -487,24 +728,37 @@ void Logo::MachineVirtual(){
                         colorFigure.setColor(Qt::red);
                         break;
                     }
-                    break;
-                }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //draw circle
+//draw circle
             case  35:
                 switch(program[cont][1]){
                 case 1:
-                    y_position=(int)(memo->get(program[cont][2]));
+                    x_position=(int)memo->get(program[cont][2]);
                     break;
                 case 2:
-                    x_position=(int)(memo->get(program[cont][2]));
+                    y_position=(int)memo->get(program[cont][2]);
                     break;
                 case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
                     break;
                 case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
                     break;
                 case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
                     break;
                 case 6:
                     break;
@@ -520,7 +774,7 @@ void Logo::MachineVirtual(){
                         colorThick.setColor(Qt::red);
                         break;
                     }
-                    break;
+                break;
                 case 8:
                     switch(program[cont][2]){
                     case 1:
@@ -533,36 +787,273 @@ void Logo::MachineVirtual(){
                         colorFigure.setColor(Qt::red);
                         break;
                     }
-                }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            // draw star
+// draw star
             case 36:
+                switch(program[cont][1]){
+                case 1:
+                    x_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 2:
+                    y_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
+                    break;
+                case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
+                    break;
+                case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorThick.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorThick.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorThick.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                case 8:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorFigure.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorFigure.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorFigure.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //draw pentagon
-            case 37:
+//draw pentagon
+            case  37:
+                switch(program[cont][1]){
+                case 1:
+                    x_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 2:
+                    y_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
+                    break;
+                case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
+                    break;
+                case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorThick.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorThick.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorThick.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                case 8:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorFigure.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorFigure.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorFigure.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //draw hexagon
-            case 38:
+            case  38:
+                switch(program[cont][1]){
+                case 1:
+                    x_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 2:
+                    y_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
+                    break;
+                case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
+                    break;
+                case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorThick.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorThick.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorThick.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                case 8:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorFigure.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorFigure.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorFigure.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //rhomboid
-            case 39:
+            case  39:
+                switch(program[cont][1]){
+                case 1:
+                    x_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 2:
+                    y_position=(int)memo->get(program[cont][2]);
+                    break;
+                case 3:
+                   rotateRight=(int)memo->get(program[cont][2]);
+                    break;
+                case 4:
+                   rotateLeft=(int)memo->get(program[cont][2]);
+                    break;
+                case 5:
+                    switch(program[cont][2]){
+                    case 1:
+                        scale=1;//pequeño
+                        break;
+                    case 2:
+                        scale=2;//normal
+                        break;
+                    case 3:
+                        scale=3;//grande
+                        break;
+                    }
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorThick.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorThick.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorThick.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                case 8:
+                    switch(program[cont][2]){
+                    case 1:
+                        colorFigure.setColor(Qt::blue);
+                        break;
+                    case 2:
+                        colorFigure.setColor(Qt::yellow);
+                        break;
+                    case 3:
+                        colorFigure.setColor(Qt::red);
+                        break;
+                    }
+                break;
+                }//acaba el segundo parametro
                 cont++;
                 break;
-            //end draw 
+                //END
             case 50:
                 switch(program[cont][1]){
+                case 31:
+                    break;
+                case 32:
+                    break;
+                case 33:
+                    dibujaFigura(33, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    break;
                 case 34:
-                    rectangle = scene->addRect(x_position, y_position, 50, 50, colorThick, colorFigure);
+                    dibujaFigura(34, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
                 case 35:
-                    ellipse = scene->addEllipse(x_position,y_position,100,100, colorThick, colorFigure);
+                    dibujaFigura(35, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    break;
+                case 36:
+                    dibujaFigura(36, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    break;
+                case 37:
+                    dibujaFigura(37, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    break;
+                case 38:
+                    dibujaFigura(38, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    break;
+                case 39:
+                    dibujaFigura(39, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
                 }
-
                 cont++;
                 break;
  /**************************************************************************************************************/

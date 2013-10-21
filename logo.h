@@ -29,12 +29,25 @@ private:
     QGraphicsScene *scene;
     QGraphicsEllipseItem * ellipse;
     QGraphicsRectItem *rectangle;
+
+    QPolygonF polytri;
+    QGraphicsItem *triangle;
+    QPolygonF polypenta;
+    QGraphicsItem *pentagon;
+    QPolygonF polyhex;
+    QGraphicsItem *hexagon;
+    QPolygonF polyrhom;
+    QGraphicsItem *rhomboid;
+    QPolygonF polystar;
+    QGraphicsItem *star;
+
     void compeling();
     void createMessage();
     void setMessage();
     void clearMessage();
     void MachineVirtual();
     void saveRead(int dir, double value);
+    void dibujaFigura(int figura, int x, int y,  int rotateRight, int rotateLeft, int scale, QBrush &colorFig, QPen &colorThi);
 
 };
 

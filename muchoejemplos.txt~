@@ -43,28 +43,3 @@ b=b+1;
 
 
 
-program {
-main(){
-int a,b;
-b=1;
-while( b < 12){
-print(b);
-draw square:
-   x_position=12*b;
-  y_position=0;
-  rotateRight=-4*b;
- colorFigure="blue";
-end
-draw square:
-   x_position=12*b;
-  y_position=0;
-  rotateRight=4*b;
- colorFigure="blue";
-end
-print(b);
-b=b+1;
-}
-}
-}
-
-
