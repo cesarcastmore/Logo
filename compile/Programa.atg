@@ -209,8 +209,8 @@ LECTURA =				(. wchar_t* name; Variable *obj; .)
 ')' ';'.
 /*----------------------------------------------------------------------------------*/
 ESCRITURA = 		
-"print" '(' ( EXP | chain ) 		(. action->createCuadrPrint(); .) 
-{ '|' ( EXP | chain ) 			(. action->createCuadrPrint(); .)
+"print" '(' ( EXP  ) 		(. action->createCuadrPrint(); .) 
+{ '|' ( EXP ) 			(. action->createCuadrPrint(); .)
 
 } ')' ';'.
 /*-----------------------------------------------------------------------------------*/

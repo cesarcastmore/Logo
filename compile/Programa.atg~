@@ -117,9 +117,9 @@ TIPO<type> IDENTI<name>  		(.  action->addLocal(name, type, var);  .)
 RETORNO = "return" EXP ';'.
 /*----------------------------------------------------------------------*/
 VARCTE =				(. double signo=1.00; double number; Direction *dir; int tipo;.) 
-[ '-' 					(. signo=-1.00; .)
-| '+'				
- ( integer 				(. number=wcstof((coco_string_create(t->val)), NULL); 
+[ '-' 					(. signo=-1; .)
+| '+'					(. .)
+] ( integer 				(. number=wcstof((coco_string_create(t->val)), NULL); 
 					tipo=entero; .)
 | floating 				(. number=wcstof((coco_string_create(t->val)), NULL);
 					 tipo=flotante; .)
