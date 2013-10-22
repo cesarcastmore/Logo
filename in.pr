@@ -1,23 +1,22 @@
 program {
 main(){
 int a,b;
-b=1;
-while( b < 12){
-print(b);
-draw square:
-   x_position=12*b;
-  y_position=0;
-  rotateRight=-4*b;
- colorFigure="blue";
-end
-draw square:
-   x_position=12*b;
-  y_position=0;
-  rotateRight=4*b;
- colorFigure="blue";
-end
-print(b);
-b=b+1;
+read(a);
+b=12;
+if( a > b){
+ draw triangle:
+    y_position=0;
+   x_position=0;
+  thick="DotLine";
+  rotateRight=45;
+ end
+}
+else{
+ draw square:
+    y_position=0;
+   x_position=0;
+  thick="DotLine";
+ end
 }
 }
 }

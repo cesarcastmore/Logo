@@ -209,8 +209,8 @@ LECTURA =				(. wchar_t* name; Variable *obj; .)
 ')' ';'.
 /*----------------------------------------------------------------------------------*/
 ESCRITURA = 		
-"print" '(' ( EXP | chain ) 		(. action->createCuadrPrint(); .) 
-{ '|' ( EXP | chain ) 			(. action->createCuadrPrint(); .)
+"print" '(' ( EXP  ) 		(. action->createCuadrPrint(); .) 
+{ '|' ( EXP ) 			(. action->createCuadrPrint(); .)
 
 } ')' ';'.
 /*-----------------------------------------------------------------------------------*/
@@ -221,32 +221,32 @@ GRAFICO = 				(.int figure; .)
  "end"					(. action->endDraw();.) .
 /*---------------------------------------------------------------------------------------------------------------*/
 FIGURA<int &figure> = 
-("point" 					(.figure=31;.)	
-| "line" 					(.figure=32;.)	
-| "triangle" 					(.figure=33;.)	
-| "square"					(.figure=34;.)	 
-| "circle" 					(.figure=35;.)	
-| "star" 					(.figure=36;.)	
-| "pentagon" 					(.figure=37;.)	
-| "hexagon" 					(.figure=38;.)	
-| "rhomboid" 					(.figure=39;.)	
+("point" 					(.figure=41;.)	
+| "line" 					(.figure=42;.)	
+| "triangle" 					(.figure=43;.)	
+| "square"					(.figure=44;.)	 
+| "circle" 					(.figure=45;.)	
+| "star" 					(.figure=46;.)	
+| "pentagon" 					(.figure=47;.)	
+| "hexagon" 					(.figure=48;.)	
+| "rhomboid" 					(.figure=49;.)	
 ).
 /*---------------------------------------------------------------------------------------------------------------*/
 ATRIBUTOS = ( ATRIBUTO_ENTERO |  ATRIBUTO_STRING ) ";".
 /*-----------------------------------------------------------------------------------------------*/
 ATRIBUTO_ENTERO = 				(. int attribute; .)
-( "y_position" 					(. attribute=1;.)
-| "x_position" 					(. attribute=2;.)
-| "rotateRight" 				(. attribute=3;.)
-| "rotateLeft" 					(. attribute=4;.)
+( "y_position" 					(. attribute=31;.)
+| "x_position" 					(. attribute=32;.)
+| "rotateRight" 				(. attribute=33;.)
+| "rotateLeft" 					(. attribute=34;.)
 ) 				
 '=' EXP						(. action->addAtributeInt(attribute);.).			
 /*------------------------------------------------------------------------------------------------*/
 ATRIBUTO_STRING = 				(. wchar_t* name; int attribute; .)
-( "size" 					(. attribute=5;.)
-| "thick" 					(. attribute=6;.)
-| "colorThick" 					(. attribute=7;.)
-| "colorFigure" 				(. attribute=8;.)
+( "size" 					(. attribute=35;.)
+| "thick" 					(. attribute=36;.)
+| "colorThick" 					(. attribute=37;.)
+| "colorFigure" 				(. attribute=38;.)
 ) '=' 
 CADENA<name>					(. action->addAtributeString(attribute, name);.).
 /*------------------------------------------------------------------------------------*/	

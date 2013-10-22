@@ -192,6 +192,7 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLef
         break;
     case 33:
         triangle = scene->addPolygon(polytri,colorThi,colorFig);
+        triangle->setRotation(rotateRight);
         triangle->setPos(x,y);
         break;
     case 34:
@@ -200,6 +201,7 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLef
         break;
     case 35:
         ellipse = scene->addEllipse(x,y,100,100, colorThi, colorFig);
+        ellipse->setRotation(rotateRight);
         break;
     case 36:
         star = scene->addPolygon(polystar,colorThi,colorFig);
@@ -210,14 +212,17 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLef
         break;
     case 37:
         pentagon = scene->addPolygon(polypenta,colorThi,colorFig);
+        pentagon->setRotation(rotateRight);
         pentagon->setPos(x,y);
         break;
     case 38:
         hexagon = scene->addPolygon(polyhex,colorThi,colorFig);
+        hexagon->setRotation(rotateRight);
         hexagon->setPos(x,y);
         break;
     case 39:
         rhomboid = scene->addPolygon(polyrhom,colorThi,colorFig);
+        rhomboid->setRotation(rotateRight);
         rhomboid->setPos(x,y);
         break;
     }
@@ -286,19 +291,6 @@ void Logo::MachineVirtual(){
 
     else cout << "Unable to open file";
 
-/*
-        int program[12][4]={{0,1,-1,-1},
-                        {30,-1,-1,-1},
-                        {35,1,50,-1},
-                        {35,1,50,-1},
-                        {35,7,1,-1},
-                        {35,8,2,-1},
-                        {50,35,-1,-1},
-                        {30,-1,-1},
-                        {34,1,0,-1},
-                        {34,2,0,-1},
-                        {50,34,-1,-1},
-                       {99,-1,-1,-1}} ;*/
 
         //initializa atributos
     int x_position=0;
@@ -496,561 +488,112 @@ void Logo::MachineVirtual(){
                 cont++;
                 break;
  //A PARTIR DE AQUI SE CAMBIAN LOS ATRIBUTOS DEPENDIENTE DE LOS QUE SE HAYA SALECCIONADO
-//draw point
+//x_position
             case 31:
-                switch(program[cont][1]){
-                case 1:
-                    x_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 2:
-                    y_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
-                    break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
+                x_position=(int)memo->get(program[cont][1]);
                 cont++;
                 break;
-//draw line
+//y_position
             case 32:
-                switch(program[cont][1]){
-                case 1:
-                    x_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 2:
-                    y_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
-                    break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
+                y_position=(int)memo->get(program[cont][1]);
                 cont++;
                 break;
-//draw triangle
+//rotateRight
             case 33:
-                switch(program[cont][1]){
-                case 1:
-                    x_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 2:
-                    y_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
-                    break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
+                rotateRight=(int)memo->get(program[cont][1]);
+                 cont++;
                 break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
+//rotateLeft
+            case 34:
+                rotateLeft=(int)memo->get(program[cont][1]);
                 cont++;
                 break;
-//draw a square
-            case  34:
+//size
+            case 35:
                 switch(program[cont][1]){
                 case 1:
-                    x_position=(int)memo->get(program[cont][2]);
+                    scale=1;//pequeño
                     break;
                 case 2:
-                    y_position=(int)memo->get(program[cont][2]);
+                    scale=2;//normal
                     break;
                 case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
+                    scale=3;//grande
                     break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
+                }
                 cont++;
                 break;
-//draw circle
-            case  35:
-                switch(program[cont][1]){
-                case 1:
-                    x_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 2:
-                    y_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
-                    break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
-                cont++;
-                break;
-// draw star
+//thick
             case 36:
-                switch(program[cont][1]){
-                case 1:
-                    x_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 2:
-                    y_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
-                    break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
+                 switch(program[cont][1]){
+                 case 1:
+                     colorThick.setStyle(Qt::SolidLine);
+                     break;
+                 case 2:
+                     colorThick.setStyle(Qt::DashLine);
+                     break;
+                 case 3:
+                     colorThick.setStyle(Qt::DotLine);
+                     break;
+            }
                 cont++;
                 break;
-//draw pentagon
-            case  37:
+//colorThick
+            case 37:
                 switch(program[cont][1]){
                 case 1:
-                    x_position=(int)memo->get(program[cont][2]);
+                    colorThick.setColor(Qt::blue);
                     break;
                 case 2:
-                    y_position=(int)memo->get(program[cont][2]);
+                    colorThick.setColor(Qt::yellow);
                     break;
                 case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
+                    colorThick.setColor(Qt::red);
                     break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
+                }
                 cont++;
                 break;
-            case  38:
+ //colorFIgure
+            case 38:
                 switch(program[cont][1]){
                 case 1:
-                    x_position=(int)memo->get(program[cont][2]);
+                    colorFigure.setColor(Qt::blue);
                     break;
                 case 2:
-                    y_position=(int)memo->get(program[cont][2]);
+                    colorFigure.setColor(Qt::yellow);
                     break;
                 case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
+                    colorFigure.setColor(Qt::red);
                     break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
+                }
                 cont++;
                 break;
-            case  39:
-                switch(program[cont][1]){
-                case 1:
-                    x_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 2:
-                    y_position=(int)memo->get(program[cont][2]);
-                    break;
-                case 3:
-                   rotateRight=(int)memo->get(program[cont][2]);
-                    break;
-                case 4:
-                   rotateLeft=(int)memo->get(program[cont][2]);
-                    break;
-                case 5:
-                    switch(program[cont][2]){
-                    case 1:
-                        scale=1;//pequeño
-                        break;
-                    case 2:
-                        scale=2;//normal
-                        break;
-                    case 3:
-                        scale=3;//grande
-                        break;
-                    }
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorThick.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorThick.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorThick.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                case 8:
-                    switch(program[cont][2]){
-                    case 1:
-                        colorFigure.setColor(Qt::blue);
-                        break;
-                    case 2:
-                        colorFigure.setColor(Qt::yellow);
-                        break;
-                    case 3:
-                        colorFigure.setColor(Qt::red);
-                        break;
-                    }
-                break;
-                }//acaba el segundo parametro
-                cont++;
-                break;
-                //END
+//END
             case 50:
                 switch(program[cont][1]){
-                case 31:
+                case 41:
                     break;
-                case 32:
+                case 42:
                     break;
-                case 33:
+                case 43:
                     dibujaFigura(33, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
-                case 34:
+                case 44:
                     dibujaFigura(34, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
-                case 35:
+                case 45:
                     dibujaFigura(35, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
-                case 36:
+                case 46:
                     dibujaFigura(36, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
-                case 37:
+                case 47:
                     dibujaFigura(37, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
-                case 38:
+                case 48:
                     dibujaFigura(38, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
-                case 39:
+                case 49:
                     dibujaFigura(39, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
                     break;
                 }

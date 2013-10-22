@@ -270,14 +270,14 @@ void Parser::EXP() {
 }
 
 void Parser::VARCTE() {
-		double signo; double number; Direction *dir; int tipo;
+		double signo=1.00; double number; Direction *dir; int tipo;
 		if (la->kind == 21 /* "-" */ || la->kind == 22 /* "+" */) {
 			if (la->kind == 21 /* "-" */) {
 				Get();
 				signo=-1; 
 			} else {
 				Get();
-				signo=1; 
+				
 			}
 		}
 		if (la->kind == _integer) {

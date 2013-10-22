@@ -602,15 +602,23 @@ const char* Cuadruplo::translate(int a){
 		case 21: return "gotoRetorno";
 		case 22: return "RET";
 		case 30: return "beginDraw";
-		case 31: return "point";
-		case 32: return "line";
-		case 33: return "triangle";
-		case 34: return "square";
-		case 35: return "circle";
-		case 36: return "star";
-		case 37: return "pentagon";
-		case 38: return "hexagon";
-		case 39: return "rhomboid";
+		case 31: return "x_position";
+		case 32: return "y_position";
+		case 33: return "rotateRight";
+		case 34: return "rotateLeft";
+		case 35: return "size";
+		case 36: return "thick";
+		case 37: return "coloThick";
+		case 38: return "colorFigure";
+		case 41: return "point";
+		case 42: return "line";
+		case 43: return "triangle";
+		case 44: return "square";
+		case 45: return "circle";
+		case 46: return "star";
+		case 47: return "pentagon";
+		case 48: return "hexagon";
+		case 49: return "rhomboid";
 		case 50: return "endDraw";
 		case 99: return "end";
 		
@@ -911,7 +919,7 @@ void Action::addAtributeInt(int attribute){
 	Direction *entero;
 	entero = dir->get();	dir->pop(); 
 	Cuadruplo *draw;
-	draw = new Cuadruplo(figure, attribute, entero->direction, -1);
+	draw = new Cuadruplo(attribute, entero->direction, -1, -1);
 	record.insert(std::make_pair(cont, draw));
 	cont++;
 			
@@ -925,7 +933,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 	int value_i;
 	int figure=op->get()->oper;
 	
-	if(attribute == 5){
+	if(attribute == 35){
 		if( strcmp(value,"\"small\"") == 0 )
 			value_i=1;
 		else if(strcmp(value, "\"normal\"") == 0)
@@ -936,18 +944,18 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 			wcout<<"The value"<<value<<" was not find\n";
 		
 	}
-	else if(attribute == 6){
+	else if(attribute == 36){
 		
-		if(strcmp(value,"\"small\"") == 0)
+		if(strcmp(value,"\"SolidLine\"") == 0)
 			value_i=1;
-		else if(strcmp(value, "\"normal\"") == 0)
+		else if(strcmp(value, "\"DashLine\"") == 0)
 			value_i=2;
-		else if(strcmp(value, "\"bigger\"") == 0)
+		else if(strcmp(value, "\"DotLine\"") == 0)
 			value_i=3;
 		else
 			wcout<<"The value"<<value<<" was not find\n";
 	}
-	else if(attribute == 7){
+	else if(attribute == 37){
 		if(strcmp(value,"\"blue\"") == 0)
 			value_i=1;
 		else if(strcmp(value,"\"yellow\"") == 0)
@@ -957,7 +965,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else 
 			wcout<<"The value"<<value<<" was not find\n";
 	}
-	else if(attribute == 8){
+	else if(attribute == 38){
 		if(strcmp(value, "\"blue\"") == 0)
 			value_i=1;
 		else if(strcmp(value, "\"yellow\"") == 0)
@@ -969,7 +977,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 	}
 	
 	Cuadruplo *draw;
-	draw = new Cuadruplo(figure, attribute, value_i, -1);
+	draw = new Cuadruplo(attribute, value_i, -1, -1);
 	record.insert(std::make_pair(cont, draw));
 	cont++;	
 	

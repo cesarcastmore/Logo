@@ -355,19 +355,11 @@ void Parser::CONDICION() {
 void Parser::ESCRITURA() {
 		Expect(28 /* "print" */);
 		Expect(16 /* "(" */);
-		if (StartOf(3)) {
-			EXP();
-		} else if (la->kind == _chain) {
-			Get();
-		} else SynErr(67);
+		EXP();
 		action->createCuadrPrint(); 
 		while (la->kind == 29 /* "|" */) {
 			Get();
-			if (StartOf(3)) {
-				EXP();
-			} else if (la->kind == _chain) {
-				Get();
-			} else SynErr(68);
+			EXP();
 			action->createCuadrPrint(); 
 		}
 		Expect(17 /* ")" */);
@@ -403,7 +395,7 @@ void Parser::EXPRESION() {
 void Parser::EXP_LOG() {
 		int rel; 
 		EXP();
-		if (StartOf(4)) {
+		if (StartOf(3)) {
 			RELACIONAL(rel);
 			action->addStackOpe(rel); 
 			EXP();
@@ -418,7 +410,7 @@ void Parser::LOG_OPE(int &log) {
 		} else if (la->kind == 57 /* "or" */) {
 			Get();
 			log=log_or; 
-		} else SynErr(69);
+		} else SynErr(67);
 }
 
 void Parser::RELACIONAL(int &rel) {
@@ -453,13 +445,13 @@ void Parser::RELACIONAL(int &rel) {
 			rel=gt;;
 			break;
 		}
-		default: SynErr(70); break;
+		default: SynErr(68); break;
 		}
 }
 
 void Parser::LLAMAR_MODULO() {
 		Expect(16 /* "(" */);
-		if (StartOf(3)) {
+		if (StartOf(4)) {
 			EXP();
 			while (la->kind == 11 /* "," */) {
 				Get();
@@ -478,7 +470,7 @@ void Parser::ASIGNACION() {
 				IDENTI(name);
 			} else if (la->kind == _integer) {
 				Get();
-			} else SynErr(71);
+			} else SynErr(69);
 			Expect(10 /* "]" */);
 		}
 		Expect(25 /* "=" */);
@@ -489,7 +481,7 @@ void Parser::ASIGNACION() {
 
 void Parser::PARENTESIS() {
 		Expect(16 /* "(" */);
-		if (StartOf(3)) {
+		if (StartOf(4)) {
 			EXP();
 			while (la->kind == 11 /* "," */) {
 				Get();
@@ -517,7 +509,7 @@ void Parser::TERM_OP(int &term) {
 		} else if (la->kind == 21 /* "-" */) {
 			Get();
 			term=minus;
-		} else SynErr(72);
+		} else SynErr(70);
 }
 
 void Parser::FACTOR() {
@@ -538,8 +530,8 @@ void Parser::FACTOR() {
 			} else if (la->kind == 16 /* "(" */) {
 				PARENTESIS();
 				obj=action->find(name); 
-			} else SynErr(73);
-		} else SynErr(74);
+			} else SynErr(71);
+		} else SynErr(72);
 }
 
 void Parser::FACTOR_OP(int &fact) {
@@ -552,57 +544,57 @@ void Parser::FACTOR_OP(int &fact) {
 		} else if (la->kind == 60 /* "%" */) {
 			Get();
 			fact=module;
-		} else SynErr(75);
+		} else SynErr(73);
 }
 
 void Parser::FIGURA(int &figure) {
 		switch (la->kind) {
 		case 33 /* "point" */: {
 			Get();
-			figure=31;
+			figure=41;
 			break;
 		}
 		case 34 /* "line" */: {
 			Get();
-			figure=32;
+			figure=42;
 			break;
 		}
 		case 35 /* "triangle" */: {
 			Get();
-			figure=33;
+			figure=43;
 			break;
 		}
 		case 36 /* "square" */: {
 			Get();
-			figure=34;
+			figure=44;
 			break;
 		}
 		case 37 /* "circle" */: {
 			Get();
-			figure=35;
+			figure=45;
 			break;
 		}
 		case 38 /* "star" */: {
 			Get();
-			figure=36;
+			figure=46;
 			break;
 		}
 		case 39 /* "pentagon" */: {
 			Get();
-			figure=37;
+			figure=47;
 			break;
 		}
 		case 40 /* "hexagon" */: {
 			Get();
-			figure=38;
+			figure=48;
 			break;
 		}
 		case 41 /* "rhomboid" */: {
 			Get();
-			figure=39;
+			figure=49;
 			break;
 		}
-		default: SynErr(76); break;
+		default: SynErr(74); break;
 		}
 }
 
@@ -611,25 +603,25 @@ void Parser::ATRIBUTOS() {
 			ATRIBUTO_ENTERO();
 		} else if (StartOf(8)) {
 			ATRIBUTO_STRING();
-		} else SynErr(77);
+		} else SynErr(75);
 		Expect(12 /* ";" */);
 }
 
 void Parser::ATRIBUTO_ENTERO() {
 		int attribute; 
-		if (la->kind == 42 /* "y_position" */) {
+		if (la->kind == 42 /* "x_position" */) {
 			Get();
-			attribute=1;
-		} else if (la->kind == 43 /* "x_position" */) {
+			attribute=31;
+		} else if (la->kind == 43 /* "y_position" */) {
 			Get();
-			attribute=2;
+			attribute=32;
 		} else if (la->kind == 44 /* "rotateRight" */) {
 			Get();
-			attribute=3;
+			attribute=33;
 		} else if (la->kind == 45 /* "rotateLeft" */) {
 			Get();
-			attribute=4;
-		} else SynErr(78);
+			attribute=34;
+		} else SynErr(76);
 		Expect(25 /* "=" */);
 		EXP();
 		action->addAtributeInt(attribute);
@@ -639,17 +631,17 @@ void Parser::ATRIBUTO_STRING() {
 		wchar_t* name; int attribute; 
 		if (la->kind == 46 /* "size" */) {
 			Get();
-			attribute=5;
+			attribute=35;
 		} else if (la->kind == 47 /* "thick" */) {
 			Get();
-			attribute=6;
+			attribute=36;
 		} else if (la->kind == 48 /* "colorThick" */) {
 			Get();
-			attribute=7;
+			attribute=37;
 		} else if (la->kind == 49 /* "colorFigure" */) {
 			Get();
-			attribute=8;
-		} else SynErr(79);
+			attribute=38;
+		} else SynErr(77);
 		Expect(25 /* "=" */);
 		CADENA(name);
 		action->addAtributeString(attribute, name);
@@ -780,8 +772,8 @@ bool Parser::StartOf(int s) {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x},
+		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,x,x, x,T,T,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
@@ -848,8 +840,8 @@ void Errors::SynErr(int line, int col, int n) {
 			case 39: s = coco_string_create(L"\"pentagon\" expected"); break;
 			case 40: s = coco_string_create(L"\"hexagon\" expected"); break;
 			case 41: s = coco_string_create(L"\"rhomboid\" expected"); break;
-			case 42: s = coco_string_create(L"\"y_position\" expected"); break;
-			case 43: s = coco_string_create(L"\"x_position\" expected"); break;
+			case 42: s = coco_string_create(L"\"x_position\" expected"); break;
+			case 43: s = coco_string_create(L"\"y_position\" expected"); break;
 			case 44: s = coco_string_create(L"\"rotateRight\" expected"); break;
 			case 45: s = coco_string_create(L"\"rotateLeft\" expected"); break;
 			case 46: s = coco_string_create(L"\"size\" expected"); break;
@@ -873,19 +865,17 @@ void Errors::SynErr(int line, int col, int n) {
 			case 64: s = coco_string_create(L"invalid TIPO_MOD"); break;
 			case 65: s = coco_string_create(L"invalid VARCTE"); break;
 			case 66: s = coco_string_create(L"invalid ASIGMODULO"); break;
-			case 67: s = coco_string_create(L"invalid ESCRITURA"); break;
-			case 68: s = coco_string_create(L"invalid ESCRITURA"); break;
-			case 69: s = coco_string_create(L"invalid LOG_OPE"); break;
-			case 70: s = coco_string_create(L"invalid RELACIONAL"); break;
-			case 71: s = coco_string_create(L"invalid ASIGNACION"); break;
-			case 72: s = coco_string_create(L"invalid TERM_OP"); break;
-			case 73: s = coco_string_create(L"invalid FACTOR"); break;
-			case 74: s = coco_string_create(L"invalid FACTOR"); break;
-			case 75: s = coco_string_create(L"invalid FACTOR_OP"); break;
-			case 76: s = coco_string_create(L"invalid FIGURA"); break;
-			case 77: s = coco_string_create(L"invalid ATRIBUTOS"); break;
-			case 78: s = coco_string_create(L"invalid ATRIBUTO_ENTERO"); break;
-			case 79: s = coco_string_create(L"invalid ATRIBUTO_STRING"); break;
+			case 67: s = coco_string_create(L"invalid LOG_OPE"); break;
+			case 68: s = coco_string_create(L"invalid RELACIONAL"); break;
+			case 69: s = coco_string_create(L"invalid ASIGNACION"); break;
+			case 70: s = coco_string_create(L"invalid TERM_OP"); break;
+			case 71: s = coco_string_create(L"invalid FACTOR"); break;
+			case 72: s = coco_string_create(L"invalid FACTOR"); break;
+			case 73: s = coco_string_create(L"invalid FACTOR_OP"); break;
+			case 74: s = coco_string_create(L"invalid FIGURA"); break;
+			case 75: s = coco_string_create(L"invalid ATRIBUTOS"); break;
+			case 76: s = coco_string_create(L"invalid ATRIBUTO_ENTERO"); break;
+			case 77: s = coco_string_create(L"invalid ATRIBUTO_STRING"); break;
 
 		default:
 		{
