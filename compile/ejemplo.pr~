@@ -1,12 +1,16 @@
-program {
-global float h;
 
-main(){
-h=13.12;
+program {
+global int i, j;
+
+module  void uno(int a){
+int i;
 
 }
 
+main(){
+int a;
+a=uno(i+j));
 
-
+}
 
 }

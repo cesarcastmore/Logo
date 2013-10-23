@@ -66,13 +66,13 @@ void Err(wchar_t* msg) {
 }
 
 
-int var, para, entero, flotante, undefined;
+int var, para, entero, flotante, undefined, function;
 
 int plus, minus, multiply, divide, module, eq, ne, gt, lt, gte, lte, log_and ,log_or ;
 
 void InitDeclarations() { 
 	
-	var=0; para=1;
+	var=0; para=1; function=2;
 	undefined=0;entero=1; flotante=2;
 	plus=1; minus=2;
 	multiply=3; divide=4; module=5;
@@ -119,6 +119,7 @@ void InitDeclarations() {
 	void TERM_OP(int &term);
 	void FACTOR();
 	void FACTOR_OP(int &fact);
+	void IDENTIFICADOR_I();
 	void FIGURA(int &figure);
 	void ATRIBUTOS();
 	void ATRIBUTO_ENTERO();

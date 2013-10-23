@@ -604,6 +604,9 @@ void Logo::MachineVirtual(){
             case 99:
                 cont=10000;
                 break;
+             default:
+                cont++;
+                break;
 
             }
         }

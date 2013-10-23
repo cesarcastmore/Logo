@@ -43,3 +43,60 @@ b=b+1;
 
 
 
+program {
+main(){
+int a,b;
+b=1;
+while( b < 12){
+print(b);
+draw square:
+   x_position=12*b;
+  y_position=0;
+  rotateRight=-4*b;
+ colorFigure="blue";
+end
+draw square:
+   x_position=12*b;
+  y_position=0;
+  rotateRight=4*b;
+ colorFigure="blue";
+end
+print(b);
+b=b+1;
+}
+}
+}
+
+
+
+
+program {
+global int i, j;
+
+module  void uno(int a){
+int i;
+	i=a*2;
+	if(i < a+4){
+		uno(a+1);
+	}
+	read(i);
+}
+
+module int dos(int b){
+	b=b*i+j;
+	return (b*2);
+
+}
+
+main(){
+	i=2;
+	j=i*2-1;
+	uno(j);
+	read(i + dos(i+j));
+
+}
+
+
+}
+
+

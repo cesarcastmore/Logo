@@ -68,3 +68,35 @@ b=b+1;
 }
 
 
+
+
+program {
+global int i, j;
+
+module  void uno(int a){
+int i;
+	i=a*2;
+	if(i < a+4){
+		uno(a+1);
+	}
+	print(i);
+}
+
+module int dos(int b){
+	b=b*i+j;
+	return (b*2);
+
+}
+
+main(){
+	i=2;
+	j=i*2-1;
+	uno(j);
+	print(i + dos(i+j));
+
+}
+
+
+}
+
+

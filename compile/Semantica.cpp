@@ -160,16 +160,16 @@ Parameter* StackParameter::get(){
 	return new_node;
 }
 
-void StackParameter::invert(){
-	StackParameter *new_stack;
-	new_stack=new StackParameter();
-	Parameter *new_node= new Parameter();
+StackParameter* StackParameter::invert(){
+	Parameter *new_node = new Parameter();
+	StackParameter *invertir =new StackParameter();
 	new_node=actual;
-	while(actual->next != NULL){
-		new_stack->push(actual->type);
-		actual = actual->next;
+	while(new_node->next != NULL){
+		invertir->push(new_node->type);
+		new_node = new_node->next;
 	}
-	actual=new_stack->actual;
+	
+	return invertir;
 	
 }
 
@@ -183,6 +183,7 @@ void StackParameter::showStack(){
 	} 
 }
 
+
 Function::Function(){
 	type=0;
 	parametro=0;
@@ -190,6 +191,7 @@ Function::Function(){
 	begin=0;
 	par=new StackParameter();
 	next=NULL;
+	direction=-1;
 }
 
 
@@ -455,6 +457,7 @@ Memory::Memory(){
 	para_int=24000;
 	para_flo=26000;
 	para_bool=28000;
+	func=30000;
 }
 
 
@@ -506,14 +509,12 @@ Direction* Memory::save(int partition, int type, double value){
 		return new_dir;
 	}
 	else if(partition == 3 and type == 1){
-		wcout<<"GUARDOOOOO"<<value<<"\n";
 		contantes[cons_int]=value;
 		Direction *new_dir=new Direction(cons_int, type);
 		cons_int++;
 		return new_dir;
 	}
 	else if(partition == 3 and type == 2){
-		wcout<<"GUARDOOOOO"<<value<<"\n";
 		contantes[cons_flo]=value;
 		Direction *new_dir=new Direction(cons_flo, type);
 		cons_flo++;
@@ -538,6 +539,11 @@ Direction* Memory::save(int partition, int type, double value){
 		else if(partition == 4 and type == 3){
 		Direction *new_dir=new Direction(para_bool, type);
 		para_bool++;
+		return new_dir;
+	}
+		else if(partition == 5 and type == 0){
+		Direction *new_dir=new Direction(func, type);
+		func++;
 		return new_dir;
 	}
 	
@@ -620,6 +626,10 @@ const char* Cuadruplo::translate(int a){
 		case 48: return "hexagon";
 		case 49: return "rhomboid";
 		case 50: return "endDraw";
+		case 51: return "ERA";
+		case 52: return "para";
+		case 53: return "GotoSub";
+		case 54: return "asigRet";
 		case 99: return "end";
 		
 	}
@@ -664,17 +674,33 @@ Action::Action(){
 	leap= new StackLeap();
 	cube=new LogicCube();
 	memory=new Memory();
+	contPara=0;
+	
+	//variables para crear procedimientos
 	inifun=new Function();
 	para= new StackParameter();
+	
+	//tabla de funciones
 	fun=new StackFunction();
+	
+	//son las variables que se utilizaran para hacer la llamada de funciones
+	llam_fun=new Function();
+	
+	
 	cont=0;
 	cant_loc=0;
 	cant_para=0;
 	}
 	
-void Action::addGlobal(const wchar_t* n, int  t){
-	Direction *d = memory->save(0, t, -1);
-	tab->addGlobal(n,t,0, d);
+void Action::addGlobal(const wchar_t* n, int  t, int slope){
+	if(slope == 0){ //var
+		Direction *d = memory->save(0, t, -1);
+		tab->addGlobal(n,t,slope, d);
+	}
+	else if(slope == 2){//function
+		Direction *d = memory->save(5, t, -1);
+		tab->addGlobal(n,t,slope, d);
+	}
 }
 
 void Action::addLocal(const wchar_t* n, int  t, int slope){
@@ -706,6 +732,7 @@ void Action::removeLocals(){
 	cant_loc=0;
 	cant_para=0;
 	para=new StackParameter();
+	
 }
 
 void Action::removeGlobals(){
@@ -888,6 +915,7 @@ void Action::createCuadrAlloca(){
 
 
 void Action::createCuadrRead(int d, int t){
+	
 	Cuadruplo *leer;
 	leer = new Cuadruplo(15, -1, -1, d);
 	record.insert(std::make_pair(cont, leer));
@@ -1043,6 +1071,9 @@ void Action::addNameFunction(const wchar_t* n){
 	inifun=new Function();
 	std::wstring ide=std::wstring(n);
 	inifun->name=ide;
+	std::wstring name=std::wstring(n);
+	int dir=tablaGlobals[name]->dir->direction;
+	inifun->direction=dir;
 }
 
 
@@ -1055,7 +1086,6 @@ void Action::addTypeFunction(int t){
 }
 void Action::addNoParameters(){
 	inifun->parametro=cant_para;
-	para->invert();
 }
 
 void Action::addNoLocals(){
@@ -1075,7 +1105,7 @@ void Action::generateRetorno(){
 	{	
 		if(regresa->type == inifun->type){
 			Cuadruplo *retorno;
-			retorno = new Cuadruplo(21, regresa->direction, -1, -1);
+			retorno = new Cuadruplo(21, regresa->direction, -1, inifun->direction);
 			record.insert(std::make_pair(cont, retorno));
 			cont++;
 			Cuadruplo *ret;
@@ -1107,6 +1137,74 @@ void Action::generateRetorno(){
 	cont++;
 }
 
+
+void Action::findFunction(const wchar_t* n){
+	llam_fun=fun->find(n);
+	contPara=llam_fun->parametro;  //obtiene la cantidad de parametros
+	llam_para=llam_fun->par->invert(); //invierte la pila para un orden correcto
+	if(llam_fun->direction  == -1){
+		wcout<<"the function was not defined\n";
+	}
+}
+
+
+
+void Action::createERA(){
+		Cuadruplo *era;
+		era = new Cuadruplo(51, llam_fun->direction, -1, -1);
+		record.insert(std::make_pair(cont, era));
+		cont++;
+}
+
+
+void Action::createParameter(){
+	contPara--; 
+	Parameter *temp_para = llam_para->get(); llam_para->pop();
+	Direction *argum=dir->get(); dir->pop();
+	Direction *resul_para = memory->save(4 , temp_para->type, -1);
+	if(temp_para->type == argum->type){
+		Cuadruplo *para;
+		para = new Cuadruplo(52, argum->direction, -1, resul_para->direction );
+		record.insert(std::make_pair(cont, para));
+		cont++;
+		}
+	else {
+		wcout<<"There are incorrect types of parameters\n";
+	}
+	
+}
+
+
+void Action::checkParameter(){
+	if(contPara > 0){
+		wcout<<"Missing more parameters\n";
+	}
+	else if(contPara < 0){
+		wcout<<"Receiving more parameters than the declared function\n";
+	}
+}
+
+
+
+
+void Action::createGotoSub(){
+			Cuadruplo *gtsub;
+			gtsub = new Cuadruplo(53, llam_fun->begin , -1, -1 );
+			record.insert(std::make_pair(cont, gtsub));
+			cont++;
+			if(llam_fun->type == 1 or llam_fun->type == 2){
+				Cuadruplo *asig;
+				Direction *tempReto = memory->save(2, llam_fun->type , -1);
+				asig = new Cuadruplo(54, llam_fun->direction , -1, tempReto->direction );
+				record.insert(std::make_pair(cont, asig));
+				dir->push(tempReto);
+				cont++;
+			}
+			else if(llam_fun->type == 0){
+				Direction *tempVoid = new Direction();
+				dir->push(tempVoid);
+			}
+}
 
 
 

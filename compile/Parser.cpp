@@ -75,7 +75,7 @@ void Parser::PROGRAMA() {
 		action->endProgram();
 		action->tab->removeAllLocals();
 		action->showCuadruplo();
-		action->fun->showStack();
+		
 		action->createObject();
 }
 
@@ -84,7 +84,7 @@ void Parser::GLOBAL() {
 		Expect(8 /* "global" */);
 		TIPO(type);
 		IDENTI(name);
-		action->addGlobal(name, type);  
+		action->addGlobal(name, type, var);  
 		if (la->kind == 9 /* "[" */) {
 			Get();
 			Expect(_integer);
@@ -93,7 +93,7 @@ void Parser::GLOBAL() {
 		while (la->kind == 11 /* "," */) {
 			Get();
 			IDENTI(name);
-			action->addGlobal(name, type); 
+			action->addGlobal(name, type, var); 
 			if (la->kind == 9 /* "[" */) {
 				Get();
 				Expect(_integer);
@@ -130,8 +130,8 @@ void Parser::MODULE() {
 		Expect(18 /* "module" */);
 		TIPO_MOD(typemod);
 		IDENTI(name);
-		action->addNameFunction(name); 
-		action->addTypeFunction(typemod);
+		action->addGlobal(name, undefined, function); action->addNameFunction(name);
+		action->addTypeFunction(typemod); 
 		Expect(16 /* "(" */);
 		if (la->kind == 13 /* "int" */ || la->kind == 14 /* "float" */) {
 			PARAMETROS();
@@ -254,7 +254,7 @@ void Parser::PARAM_COMA() {
 		wchar_t* name; int type; int can; 
 		TIPO(type);
 		IDENTI(name);
-		action->addLocal(name, type, para); 
+		action->addLocal(name, type, para);
 		action->addParameter(type); 
 }
 
@@ -321,6 +321,7 @@ void Parser::ASIGMODULO() {
 		wchar_t* name; Variable *obj; 
 		IDENTI(name);
 		if (la->kind == 16 /* "(" */) {
+			action->findFunction(name); 
 			LLAMAR_MODULO();
 		} else if (la->kind == 9 /* "[" */ || la->kind == 25 /* "=" */) {
 			obj=action->find(name);
@@ -451,14 +452,19 @@ void Parser::RELACIONAL(int &rel) {
 
 void Parser::LLAMAR_MODULO() {
 		Expect(16 /* "(" */);
+		action->createERA(); 
 		if (StartOf(4)) {
 			EXP();
+			action->createParameter(); 
 			while (la->kind == 11 /* "," */) {
 				Get();
 				EXP();
+				action->createParameter(); 
 			}
 		}
+		action->checkParameter(); 
 		Expect(17 /* ")" */);
+		action->createGotoSub();
 		Expect(12 /* ";" */);
 }
 
@@ -481,14 +487,21 @@ void Parser::ASIGNACION() {
 
 void Parser::PARENTESIS() {
 		Expect(16 /* "(" */);
+		action->addFake();
+		action->createERA(); 
 		if (StartOf(4)) {
 			EXP();
+			action->createParameter(); 
 			while (la->kind == 11 /* "," */) {
 				Get();
 				EXP();
+				action->createParameter(); 
 			}
 		}
+		action->checkParameter(); 
 		Expect(17 /* ")" */);
+		action->removeFake();
+		action->createGotoSub();  
 }
 
 void Parser::TERMINO() {
@@ -513,8 +526,9 @@ void Parser::TERM_OP(int &term) {
 }
 
 void Parser::FACTOR() {
-		wchar_t* name; Variable *obj; int signo; Direction *dir; 
-		if (la->kind == 16 /* "(" */) {
+		if (la->kind == _id) {
+			IDENTIFICADOR_I();
+		} else if (la->kind == 16 /* "(" */) {
 			Get();
 			action->addFake(); 
 			EXPRESION();
@@ -522,16 +536,7 @@ void Parser::FACTOR() {
 			action->removeFake(); 
 		} else if (StartOf(5)) {
 			VARCTE();
-		} else if (la->kind == _id) {
-			IDENTI(name);
-			if (StartOf(6)) {
-				obj=action->find(name); 
-				action->addStackDir(obj->dir->direction,obj->type); 
-			} else if (la->kind == 16 /* "(" */) {
-				PARENTESIS();
-				obj=action->find(name); 
-			} else SynErr(71);
-		} else SynErr(72);
+		} else SynErr(71);
 }
 
 void Parser::FACTOR_OP(int &fact) {
@@ -544,6 +549,18 @@ void Parser::FACTOR_OP(int &fact) {
 		} else if (la->kind == 60 /* "%" */) {
 			Get();
 			fact=module;
+		} else SynErr(72);
+}
+
+void Parser::IDENTIFICADOR_I() {
+		wchar_t* name; Variable *obj; int signo; Direction *dir; 
+		IDENTI(name);
+		if (StartOf(6)) {
+			obj=action->find(name); 
+			action->addStackDir(obj->dir->direction,obj->type); 
+		} else if (la->kind == 16 /* "(" */) {
+			action->findFunction(name); 
+			PARENTESIS();
 		} else SynErr(73);
 }
 
@@ -870,8 +887,8 @@ void Errors::SynErr(int line, int col, int n) {
 			case 69: s = coco_string_create(L"invalid ASIGNACION"); break;
 			case 70: s = coco_string_create(L"invalid TERM_OP"); break;
 			case 71: s = coco_string_create(L"invalid FACTOR"); break;
-			case 72: s = coco_string_create(L"invalid FACTOR"); break;
-			case 73: s = coco_string_create(L"invalid FACTOR_OP"); break;
+			case 72: s = coco_string_create(L"invalid FACTOR_OP"); break;
+			case 73: s = coco_string_create(L"invalid IDENTIFICADOR_I"); break;
 			case 74: s = coco_string_create(L"invalid FIGURA"); break;
 			case 75: s = coco_string_create(L"invalid ATRIBUTOS"); break;
 			case 76: s = coco_string_create(L"invalid ATRIBUTO_ENTERO"); break;

@@ -79,7 +79,8 @@ public:
 	void push(int t);
 	void pop();
 	Parameter* get();
-	void invert();
+	int  getInt();
+	StackParameter invert();
 	void showStack();
 
 };
@@ -92,6 +93,7 @@ public:
 	int parametro;
 	int varLoc;
 	int begin;
+	int direction;
 	StackParameter *par;
 	Function *next;
 	Function();
@@ -186,8 +188,9 @@ public :
 	int para_int;
 	int para_flo;
 	int para_bool;
+	int func;
 	Memory();
-	Direction* save(int partition, int type, float value);
+	Direction* save(int partition, int type, double value);
 	void clearLocal();
 	void clearTemp();
 	void clearPara();
@@ -197,8 +200,8 @@ public :
 class Action{
 public:
 	LogicCube *cube;
-	int cont;//indice de los cuadruplos
-	int rec;//direccion del resultado
+	int cont;
+	int rec;
 	TablaVariables *tab;	
 	StackOperator *op;
 	StackDirection *dir;
@@ -206,11 +209,14 @@ public:
 	StackFunction *fun;
 	Function *inifun;
 	StackParameter *para;
+	Function *llam_fun;
+	StackParameter *llam_para;
+	int contPara;
 	Memory *memory;
 	int cant_loc;
 	int cant_para;
 	Action();
-	void addGlobal(const wchar_t* n , int t);
+	void addGlobal(const wchar_t* n , int t, int slope);
 	void addLocal(const wchar_t* n, int t, int slope);
 	void removeLocals();
 	void removeGlobals();
@@ -251,6 +257,12 @@ public:
 	void addContCuadruplo();
 	void generateRetorno();
 	void addTypeFunction(int t);
+	void findFunction(const wchar_t* n);
+	void createERA();
+	void createParameter();
+	void checkParameter();
+	void createGotoSub();
+
 
 	
 };

@@ -17,13 +17,13 @@ void Err(wchar_t* msg) {
 }
 
 
-int var, para, entero, flotante, undefined;
+int var, para, entero, flotante, undefined, function;
 
 int plus, minus, multiply, divide, module, eq, ne, gt, lt, gte, lte, log_and ,log_or ;
 
 void InitDeclarations() { 
 	
-	var=0; para=1;
+	var=0; para=1; function=2;
 	undefined=0;entero=1; flotante=2;
 	plus=1; minus=2;
 	multiply=3; divide=4; module=5;
@@ -50,19 +50,20 @@ PROGRAMA =
 "program"  "{"				(. InitDeclarations(); 
 					action->beginProgram(); .)
 { GLOBAL  } 
- BLOQUE '}'			       (. action->endProgram();
+ BLOQUE '}'			       (. /*action->fun->showStack();*/
+					action->endProgram();
 					action->tab->removeAllLocals();
 					action->showCuadruplo();
-					action->fun->showStack();
+				
 					action->createObject();.)
 .
 
 /*----------------------------------------------------------------------------*/
 GLOBAL = 				(. wchar_t* name; int type; .)
 "global" TIPO<type> 
-IDENTI<name> 				(. action->addGlobal(name, type);  .)
+IDENTI<name> 				(. action->addGlobal(name, type, var);  .)
 [ '[' integer ']' ] 
-{ ',' IDENTI<name>  			(.  action->addGlobal(name, type); .)
+{ ',' IDENTI<name>  			(.  action->addGlobal(name, type, var); .)
 [ '[' integer ']' ] } 			
 ';'.
 /*----------------------------------------------------------------------*/
@@ -83,8 +84,8 @@ MAIN = "main" '(' ')' 			(. int can;   .)
 MODULE = 				(. wchar_t* name; int typemod; int no; int can; .)
 "module" 
 TIPO_MOD<typemod>	
- IDENTI<name>			 	(. action->addNameFunction(name); 
-					action->addTypeFunction(typemod);.) 
+ IDENTI<name>			 	(. action->addGlobal(name, undefined, function); action->addNameFunction(name);
+					action->addTypeFunction(typemod); .) 
 '('  [ PARAMETROS ] 			(. action->addNoParameters(); .)
 ')' 
 '{' { LOCAL }				(. action->addNoLocals(); 
@@ -103,8 +104,8 @@ PARAM_COMA
  }. 
 /*---------------------------------------------------------*/
 PARAM_COMA = 				(. wchar_t* name; int type; int can; .)
- TIPO<type> IDENTI<name>		(. action->addLocal(name, type, para); 
-					action->addParameter(type); .)
+ TIPO<type> IDENTI<name>		(. action->addLocal(name, type, para);
+					  action->addParameter(type); .)
 .
 /*---------------------------------------------------------------------------*/
 LOCAL= 					(. wchar_t* name; int type; .)
@@ -151,16 +152,27 @@ EXP]					(. action->createCuadroOpeRel(); .)
 /*-------------------------------------------------------------------------*/
 ASIGMODULO =				(. wchar_t* name; Variable *obj; .) 
 IDENTI<name> 			
-( 					
+( 					(. action->findFunction(name); .)		
 LLAMAR_MODULO 	
 | 			 		(.  obj=action->find(name);
 					action->addStackDir(obj->dir->direction,obj->type); .)
 ASIGNACION 	
 ).
 /*------------------------------------------------------------------*/
-LLAMAR_MODULO = '(' [  EXP { ',' EXP } ] ')' ';'.
+LLAMAR_MODULO = '(' 			(. action->createERA(); .)
+[  EXP 					(. action->createParameter(); .)
+{ ',' EXP				(. action->createParameter(); .)
+ } ]					(. action->checkParameter(); .) 
+')'					(. action->createGotoSub();.) 
+';'.				
+
 /*----------------------------------------------------------------------*/
-PARENTESIS =  '(' [  EXP { ',' EXP } ] ')'.
+PARENTESIS =  '(' 			(. action->createERA(); .)
+[  EXP					(. action->createParameter(); .)
+{ ',' EXP 				(. action->createParameter(); .)
+} ] 					(. action->checkParameter(); .)
+')'					(.action->createGotoSub();  .)
+.
 /*---------------------------------------------------------------------*/
 ASIGNACION = 			(. wchar_t* name; .)
 [ '[' 
@@ -183,18 +195,21 @@ FACTOR_OP<fact> 			(. action->addStackOpe(fact); .)
 TERMINO]				(. action->createCuadroOpeFact(); .)
 .
 /*---------------------------------------------------------------------------------*/
-FACTOR= 				(. wchar_t* name; Variable *obj; int signo; Direction *dir; .)
-(			
+FACTOR= 				
+IDENTIFICADOR_I	|		
 ( '(' 					(. action->addFake(); .)
 EXPRESION ')'				(. action->removeFake(); .)
  ) 	
-| ( VARCTE ) 
-| IDENTI<name>  					
+| ( VARCTE ).
+
+/*----------------------------------------------------------------------------------*/
+IDENTIFICADOR_I=			(. wchar_t* name; Variable *obj; int signo; Direction *dir; .)
+IDENTI<name>  					
 ( 					(. obj=action->find(name); 
 					 action->addStackDir(obj->dir->direction,obj->type); .)
-|PARENTESIS 				(. obj=action->find(name); .)
-) 
-).
+|					(.  action->findFunction(name); .)
+PARENTESIS 			
+). 
 /*----------------------------------------------------------------------------------*/	
 CICLO = 
 "while" 				(. action->addStackLeapActual(); .)
@@ -235,8 +250,8 @@ FIGURA<int &figure> =
 ATRIBUTOS = ( ATRIBUTO_ENTERO |  ATRIBUTO_STRING ) ";".
 /*-----------------------------------------------------------------------------------------------*/
 ATRIBUTO_ENTERO = 				(. int attribute; .)
-( "y_position" 					(. attribute=31;.)
-| "x_position" 					(. attribute=32;.)
+( "x_position" 					(. attribute=31;.)
+| "y_position" 					(. attribute=32;.)
 | "rotateRight" 				(. attribute=33;.)
 | "rotateLeft" 					(. attribute=34;.)
 ) 				

@@ -472,8 +472,8 @@ void Scanner::Init() {
 	keywords.set(L"pentagon", 39);
 	keywords.set(L"hexagon", 40);
 	keywords.set(L"rhomboid", 41);
-	keywords.set(L"y_position", 42);
-	keywords.set(L"x_position", 43);
+	keywords.set(L"x_position", 42);
+	keywords.set(L"y_position", 43);
 	keywords.set(L"rotateRight", 44);
 	keywords.set(L"rotateLeft", 45);
 	keywords.set(L"size", 46);
