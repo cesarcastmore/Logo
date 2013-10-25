@@ -48,6 +48,7 @@ private:
     void clearMessage();
     void MachineVirtual();
     void saveRead(int dir, double value);
+    void setExamples();
     void dibujaFigura(int figura, int x, int y,  int rotateRight, int rotateLeft, int scale, QBrush &colorFig, QPen &colorThi);
 };
 

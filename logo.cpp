@@ -29,11 +29,13 @@ Logo::Logo(QWidget *parent) :
     scene->setSceneRect(0, 0, 100, 100);
     ui->graphic->setScene(scene);
 
+
     polytri << QPointF(-200,50) << QPointF(-100,50) << QPointF(-150,-36.6);
     polystar << QPointF(100,36) << QPointF(89,73) << QPointF(50,73) << QPointF(81,95) << QPointF(69,131) << QPointF(100,109.1) << QPointF(131,131) << QPointF(119,95) << QPointF(150,73) << QPointF(110,73);
     polypenta << QPointF(-47.55,-15.45) << QPointF(-29.39,40.45) << QPointF(29.39,40.45) << QPointF(47.55,-15.45) << QPointF(0,-50);
     polyhex << QPointF(-50,-50) << QPointF(-75,-6.7) << QPointF(-50,36.6) << QPointF(0,36.6) << QPointF(25,-6.7) << QPointF(0,-50);
     polyrhom << QPointF(-200,-50) << QPointF(-225,0) << QPointF(-125,0) << QPointF(-100,-50);
+    setExamples();
 
 
 }
@@ -71,6 +73,14 @@ void Logo::compeling(){
         cout<<"no encontro el arcivho";
     QTextStream out(&file);
     out <<document;
+}
+
+void Logo::setExamples(){
+    QFile in("/home/castillo/Logo/muchoejemplos.txt");
+    if (!in.open(QFile::ReadOnly | QFile::Text))
+        cout<<"no encontro el arcivho";
+    QTextStream ReadFile(&in);
+    ui->examplesText->setText(ReadFile.readAll());
 }
 
 void Logo::createMessage(){
