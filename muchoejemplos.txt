@@ -1,3 +1,4 @@
+/*************************************************************/
 program {
 main(){
 int a,b;
@@ -19,7 +20,7 @@ else{
 }
 
 
-
+/*************************************************************/
 
 
 program {
@@ -41,7 +42,7 @@ b=b+1;
 
 
 
-
+/*************************************************************/
 
 program {
 main(){
@@ -68,7 +69,7 @@ b=b+1;
 }
 
 
-
+/*************************************************************/
 
 program {
 global int i, j;
@@ -100,3 +101,105 @@ main(){
 }
 
 
+/*************************************************************/
+
+program {
+global int i,j,k;
+global float x,y,z;
+
+module int uno(int j){
+	int k;
+	k=j*i;
+	print(k | j*3);
+	return (k+j);
+	
+}	
+
+
+module void dos(){
+	int j;
+	i=uno(j+k);
+	while( j >= k){
+		j=j-2;
+		print(i | uno(j));
+
+	}
+}
+
+main(){
+	k=5;
+	j=k+3;
+	i=j*k;
+	while(i >= k + j){
+		i=i-1;
+		if(k > j){
+			print(j+k);
+			dos();
+		}
+		else {	
+			dos();
+			print(k + i*j);
+		}
+	}
+print(k | j | i);
+}
+}
+
+/*************************************************************/
+
+
+program {
+global int i,j,k;
+global float x,y,z;
+
+
+
+main(){
+ do{
+print(z);
+if( x > y){
+print(x);
+}
+
+print(j);
+}
+while( x > y);
+}
+}
+
+/***********************USANDO RECURSIVIDAD*********************/
+
+program {
+module void cesar (int a){
+	print(a);
+	if(a > 0){
+		a=a-1;
+  		cesar(a);
+	}
+
+
+}
+
+main(){
+
+	cesar(5);
+}
+}
+
+
+/**************USANDO RETORNO***************************************/
+
+
+
+program {
+module int suma (int a , int b){
+	return a+b;
+}
+
+main(){
+	int x, y, total;
+	x=10; y=10;
+	total=suma( x, y );
+	print(total);
+}
+}

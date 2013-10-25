@@ -5,6 +5,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QGraphicsScene>
+#include "virtualmemory.h"
 
 namespace Ui {
 class Logo;
@@ -29,7 +30,6 @@ private:
     QGraphicsScene *scene;
     QGraphicsEllipseItem * ellipse;
     QGraphicsRectItem *rectangle;
-
     QPolygonF polytri;
     QGraphicsItem *triangle;
     QPolygonF polypenta;
@@ -40,6 +40,7 @@ private:
     QGraphicsItem *rhomboid;
     QPolygonF polystar;
     QGraphicsItem *star;
+    Memoria *memoria;
 
     void compeling();
     void createMessage();
@@ -48,20 +49,8 @@ private:
     void MachineVirtual();
     void saveRead(int dir, double value);
     void dibujaFigura(int figura, int x, int y,  int rotateRight, int rotateLeft, int scale, QBrush &colorFig, QPen &colorThi);
-
 };
 
-
-class MemoryVirtual{
-public:
-    MemoryVirtual();
-    void save(int dir, double value);
-    void save(int dir, bool value);
-    void save(int dir, int value);
-    void saveCons();
-    double get(int dir);
-    void displayMemory();
-};
 
 
 

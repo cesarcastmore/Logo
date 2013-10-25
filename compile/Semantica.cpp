@@ -9,13 +9,13 @@ using namespace std;
 
 namespace System{
 
+
 std::map< std::wstring , Variable*> tablaGlobals;
 std::map<std::wstring , Variable*> tablaLocals;		
 std::map<int , Cuadruplo*> record;
 std::map<int , double> contantes;
 
 Variable::Variable(){
-name;
 type=0;
 slope=0;
 dir=new Direction();
@@ -585,6 +585,7 @@ Cuadruplo::Cuadruplo(int a, int b, int c, int d){
 
 const char* Cuadruplo::translate(int a){
 	switch(a){
+		case 0: return "GotoMain";
 		case 1: return "+";
 		case 2: return "-";
 		case 3: return "*";
@@ -604,9 +605,13 @@ const char* Cuadruplo::translate(int a){
 		case 17: return "gotoFalse";
 		case 18: return "gotoFin";
 		case 19: return "gotoRetorno";
-		case 20: return "gotoMain";
-		case 21: return "gotoRetorno";
-		case 22: return "RET";
+		case 20: return "gotoTrue";
+		case 21: return "retorno";
+		case 22: return "assig";
+		case 23: return "ret";
+		case 24: return "era";
+		case 25: return "para";
+		case 26: return "gotoSub";
 		case 30: return "beginDraw";
 		case 31: return "x_position";
 		case 32: return "y_position";
@@ -626,10 +631,6 @@ const char* Cuadruplo::translate(int a){
 		case 48: return "hexagon";
 		case 49: return "rhomboid";
 		case 50: return "endDraw";
-		case 51: return "ERA";
-		case 52: return "para";
-		case 53: return "GotoSub";
-		case 54: return "asigRet";
 		case 99: return "end";
 		
 	}
@@ -707,10 +708,10 @@ void Action::addLocal(const wchar_t* n, int  t, int slope){
 	Direction *d;
 	//si es parametro
 	if(slope == 1){
-		d = memory->save(4, t, -1);
+		d = memory->save(1, t, -1);
 		cant_para++;
 	}
-	//no es local
+	// es local
 	else if(slope == 0){
 		d = memory->save(1, t, -1);
 		cant_loc++;
@@ -893,6 +894,18 @@ void Action::createEndWhile(){
 	
 }
 
+
+void Action::createWhileDo(){
+	int verdadero = leap->get()->leaps;
+	leap->pop();
+	Direction *expresion =dir->get(); dir->pop();
+	Cuadruplo *cuadru;
+	cuadru=new Cuadruplo(20, expresion->direction, -1, verdadero);
+	record.insert(std::make_pair(cont, cuadru));
+	cont++;
+	
+}
+
 void Action::createCuadrAlloca(){
 
 	int top1=dir->getType1();
@@ -943,15 +956,12 @@ void Action::beginDraw(int figure){
 }
 	
 void Action::addAtributeInt(int attribute){
-	int figure=op->get()->oper;
 	Direction *entero;
 	entero = dir->get();	dir->pop(); 
 	Cuadruplo *draw;
 	draw = new Cuadruplo(attribute, entero->direction, -1, -1);
 	record.insert(std::make_pair(cont, draw));
 	cont++;
-			
-;
 	
 	
 }
@@ -959,7 +969,6 @@ void Action::addAtributeInt(int attribute){
 void Action::addAtributeString(int attribute, const wchar_t* n){
 	char* value=coco_string_create_char(n);
 	int value_i;
-	int figure=op->get()->oper;
 	
 	if(attribute == 35){
 		if( strcmp(value,"\"small\"") == 0 )
@@ -1024,7 +1033,7 @@ void Action::endDraw(){
 
 void Action::beginProgram(){
 	Cuadruplo *gotoMain;
-	gotoMain = new Cuadruplo(20, -1, -1, -1);
+	gotoMain = new Cuadruplo(0, -1, -1, -1);
 	record.insert(std::make_pair(cont, gotoMain));
 	cont++;
 }
@@ -1109,15 +1118,15 @@ void Action::generateRetorno(){
 			record.insert(std::make_pair(cont, retorno));
 			cont++;
 			Cuadruplo *ret;
-			ret = new Cuadruplo(22, -1, -1, -1);
+			ret = new Cuadruplo(23, -1, -1, -1);
 			record.insert(std::make_pair(cont, ret));
 			cont++;
 		}
 		else if(regresa->type == 0){
-			wcout<<"There are not return value\n";
+			wcout<<"There are not return value in the function "<<inifun->name<<" \n";
 		}
 		else if(regresa->type != inifun->type and regresa->type != 0){
-			wcout<<"Return failture: incompatible types\n";
+			wcout<<"Return failture: incompatible types in the function "<<inifun->name<<" \n";
 		    }
 		}
 	
@@ -1143,7 +1152,7 @@ void Action::findFunction(const wchar_t* n){
 	contPara=llam_fun->parametro;  //obtiene la cantidad de parametros
 	llam_para=llam_fun->par->invert(); //invierte la pila para un orden correcto
 	if(llam_fun->direction  == -1){
-		wcout<<"the function was not defined\n";
+		wcout<<"the function "<<llam_fun->name<<" was not defined\n";
 	}
 }
 
@@ -1151,7 +1160,7 @@ void Action::findFunction(const wchar_t* n){
 
 void Action::createERA(){
 		Cuadruplo *era;
-		era = new Cuadruplo(51, llam_fun->direction, -1, -1);
+		era = new Cuadruplo(24, llam_fun->direction, -1, -1);
 		record.insert(std::make_pair(cont, era));
 		cont++;
 }
@@ -1164,12 +1173,12 @@ void Action::createParameter(){
 	Direction *resul_para = memory->save(4 , temp_para->type, -1);
 	if(temp_para->type == argum->type){
 		Cuadruplo *para;
-		para = new Cuadruplo(52, argum->direction, -1, resul_para->direction );
+		para = new Cuadruplo(25, argum->direction, -1, resul_para->direction );
 		record.insert(std::make_pair(cont, para));
 		cont++;
 		}
 	else {
-		wcout<<"There are incorrect types of parameters\n";
+		wcout<<"There are incorrect types of parameters in the function "<<llam_fun->name<<"\n";
 	}
 	
 }
@@ -1177,10 +1186,10 @@ void Action::createParameter(){
 
 void Action::checkParameter(){
 	if(contPara > 0){
-		wcout<<"Missing more parameters\n";
+		wcout<<"Missing more parameters in the function "<<llam_fun->name<<" \n";
 	}
 	else if(contPara < 0){
-		wcout<<"Receiving more parameters than the declared function\n";
+		wcout<<"Receiving more parameters than the declared function "<<llam_fun->name<<" \n";
 	}
 }
 
@@ -1189,13 +1198,13 @@ void Action::checkParameter(){
 
 void Action::createGotoSub(){
 			Cuadruplo *gtsub;
-			gtsub = new Cuadruplo(53, llam_fun->begin , -1, -1 );
+			gtsub = new Cuadruplo(26, llam_fun->begin , -1, -1 );
 			record.insert(std::make_pair(cont, gtsub));
 			cont++;
 			if(llam_fun->type == 1 or llam_fun->type == 2){
 				Cuadruplo *asig;
 				Direction *tempReto = memory->save(2, llam_fun->type , -1);
-				asig = new Cuadruplo(54, llam_fun->direction , -1, tempReto->direction );
+				asig = new Cuadruplo(22, llam_fun->direction , -1, tempReto->direction );
 				record.insert(std::make_pair(cont, asig));
 				dir->push(tempReto);
 				cont++;

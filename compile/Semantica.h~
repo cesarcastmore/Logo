@@ -80,7 +80,7 @@ public:
 	void pop();
 	Parameter* get();
 	int  getInt();
-	StackParameter invert();
+	StackParameter* invert();
 	void showStack();
 
 };

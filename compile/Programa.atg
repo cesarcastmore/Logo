@@ -128,7 +128,7 @@ VARCTE =				(. double signo=1.00; double number; Direction *dir; int tipo;.)
 					action->dir->push(dir); .)
 .
 /*----------------------------------------------------------------------*/
-ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO  ) .
+ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO | CICLO_DO  ) .
 /*----------------------------------------------------------------------*/
 CONDICION = 
 "if"			
@@ -218,6 +218,14 @@ CICLO =
 '(' EXPRESION ')' 			(. action->createGotoFalWhile(); .)
 '{' { ESTATUTO } 			(. action->createEndWhile(); .)
 '}'.
+/*-----------------------------------------------------------------------------------*/
+CICLO_DO=
+"do" 					(. action->addStackLeapActual(); .)
+"{"
+ { ESTATUTO }
+"}"
+"while" "(" EXPRESION ")" 		(. action->createWhileDo(); .)
+";".
 /*----------------------------------------------------------------------------------*/
 LECTURA =				(. wchar_t* name; Variable *obj; .)			
 "read" 

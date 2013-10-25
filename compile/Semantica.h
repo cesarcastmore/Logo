@@ -238,6 +238,7 @@ public:
 	void addStackLeapActual();
 	void createGotoFalWhile();
 	void createEndWhile();
+	void createWhileDo();
 	void createCuadrAlloca();
 	void createCuadrRead(int d, int t);
 	void createCuadrPrint();

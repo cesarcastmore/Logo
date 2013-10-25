@@ -117,7 +117,7 @@ void Parser::TIPO(int  &type) {
 		} else if (la->kind == 14 /* "float" */) {
 			Get();
 			type=flotante; 
-		} else SynErr(62);
+		} else SynErr(63);
 }
 
 void Parser::IDENTI(wchar_t* &name) {
@@ -197,11 +197,11 @@ void Parser::LOCAL() {
 
 void Parser::ESTATUTO() {
 		switch (la->kind) {
-		case 27 /* "read" */: {
+		case 28 /* "read" */: {
 			LECTURA();
 			break;
 		}
-		case 30 /* "draw" */: {
+		case 31 /* "draw" */: {
 			GRAFICO();
 			break;
 		}
@@ -213,7 +213,7 @@ void Parser::ESTATUTO() {
 			CONDICION();
 			break;
 		}
-		case 28 /* "print" */: {
+		case 29 /* "print" */: {
 			ESCRITURA();
 			break;
 		}
@@ -221,7 +221,11 @@ void Parser::ESTATUTO() {
 			CICLO();
 			break;
 		}
-		default: SynErr(63); break;
+		case 27 /* "do" */: {
+			CICLO_DO();
+			break;
+		}
+		default: SynErr(64); break;
 		}
 }
 
@@ -233,7 +237,7 @@ void Parser::TIPO_MOD(int &typemod) {
 		} else if (la->kind == 19 /* "void" */) {
 			Get();
 			typemod = undefined; 
-		} else SynErr(64);
+		} else SynErr(65);
 }
 
 void Parser::PARAMETROS() {
@@ -288,14 +292,14 @@ void Parser::VARCTE() {
 			Get();
 			number=wcstof((coco_string_create(t->val)), NULL);
 			tipo=flotante; 
-		} else SynErr(65);
+		} else SynErr(66);
 		dir=action->memory->save(3,tipo, number*signo);
 		action->dir->push(dir); 
 }
 
 void Parser::LECTURA() {
 		wchar_t* name; Variable *obj; 
-		Expect(27 /* "read" */);
+		Expect(28 /* "read" */);
 		Expect(16 /* "(" */);
 		IDENTI(name);
 		obj=action->find(name);
@@ -306,14 +310,14 @@ void Parser::LECTURA() {
 
 void Parser::GRAFICO() {
 		int figure; 
-		Expect(30 /* "draw" */);
+		Expect(31 /* "draw" */);
 		FIGURA(figure);
 		action->beginDraw(figure); 
-		Expect(31 /* ":" */);
+		Expect(32 /* ":" */);
 		while (StartOf(2)) {
 			ATRIBUTOS();
 		}
-		Expect(32 /* "end" */);
+		Expect(33 /* "end" */);
 		action->endDraw();
 }
 
@@ -327,7 +331,7 @@ void Parser::ASIGMODULO() {
 			obj=action->find(name);
 			action->addStackDir(obj->dir->direction,obj->type); 
 			ASIGNACION();
-		} else SynErr(66);
+		} else SynErr(67);
 }
 
 void Parser::CONDICION() {
@@ -354,11 +358,11 @@ void Parser::CONDICION() {
 }
 
 void Parser::ESCRITURA() {
-		Expect(28 /* "print" */);
+		Expect(29 /* "print" */);
 		Expect(16 /* "(" */);
 		EXP();
 		action->createCuadrPrint(); 
-		while (la->kind == 29 /* "|" */) {
+		while (la->kind == 30 /* "|" */) {
 			Get();
 			EXP();
 			action->createCuadrPrint(); 
@@ -382,10 +386,26 @@ void Parser::CICLO() {
 		Expect(7 /* "}" */);
 }
 
+void Parser::CICLO_DO() {
+		Expect(27 /* "do" */);
+		action->addStackLeapActual(); 
+		Expect(6 /* "{" */);
+		while (StartOf(1)) {
+			ESTATUTO();
+		}
+		Expect(7 /* "}" */);
+		Expect(26 /* "while" */);
+		Expect(16 /* "(" */);
+		EXPRESION();
+		Expect(17 /* ")" */);
+		action->createWhileDo(); 
+		Expect(12 /* ";" */);
+}
+
 void Parser::EXPRESION() {
 		int log; 
 		EXP_LOG();
-		while (la->kind == 56 /* "and" */ || la->kind == 57 /* "or" */) {
+		while (la->kind == 57 /* "and" */ || la->kind == 58 /* "or" */) {
 			LOG_OPE(log);
 			action->addStackOpe(log); 
 			EXP_LOG();
@@ -405,48 +425,48 @@ void Parser::EXP_LOG() {
 }
 
 void Parser::LOG_OPE(int &log) {
-		if (la->kind == 56 /* "and" */) {
+		if (la->kind == 57 /* "and" */) {
 			Get();
 			log=log_and;
-		} else if (la->kind == 57 /* "or" */) {
+		} else if (la->kind == 58 /* "or" */) {
 			Get();
 			log=log_or; 
-		} else SynErr(67);
+		} else SynErr(68);
 }
 
 void Parser::RELACIONAL(int &rel) {
 		switch (la->kind) {
-		case 50 /* "==" */: {
+		case 51 /* "==" */: {
 			Get();
 			rel=eq;
 			break;
 		}
-		case 51 /* "<>" */: {
+		case 52 /* "<>" */: {
 			Get();
 			rel=ne;
 			break;
 		}
-		case 52 /* "<=" */: {
+		case 53 /* "<=" */: {
 			Get();
 			rel=lte;
 			break;
 		}
-		case 53 /* ">=" */: {
+		case 54 /* ">=" */: {
 			Get();
 			rel=gte;
 			break;
 		}
-		case 54 /* "<" */: {
+		case 55 /* "<" */: {
 			Get();
 			rel=lt;
 			break;
 		}
-		case 55 /* ">" */: {
+		case 56 /* ">" */: {
 			Get();
 			rel=gt;;
 			break;
 		}
-		default: SynErr(68); break;
+		default: SynErr(69); break;
 		}
 }
 
@@ -476,7 +496,7 @@ void Parser::ASIGNACION() {
 				IDENTI(name);
 			} else if (la->kind == _integer) {
 				Get();
-			} else SynErr(69);
+			} else SynErr(70);
 			Expect(10 /* "]" */);
 		}
 		Expect(25 /* "=" */);
@@ -507,7 +527,7 @@ void Parser::PARENTESIS() {
 void Parser::TERMINO() {
 		int fact; 
 		FACTOR();
-		if (la->kind == 58 /* "*" */ || la->kind == 59 /* "/" */ || la->kind == 60 /* "%" */) {
+		if (la->kind == 59 /* "*" */ || la->kind == 60 /* "/" */ || la->kind == 61 /* "%" */) {
 			FACTOR_OP(fact);
 			action->addStackOpe(fact); 
 			TERMINO();
@@ -522,7 +542,7 @@ void Parser::TERM_OP(int &term) {
 		} else if (la->kind == 21 /* "-" */) {
 			Get();
 			term=minus;
-		} else SynErr(70);
+		} else SynErr(71);
 }
 
 void Parser::FACTOR() {
@@ -536,20 +556,20 @@ void Parser::FACTOR() {
 			action->removeFake(); 
 		} else if (StartOf(5)) {
 			VARCTE();
-		} else SynErr(71);
+		} else SynErr(72);
 }
 
 void Parser::FACTOR_OP(int &fact) {
-		if (la->kind == 58 /* "*" */) {
+		if (la->kind == 59 /* "*" */) {
 			Get();
 			fact=multiply;
-		} else if (la->kind == 59 /* "/" */) {
+		} else if (la->kind == 60 /* "/" */) {
 			Get();
 			fact=divide;
-		} else if (la->kind == 60 /* "%" */) {
+		} else if (la->kind == 61 /* "%" */) {
 			Get();
 			fact=module;
-		} else SynErr(72);
+		} else SynErr(73);
 }
 
 void Parser::IDENTIFICADOR_I() {
@@ -561,57 +581,57 @@ void Parser::IDENTIFICADOR_I() {
 		} else if (la->kind == 16 /* "(" */) {
 			action->findFunction(name); 
 			PARENTESIS();
-		} else SynErr(73);
+		} else SynErr(74);
 }
 
 void Parser::FIGURA(int &figure) {
 		switch (la->kind) {
-		case 33 /* "point" */: {
+		case 34 /* "point" */: {
 			Get();
 			figure=41;
 			break;
 		}
-		case 34 /* "line" */: {
+		case 35 /* "line" */: {
 			Get();
 			figure=42;
 			break;
 		}
-		case 35 /* "triangle" */: {
+		case 36 /* "triangle" */: {
 			Get();
 			figure=43;
 			break;
 		}
-		case 36 /* "square" */: {
+		case 37 /* "square" */: {
 			Get();
 			figure=44;
 			break;
 		}
-		case 37 /* "circle" */: {
+		case 38 /* "circle" */: {
 			Get();
 			figure=45;
 			break;
 		}
-		case 38 /* "star" */: {
+		case 39 /* "star" */: {
 			Get();
 			figure=46;
 			break;
 		}
-		case 39 /* "pentagon" */: {
+		case 40 /* "pentagon" */: {
 			Get();
 			figure=47;
 			break;
 		}
-		case 40 /* "hexagon" */: {
+		case 41 /* "hexagon" */: {
 			Get();
 			figure=48;
 			break;
 		}
-		case 41 /* "rhomboid" */: {
+		case 42 /* "rhomboid" */: {
 			Get();
 			figure=49;
 			break;
 		}
-		default: SynErr(74); break;
+		default: SynErr(75); break;
 		}
 }
 
@@ -620,25 +640,25 @@ void Parser::ATRIBUTOS() {
 			ATRIBUTO_ENTERO();
 		} else if (StartOf(8)) {
 			ATRIBUTO_STRING();
-		} else SynErr(75);
+		} else SynErr(76);
 		Expect(12 /* ";" */);
 }
 
 void Parser::ATRIBUTO_ENTERO() {
 		int attribute; 
-		if (la->kind == 42 /* "x_position" */) {
+		if (la->kind == 43 /* "x_position" */) {
 			Get();
 			attribute=31;
-		} else if (la->kind == 43 /* "y_position" */) {
+		} else if (la->kind == 44 /* "y_position" */) {
 			Get();
 			attribute=32;
-		} else if (la->kind == 44 /* "rotateRight" */) {
+		} else if (la->kind == 45 /* "rotateRight" */) {
 			Get();
 			attribute=33;
-		} else if (la->kind == 45 /* "rotateLeft" */) {
+		} else if (la->kind == 46 /* "rotateLeft" */) {
 			Get();
 			attribute=34;
-		} else SynErr(76);
+		} else SynErr(77);
 		Expect(25 /* "=" */);
 		EXP();
 		action->addAtributeInt(attribute);
@@ -646,19 +666,19 @@ void Parser::ATRIBUTO_ENTERO() {
 
 void Parser::ATRIBUTO_STRING() {
 		wchar_t* name; int attribute; 
-		if (la->kind == 46 /* "size" */) {
+		if (la->kind == 47 /* "size" */) {
 			Get();
 			attribute=35;
-		} else if (la->kind == 47 /* "thick" */) {
+		} else if (la->kind == 48 /* "thick" */) {
 			Get();
 			attribute=36;
-		} else if (la->kind == 48 /* "colorThick" */) {
+		} else if (la->kind == 49 /* "colorThick" */) {
 			Get();
 			attribute=37;
-		} else if (la->kind == 49 /* "colorFigure" */) {
+		} else if (la->kind == 50 /* "colorFigure" */) {
 			Get();
 			attribute=38;
-		} else SynErr(77);
+		} else SynErr(78);
 		Expect(25 /* "=" */);
 		CADENA(name);
 		action->addAtributeString(attribute, name);
@@ -770,7 +790,7 @@ void Parser::Parse() {
 }
 
 Parser::Parser(Scanner *scanner) {
-	maxT = 61;
+	maxT = 62;
 
 	ParserInitCaller<Parser>::CallInit(this);
 	dummyToken = NULL;
@@ -785,16 +805,16 @@ bool Parser::StartOf(int s) {
 	const bool T = true;
 	const bool x = false;
 
-	static bool set[9][63] = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, x,x,x,x, x,x,x},
-		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,x,x, x,T,T,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,T,T, T,T,T,T, T,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x}
+	static bool set[9][64] = {
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, T,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,x,x,x, x,x,x,x},
+		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,x,x, x,T,T,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,T, T,T,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x}
 	};
 
 
@@ -842,57 +862,58 @@ void Errors::SynErr(int line, int col, int n) {
 			case 24: s = coco_string_create(L"\"else\" expected"); break;
 			case 25: s = coco_string_create(L"\"=\" expected"); break;
 			case 26: s = coco_string_create(L"\"while\" expected"); break;
-			case 27: s = coco_string_create(L"\"read\" expected"); break;
-			case 28: s = coco_string_create(L"\"print\" expected"); break;
-			case 29: s = coco_string_create(L"\"|\" expected"); break;
-			case 30: s = coco_string_create(L"\"draw\" expected"); break;
-			case 31: s = coco_string_create(L"\":\" expected"); break;
-			case 32: s = coco_string_create(L"\"end\" expected"); break;
-			case 33: s = coco_string_create(L"\"point\" expected"); break;
-			case 34: s = coco_string_create(L"\"line\" expected"); break;
-			case 35: s = coco_string_create(L"\"triangle\" expected"); break;
-			case 36: s = coco_string_create(L"\"square\" expected"); break;
-			case 37: s = coco_string_create(L"\"circle\" expected"); break;
-			case 38: s = coco_string_create(L"\"star\" expected"); break;
-			case 39: s = coco_string_create(L"\"pentagon\" expected"); break;
-			case 40: s = coco_string_create(L"\"hexagon\" expected"); break;
-			case 41: s = coco_string_create(L"\"rhomboid\" expected"); break;
-			case 42: s = coco_string_create(L"\"x_position\" expected"); break;
-			case 43: s = coco_string_create(L"\"y_position\" expected"); break;
-			case 44: s = coco_string_create(L"\"rotateRight\" expected"); break;
-			case 45: s = coco_string_create(L"\"rotateLeft\" expected"); break;
-			case 46: s = coco_string_create(L"\"size\" expected"); break;
-			case 47: s = coco_string_create(L"\"thick\" expected"); break;
-			case 48: s = coco_string_create(L"\"colorThick\" expected"); break;
-			case 49: s = coco_string_create(L"\"colorFigure\" expected"); break;
-			case 50: s = coco_string_create(L"\"==\" expected"); break;
-			case 51: s = coco_string_create(L"\"<>\" expected"); break;
-			case 52: s = coco_string_create(L"\"<=\" expected"); break;
-			case 53: s = coco_string_create(L"\">=\" expected"); break;
-			case 54: s = coco_string_create(L"\"<\" expected"); break;
-			case 55: s = coco_string_create(L"\">\" expected"); break;
-			case 56: s = coco_string_create(L"\"and\" expected"); break;
-			case 57: s = coco_string_create(L"\"or\" expected"); break;
-			case 58: s = coco_string_create(L"\"*\" expected"); break;
-			case 59: s = coco_string_create(L"\"/\" expected"); break;
-			case 60: s = coco_string_create(L"\"%\" expected"); break;
-			case 61: s = coco_string_create(L"??? expected"); break;
-			case 62: s = coco_string_create(L"invalid TIPO"); break;
-			case 63: s = coco_string_create(L"invalid ESTATUTO"); break;
-			case 64: s = coco_string_create(L"invalid TIPO_MOD"); break;
-			case 65: s = coco_string_create(L"invalid VARCTE"); break;
-			case 66: s = coco_string_create(L"invalid ASIGMODULO"); break;
-			case 67: s = coco_string_create(L"invalid LOG_OPE"); break;
-			case 68: s = coco_string_create(L"invalid RELACIONAL"); break;
-			case 69: s = coco_string_create(L"invalid ASIGNACION"); break;
-			case 70: s = coco_string_create(L"invalid TERM_OP"); break;
-			case 71: s = coco_string_create(L"invalid FACTOR"); break;
-			case 72: s = coco_string_create(L"invalid FACTOR_OP"); break;
-			case 73: s = coco_string_create(L"invalid IDENTIFICADOR_I"); break;
-			case 74: s = coco_string_create(L"invalid FIGURA"); break;
-			case 75: s = coco_string_create(L"invalid ATRIBUTOS"); break;
-			case 76: s = coco_string_create(L"invalid ATRIBUTO_ENTERO"); break;
-			case 77: s = coco_string_create(L"invalid ATRIBUTO_STRING"); break;
+			case 27: s = coco_string_create(L"\"do\" expected"); break;
+			case 28: s = coco_string_create(L"\"read\" expected"); break;
+			case 29: s = coco_string_create(L"\"print\" expected"); break;
+			case 30: s = coco_string_create(L"\"|\" expected"); break;
+			case 31: s = coco_string_create(L"\"draw\" expected"); break;
+			case 32: s = coco_string_create(L"\":\" expected"); break;
+			case 33: s = coco_string_create(L"\"end\" expected"); break;
+			case 34: s = coco_string_create(L"\"point\" expected"); break;
+			case 35: s = coco_string_create(L"\"line\" expected"); break;
+			case 36: s = coco_string_create(L"\"triangle\" expected"); break;
+			case 37: s = coco_string_create(L"\"square\" expected"); break;
+			case 38: s = coco_string_create(L"\"circle\" expected"); break;
+			case 39: s = coco_string_create(L"\"star\" expected"); break;
+			case 40: s = coco_string_create(L"\"pentagon\" expected"); break;
+			case 41: s = coco_string_create(L"\"hexagon\" expected"); break;
+			case 42: s = coco_string_create(L"\"rhomboid\" expected"); break;
+			case 43: s = coco_string_create(L"\"x_position\" expected"); break;
+			case 44: s = coco_string_create(L"\"y_position\" expected"); break;
+			case 45: s = coco_string_create(L"\"rotateRight\" expected"); break;
+			case 46: s = coco_string_create(L"\"rotateLeft\" expected"); break;
+			case 47: s = coco_string_create(L"\"size\" expected"); break;
+			case 48: s = coco_string_create(L"\"thick\" expected"); break;
+			case 49: s = coco_string_create(L"\"colorThick\" expected"); break;
+			case 50: s = coco_string_create(L"\"colorFigure\" expected"); break;
+			case 51: s = coco_string_create(L"\"==\" expected"); break;
+			case 52: s = coco_string_create(L"\"<>\" expected"); break;
+			case 53: s = coco_string_create(L"\"<=\" expected"); break;
+			case 54: s = coco_string_create(L"\">=\" expected"); break;
+			case 55: s = coco_string_create(L"\"<\" expected"); break;
+			case 56: s = coco_string_create(L"\">\" expected"); break;
+			case 57: s = coco_string_create(L"\"and\" expected"); break;
+			case 58: s = coco_string_create(L"\"or\" expected"); break;
+			case 59: s = coco_string_create(L"\"*\" expected"); break;
+			case 60: s = coco_string_create(L"\"/\" expected"); break;
+			case 61: s = coco_string_create(L"\"%\" expected"); break;
+			case 62: s = coco_string_create(L"??? expected"); break;
+			case 63: s = coco_string_create(L"invalid TIPO"); break;
+			case 64: s = coco_string_create(L"invalid ESTATUTO"); break;
+			case 65: s = coco_string_create(L"invalid TIPO_MOD"); break;
+			case 66: s = coco_string_create(L"invalid VARCTE"); break;
+			case 67: s = coco_string_create(L"invalid ASIGMODULO"); break;
+			case 68: s = coco_string_create(L"invalid LOG_OPE"); break;
+			case 69: s = coco_string_create(L"invalid RELACIONAL"); break;
+			case 70: s = coco_string_create(L"invalid ASIGNACION"); break;
+			case 71: s = coco_string_create(L"invalid TERM_OP"); break;
+			case 72: s = coco_string_create(L"invalid FACTOR"); break;
+			case 73: s = coco_string_create(L"invalid FACTOR_OP"); break;
+			case 74: s = coco_string_create(L"invalid IDENTIFICADOR_I"); break;
+			case 75: s = coco_string_create(L"invalid FIGURA"); break;
+			case 76: s = coco_string_create(L"invalid ATRIBUTOS"); break;
+			case 77: s = coco_string_create(L"invalid ATRIBUTO_ENTERO"); break;
+			case 78: s = coco_string_create(L"invalid ATRIBUTO_STRING"); break;
 
 		default:
 		{

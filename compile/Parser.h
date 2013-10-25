@@ -108,6 +108,7 @@ void InitDeclarations() {
 	void CONDICION();
 	void ESCRITURA();
 	void CICLO();
+	void CICLO_DO();
 	void EXPRESION();
 	void EXP_LOG();
 	void LOG_OPE(int &log);

@@ -1,5 +1,6 @@
 #include "logo.h"
 #include "ui_logo.h"
+
 #include <QFile>
 #include <iostream>
 #include <QTextStream>
@@ -12,101 +13,18 @@
 #include <QGraphicsItem>
 #include <QGraphicsPolygonItem>
 #include <QGraphicsScene>
+#include "virtualmemory.h"
+
 
 using namespace std;
 
-std::map<int , double> memoria;
-
-
-MemoryVirtual::MemoryVirtual(){
-
-}
-
-double MemoryVirtual::get(int dir){
-    return memoria[dir];
-}
-
-void MemoryVirtual::save(int dir, double value){
-    memoria[dir]=value;
-    if((dir >= 0000 and dir < 2000 ) or
-            (dir >= 6000 and dir < 8000) or
-            (dir >= 12000 and dir < 14000 ) or
-            (dir >= 18000 and dir < 20000 ) or
-            (dir >= 24000 and dir < 26000 )){
-     int entero = (double)(value);
-     value=(double)(entero);
-     memoria[dir]=value;
-    }
-    else if((dir >= 2000 and dir < 4000) or
-            (dir >= 8000 and dir < 10000 ) or
-            (dir >= 14000 and dir < 16000 ) or
-            (dir >= 20000 and dir < 22000 ) or
-            (dir >= 26000 and dir < 28000 )
-            ){
-        memoria[dir]=value;
-    }
-}
-
-void MemoryVirtual::save(int dir, bool value){
-    if(value == true){
-        double bo=1.00;
-        memoria[dir]=bo;
-    }
-    else{
-        double bo=0.0;
-        memoria[dir]=bo;
-    }
-}
-
-void MemoryVirtual::save(int dir, int value){
-    int entero = (double)(value);
-    value=(double)(entero);
-    memoria[dir]=value;
-
-}
-
-
-void MemoryVirtual::saveCons(){
-    string line;
-    ifstream myfile ("/home/castillo/Logo/Constantes.txt");
-    if (myfile.is_open())
-    {
-      while ( getline (myfile,line) )
-      {
-          int lon = line.find("$");
-          string dir_s = line.substr(0,lon);
-
-          line=line.substr(line.find("$")+1);
-          lon=line.find("$");
-          string value_s = line.substr(0,lon);
-
-
-          int dir_i= atoi(dir_s.c_str());
-          double value_f=atof(value_s.c_str());
-          save(dir_i, value_f);
-
-
-      }
-      myfile.close();
-    }
-}
-
-void MemoryVirtual::displayMemory(){
-    cout <<"Memory\n";
-    for (std::map<int , double >::iterator it=memoria.begin(); it!=memoria.end(); ++it){
-        cout <<"Memory\n"<< it->first << " => " << it->second << "\n";
-    }
-}
-
-void Logo::saveRead(int dir, double value){
-    memoria[dir]=value;
-}
 
 Logo::Logo(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Logo)
 {
     ui->setupUi(this);
+    memoria=new Memoria();
     scene = new QGraphicsScene(this);
     scene->setSceneRect(0, 0, 100, 100);
     ui->graphic->setScene(scene);
@@ -125,7 +43,9 @@ Logo::~Logo()
     delete ui;
 }
 
-
+void Logo::saveRead(int dir, double value){
+   memoria->save(dir, value);
+}
 
 void Logo::on_clearButton_clicked()
 {
@@ -232,23 +152,20 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLef
 
 
 void Logo::MachineVirtual(){
+int contador=0;
+    memoria->salvarConstantes();
 
-    MemoryVirtual *memo= new MemoryVirtual();
-    cout<<"entrooooo\n";
-
-    //salvar las constante en un archivo
-    memo->saveCons();
-    memo->displayMemory();
-
-    double re;QString doc, s1, s2;//allocation
+    double re;QString doc, s1;//allocation
     double value1, value2, temp, resul; int mod1, mod2;//expresiones
     bool logica;
-     Input *read;//lectura
+    Input *read;//lectura
+    int seguir; //entero donde seguira la funcion
 
     int program[1000][4];
     int instr=0;
     string line;
     ifstream myfile ("/home/castillo/Logo/Objecto.txt");
+    MemoriaLocales *memoria_locales;
     if (myfile.is_open())
     {
       while ( getline (myfile,line) )
@@ -305,114 +222,115 @@ void Logo::MachineVirtual(){
         scene->clear();
 
         int cont=0;
-        while(cont != 10000){
-
+        while(cont != 10000 and contador < 400 ){
             int instruccion = program[cont][0];
+            cout<<"contador  "<<cont<<"\n";
 
             switch(instruccion){
+ //GOtoMain
             case 0:
-                cont=program[cont][1];
+                cont=program[cont][3];
                 break;
             //plus
             case 1:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 resul=value1+value2;
-                memo->save(temp,resul);
+                memoria->save(temp,resul);
                 cont++;
                 break;
             //minus
             case 2:;
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 cout<<"la direccion es "<<temp;
                 resul=value1-value2;
-                memo->save(temp,resul);
+                memoria->save(temp,resul);
                 cont++;
                 break;
             //multiply
             case 3:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 resul=value1*value2;
-                memo->save(temp,resul);
+                memoria->save(temp,resul);
                 cont++;
                 break;
             //divide
             case 4:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 resul=value1/value2;
-                memo->save(temp,resul);
+                memoria->save(temp,resul);
                 cont++;
                 break;
             //module
             case 5:;
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 mod1=(int)value1;
                 mod2=(int)value2;
                 resul=mod1%mod2;
-                memo->save(temp,resul);
+                memoria->save(temp,resul);
                 cont++;
                 break;
             //equal
             case 6:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 logica=(value1==value2);
-                memo->save(temp,logica);
+                memoria->save(temp,logica);
                 cont++;
                 break;
             //no equal
             case 7:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 logica=(value1!=value2);
-                memo->save(temp,logica);
+                memoria->save(temp,logica);
                 cont++;
                 break;
             //greater than
             case 8:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 logica=(value1>value2);
-                memo->save(temp,logica);
+                memoria->save(temp,logica);
                 cont++;
                 break;
             //less than
             case 9:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 logica=(value1<value2);
-                memo->save(temp,logica);
+                memoria->save(temp,logica);
                 cont++;
                 break;
             //greater or equal than
             case 10:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 logica=(value1>=value2);
-                memo->save(temp,logica);
+                memoria->save(temp,logica);
                 cont++;
                 break;
             //less or equal than
             case 11:
-                value1=memo->get(program[cont][1]);
-                value2=memo->get(program[cont][2]);
+                value1=memoria->get(program[cont][1]);
+                value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 logica=(value1<=value2);
-                memo->save(temp,logica);
+                memoria->save(temp,logica);
                 cont++;
                 break;
             //and
@@ -426,10 +344,10 @@ void Logo::MachineVirtual(){
             //allocation
             case 14:
                 double valor;
-                valor= memo->get(program[cont][1]);
+                valor= memoria->get(program[cont][1]);
                 int direccion;
                 direccion= program[cont][3];
-                memo->save(direccion, valor);
+                memoria->save(direccion, valor);
                 cont++;
                 break;
             //read
@@ -442,7 +360,7 @@ void Logo::MachineVirtual(){
                 break;
             //write
             case 16:
-               re=memo->get(program[cont][1]);
+               re=memoria->get(program[cont][1]);
                doc=ui->textMessage->toPlainText();
                s1= QString::number(re);
                ui->textMessage->setText(doc+ s1 +"\n");
@@ -450,7 +368,7 @@ void Logo::MachineVirtual(){
                 break;
            //gotoFalse
             case 17:
-                value1=memo->get(program[cont][1]);
+                value1=memoria->get(program[cont][1]);
                 value2=0;
                 if(value1 == value2 )
                     cont=program[cont][3];
@@ -459,24 +377,61 @@ void Logo::MachineVirtual(){
                 break;
            //gotoFin
             case 18:
-                 cont=program[cont][3];
+                 cont=program[cont][1];
                 break;
            //gotoRetorno
             case 19:
-                 cont=program[cont][3];
+                cont=program[cont][1];
                 break;
-            //GotoMain
+            //GotoTrue
             case 20:
-                cont++;
+                value1=memoria->get(program[cont][1]);
+                value2=1;
+                if(value1 == value2 )
+                    cont=program[cont][3];
+                else
+                    cont++;
                 break;
+            //retorno
             case 21:
+                value1=memoria->get(program[cont][1]);
+                direccion=program[cont][3];
+                memoria->save(direccion, value1);
                 cont++;
                 break;
+            //assig
             case 22:
+                value1=memoria->get(program[cont][1]);
+                direccion=program[cont][3];
+                memoria->save(direccion, value1);
                 cont++;
                 break;
- /****************************************************************************************************/
-                //ESTA CASE VA SER PARA INICIALIZAR LA FIGURA Y COLCARLA EN EL SCENE
+            //RET
+            case 23:
+                memoria->despertarMemoria();
+                cont=memoria->memoriaActual->instruccion;
+                break;
+            //ERA
+            case 24:
+                memoria_locales=new MemoriaLocales();
+                memoria_locales->direccionFuncion=program[cont][1];
+                cont++;
+                break;
+            //PARA
+            case 25:
+                value1=memoria->get(program[cont][1]);
+                memoria_locales->save(program[cont][3]-18000,value1);
+                cont++;
+                break;
+            //GOTOSUB
+            case 26:
+                seguir = cont+1;
+                memoria->memoriaActual->instruccion=seguir;
+                memoria->dormirMemoria();
+                memoria->colocarMemoria(memoria_locales);
+                cont=program[cont][1];
+                break;
+            //ESTA CASE VA SER PARA INICIALIZAR LA FIGURA Y COLCARLA EN EL SCENE
             case 30:
                 x_position=0;
                 y_position=0;
@@ -490,22 +445,22 @@ void Logo::MachineVirtual(){
  //A PARTIR DE AQUI SE CAMBIAN LOS ATRIBUTOS DEPENDIENTE DE LOS QUE SE HAYA SALECCIONADO
 //x_position
             case 31:
-                x_position=(int)memo->get(program[cont][1]);
+                x_position=(int)memoria->get(program[cont][1]);
                 cont++;
                 break;
 //y_position
             case 32:
-                y_position=(int)memo->get(program[cont][1]);
+                y_position=(int)memoria->get(program[cont][1]);
                 cont++;
                 break;
 //rotateRight
             case 33:
-                rotateRight=(int)memo->get(program[cont][1]);
+                rotateRight=(int)memoria->get(program[cont][1]);
                  cont++;
                 break;
 //rotateLeft
             case 34:
-                rotateLeft=(int)memo->get(program[cont][1]);
+                rotateLeft=(int)memoria->get(program[cont][1]);
                 cont++;
                 break;
 //size
@@ -599,8 +554,7 @@ void Logo::MachineVirtual(){
                 }
                 cont++;
                 break;
- /**************************************************************************************************************/
-           //end Program
+            //end program
             case 99:
                 cont=10000;
                 break;
@@ -609,6 +563,7 @@ void Logo::MachineVirtual(){
                 break;
 
             }
+            contador++;
         }
 
 }

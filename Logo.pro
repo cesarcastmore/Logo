@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         logo.cpp \
-    input.cpp
+    input.cpp \
+    virtualmemory.cpp
 
 HEADERS  += logo.h \
-    input.h
+    input.h \
+    virtualmemory.h
 
 FORMS    += logo.ui \
     input.ui

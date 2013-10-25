@@ -104,7 +104,7 @@ PARAM_COMA
  }. 
 /*---------------------------------------------------------*/
 PARAM_COMA = 				(. wchar_t* name; int type; int can; .)
- TIPO<type> IDENTI<name>		(. action->addLocal(name, type, para);
+ TIPO<type> IDENTI<name>		(. action->addLocal(name, type, var);
 					  action->addParameter(type); .)
 .
 /*---------------------------------------------------------------------------*/
@@ -128,7 +128,7 @@ VARCTE =				(. double signo=1.00; double number; Direction *dir; int tipo;.)
 					action->dir->push(dir); .)
 .
 /*----------------------------------------------------------------------*/
-ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO  ) .
+ESTATUTO = ( LECTURA | GRAFICO | ASIGMODULO | CONDICION | ESCRITURA  | CICLO | CICLO_DO  ) .
 /*----------------------------------------------------------------------*/
 CONDICION = 
 "if"			
@@ -167,11 +167,13 @@ LLAMAR_MODULO = '(' 			(. action->createERA(); .)
 ';'.				
 
 /*----------------------------------------------------------------------*/
-PARENTESIS =  '(' 			(. action->createERA(); .)
+PARENTESIS =  '(' 			(. action->addFake();
+					 action->createERA(); .)
 [  EXP					(. action->createParameter(); .)
 { ',' EXP 				(. action->createParameter(); .)
 } ] 					(. action->checkParameter(); .)
-')'					(.action->createGotoSub();  .)
+')'					(. action->removeFake();
+					action->createGotoSub();  .)
 .
 /*---------------------------------------------------------------------*/
 ASIGNACION = 			(. wchar_t* name; .)
@@ -216,6 +218,14 @@ CICLO =
 '(' EXPRESION ')' 			(. action->createGotoFalWhile(); .)
 '{' { ESTATUTO } 			(. action->createEndWhile(); .)
 '}'.
+/*-----------------------------------------------------------------------------------*/
+CICLO_DO=
+"do" 					(. action->addStackLeapActual(); .)
+"{"
+ { ESTATUTO }
+"}"
+"while" "(" EXPRESION ")" 		(. action->createWhileDo(); .)
+";".
 /*----------------------------------------------------------------------------------*/
 LECTURA =				(. wchar_t* name; Variable *obj; .)			
 "read" 
