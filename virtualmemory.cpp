@@ -82,8 +82,9 @@ void Memoria::save(int direccion, bool value){
 void Memoria::save(int direccion, double value){
     if((0 <= direccion and direccion < 6000) or
     (18000 <= direccion and direccion < 24000) or
-    (30000 <= direccion and direccion < 32000))
+    (30000 <= direccion and direccion < 32000)){
         glob_cons[direccion] = value;
+    }
     else if	((6000 <= direccion and direccion < 18000) or
         (24000 <= direccion and direccion < 30000))
         memoriaActual->save(direccion, value);
@@ -134,8 +135,9 @@ double  Memoria::get(int direccion){
     double retorno;
     if((0 <= direccion and direccion < 6000) or
     (18000 <= direccion and direccion < 24000) or
-    (30000 <= direccion and direccion < 32000))
+    (30000 <= direccion and direccion < 32000)){
         retorno=glob_cons[direccion];
+    }
     else if	((6000 <= direccion and direccion < 18000) or
         (24000 <= direccion and direccion < 30000))
         retorno=memoriaActual->get(direccion);

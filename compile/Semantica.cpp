@@ -1132,7 +1132,7 @@ void Action::generateRetorno(){
 	
 	else if(inifun->type == 0 and regresa->direction == -1){
 		Cuadruplo *retorno;
-		retorno = new Cuadruplo(22, -1, -1, -1);
+		retorno = new Cuadruplo(23, -1, -1, -1);
 		record.insert(std::make_pair(cont, retorno));
 		cont++;
 	}
@@ -1213,6 +1213,7 @@ void Action::createGotoSub(){
 				Direction *tempVoid = new Direction();
 				dir->push(tempVoid);
 			}
+			memory->clearPara();
 }
 
 

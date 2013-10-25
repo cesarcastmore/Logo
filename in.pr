@@ -1,15 +1,17 @@
 program {
-module float suma (int a , int b, float c){
-	return a+b+c;
+main(){
+int a,b;
+b=1;
+while( b < 12){
+print(b);
+draw circle:
+   x_position=12*b;
+  y_position=0;
+end
+
+print(b);
+b=b+1;
+}
+}
 }
 
-main(){
-	int x, y; 
-	float z, total; 
-	x=100; y=100; z=12.12;
-	draw circle:
-		x_position=suma( x, y , z);
-		y_position=100;
-	end
-}
-}

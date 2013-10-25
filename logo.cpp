@@ -224,7 +224,7 @@ int contador=0;
         int cont=0;
         while(cont != 10000 and contador < 400 ){
             int instruccion = program[cont][0];
-            cout<<"contador  "<<cont<<"\n";
+            cout<<"CONTADOR  "<<cont<<"\n";
 
             switch(instruccion){
  //GOtoMain
