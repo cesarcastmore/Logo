@@ -232,7 +232,7 @@ int contador=0;
         scene->clear();
 
         int cont=0;
-        while(cont != 10000 and contador < 400 ){
+        while(cont != 10000){
             int instruccion = program[cont][0];
             cout<<"CONTADOR  "<<cont<<"\n";
 
@@ -391,7 +391,7 @@ int contador=0;
                 break;
            //gotoRetorno
             case 19:
-                cont=program[cont][1];
+                cont=program[cont][3];
                 break;
             //GotoTrue
             case 20:

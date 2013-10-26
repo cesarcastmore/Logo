@@ -1,19 +1,13 @@
-rogram {
+program {
 main(){
-int a,b;
-read(a);
-b=12;
-if( a > b){
- draw circle:
-    y_position=0;
-   x_position=0;
- end
+int b;
+b=1;
+do{
+draw square:
+   rotateRight=10*b;
+end
+b=b+1;
 }
-else{
- draw square:
-    y_position=0;
-   x_position=0;
- end
-}
+while(b < 40);
 }
 }
