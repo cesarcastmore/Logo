@@ -1,4 +1,4 @@
-program {
+rogram {
 main(){
 int a,b;
 read(a);
