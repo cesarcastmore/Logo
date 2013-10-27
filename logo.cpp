@@ -31,11 +31,11 @@ Logo::Logo(QWidget *parent) :
     ui->graphic->setScene(scene);
 
 
-    polytri << QPointF(-200,50) << QPointF(-100,50) << QPointF(-150,-36.6);
-    polystar << QPointF(100,36) << QPointF(89,73) << QPointF(50,73) << QPointF(81,95) << QPointF(69,131) << QPointF(100,109.1) << QPointF(131,131) << QPointF(119,95) << QPointF(150,73) << QPointF(110,73);
-    polypenta << QPointF(-47.55,-15.45) << QPointF(-29.39,40.45) << QPointF(29.39,40.45) << QPointF(47.55,-15.45) << QPointF(0,-50);
-    polyhex << QPointF(-50,-50) << QPointF(-75,-6.7) << QPointF(-50,36.6) << QPointF(0,36.6) << QPointF(25,-6.7) << QPointF(0,-50);
-    polyrhom << QPointF(-200,-50) << QPointF(-225,0) << QPointF(-125,0) << QPointF(-100,-50);
+    polytri << QPointF(0,0) << QPointF(100,0) << QPointF(50,-86.6);
+    polystar << QPointF(0,0) << QPointF(-11,37) << QPointF(-50,37) << QPointF(-19,59) << QPointF(-31,95) << QPointF(0,73.1) << QPointF(31,95) << QPointF(19,59) << QPointF(50,37) << QPointF(10,37);
+    polypenta << QPointF(0,0) << QPointF(18.16,55.9) << QPointF(76.94,55.9) << QPointF(95.1,0) << QPointF(47.55,-34.55);
+    polyhex << QPointF(0,0) << QPointF(-25,43.3) << QPointF(0,86.6) << QPointF(50,86.6) << QPointF(75,43.3) << QPointF(50,0);
+    polyrhom << QPointF(0,0) << QPointF(-25,50) << QPointF(75,50) << QPointF(100,0);
     setExamples();
 
 
@@ -71,15 +71,15 @@ void Logo::compeling(){
     QString document=ui->textProgram->toPlainText();
     QFile file("/home/castillo/Logo/in.pr");
     if (!file.open(QIODevice::WriteOnly))
-        cout<<"no encontro el arcivho";
+        cout<<"no encontro el archivo";
     QTextStream out(&file);
-    out <<document;
+    out<<document;
 }
 
 void Logo::setExamples(){
     QFile in("/home/castillo/Logo/muchoejemplos.txt");
     if (!in.open(QFile::ReadOnly | QFile::Text))
-        cout<<"no encontro el arcivho";
+        cout<<"no encontro el archivo";
     QTextStream ReadFile(&in);
     ui->examplesText->setText(ReadFile.readAll());
 }
@@ -93,7 +93,7 @@ void Logo::createMessage(){
 void Logo::setMessage(){
     QFile in("/home/castillo/Logo/message.txt");
     if (!in.open(QFile::ReadOnly | QFile::Text))
-        cout<<"no encontro el arcivho";
+        cout<<"no encontro el archivo";
     QTextStream ReadFile(&in);
     ui->textMessage->setText(ReadFile.readAll());
 
@@ -102,7 +102,7 @@ void Logo::clearMessage(){
     ui->textMessage->setText("");
     QFile file("/home/castillo/Logo/compile/message.txt");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        cout<<"no encontro el arcivho";
+        cout<<"no encontro el archivo";
     QTextStream out(&file);
     out <<"";
 }
@@ -115,7 +115,7 @@ void Logo::on_runButton_clicked()
 
 
 
-void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLeft, int scale, QBrush &colorFig,   QPen &colorThi){
+void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush &colorFig,   QPen &colorThi){
     switch(figura){
     case 31:
         break;
@@ -125,43 +125,50 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLef
         triangle = scene->addPolygon(polytri,colorThi,colorFig);
         triangle->resetTransform();
         triangle->setPos(x,y);
-        triangle->setRotation(rotateRight);
+        triangle->setScale(scale);
+        triangle->setRotation(rotate);
         break;
     case 34:
        rectangle = scene->addRect(0, 0, 50, 50, colorThi, colorFig);
        rectangle->resetTransform();
        rectangle->setPos(x,y);
-       rectangle->setRotation(rotateRight);
+       rectangle->setScale(scale);
+       rectangle->setRotation(rotate);
         break;
     case 35:
         ellipse = scene->addEllipse(0,0,100,100, colorThi, colorFig);
         ellipse->resetTransform();
         ellipse->setPos(x,y);
-        ellipse->setRotation(rotateRight);
+        ellipse->setScale(scale);
+        ellipse->setRotation(rotate);
         break;
     case 36:
         star = scene->addPolygon(polystar,colorThi,colorFig);
         star->resetTransform();
         star->setPos(x,y);
-        star->setRotation(rotateRight);
+        star->setScale(scale);
+        star->setRotation(rotate);
         break;
     case 37:
         pentagon = scene->addPolygon(polypenta,colorThi,colorFig);
         pentagon->resetTransform();
         pentagon->setPos(x,y);
-        pentagon->setRotation(rotateRight);
+        pentagon->setScale(scale);
+        pentagon->setRotation(rotate);
         break;
     case 38:
         hexagon = scene->addPolygon(polyhex,colorThi,colorFig);
         hexagon->resetTransform();
         hexagon->setPos(x,y);
-        hexagon->setRotation(rotateRight);
+        hexagon->setScale(scale);
+        hexagon->setRotation(rotate);
         break;
     case 39:
         rhomboid = scene->addPolygon(polyrhom,colorThi,colorFig);
         rhomboid->resetTransform();
         rhomboid->setPos(x,y);
-        rhomboid->setRotation(rotateRight);
+        rhomboid->setScale(scale);
+        rhomboid->setRotation(rotate);
         break;
     }
 
@@ -216,10 +223,6 @@ int contador=0;
           instr++;
 
 
-          cout<<operator_i<<"|"<<operando_1i<<"|"<<operando_2i<<"|"<<resul_i<<"\n";
-
-
-
       }
       myfile.close();
     }
@@ -230,9 +233,8 @@ int contador=0;
         //initializa atributos
     int x_position=0;
     int y_position=0;
-    int rotateRight=0;
-    int rotateLeft=0;
-    int scale=0;
+    int rotate=0;
+    int scale=1;
 
     QBrush colorFigure(Qt::yellow);
     QPen colorThick(Qt::black);
@@ -242,7 +244,6 @@ int contador=0;
         int cont=0;
         while(cont != 10000){
             int instruccion = program[cont][0];
-            cout<<"CONTADOR  "<<cont<<"\n";
 
             switch(instruccion){
  //GOtoMain
@@ -263,7 +264,6 @@ int contador=0;
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
-                cout<<"la direccion es "<<temp;
                 resul=value1-value2;
                 memoria->save(temp,resul);
                 cont++;
@@ -449,13 +449,12 @@ int contador=0;
                 memoria->colocarMemoria(memoria_locales);
                 cont=program[cont][1];
                 break;
-            //ESTA CASE VA SER PARA INICIALIZAR LA FIGURA Y COLCARLA EN EL SCENE
+//ESTA CASE VA SER PARA INICIALIZAR LA FIGURA Y COLCARLA EN EL SCENE
             case 30:
                 x_position=0;
                 y_position=0;
-                rotateRight=0;
-                rotateLeft=0;
-                scale=0;
+                rotate=0;
+                scale=1;
                 colorFigure.setColor(Qt::white);
                 colorThick.setColor(Qt::black);
                 cont++;
@@ -473,12 +472,12 @@ int contador=0;
                 break;
 //rotateRight
             case 33:
-                rotateRight=(int)memoria->get(program[cont][1]);
+                rotate=(int)memoria->get(program[cont][1]);
                  cont++;
                 break;
 //rotateLeft
             case 34:
-                rotateLeft=(int)memoria->get(program[cont][1]);
+                //rotateLeft=(int)memoria->get(program[cont][1]);
                 cont++;
                 break;
 //size
@@ -508,6 +507,7 @@ int contador=0;
                  case 3:
                      colorThick.setStyle(Qt::DotLine);
                      break;
+
             }
                 cont++;
                 break;
@@ -522,6 +522,30 @@ int contador=0;
                     break;
                 case 3:
                     colorThick.setColor(Qt::red);
+                    break;
+                case 4:
+                    colorThick.setColor(QColor("#ff69b4"));
+                    break;
+                case 5:
+                    colorThick.setColor(QColor("#8b4513"));
+                    break;
+                case 6:
+                    colorThick.setColor(Qt::black);
+                    break;
+                case 7:
+                    colorThick.setColor(Qt::white);
+                    break;
+                case 8:
+                    colorThick.setColor(Qt::green);
+                    break;
+                case 9:
+                    colorThick.setColor(Qt::gray);
+                    break;
+                case 10:
+                    colorThick.setColor(QColor("#ffa500"));
+                    break;
+                case 11:
+                    colorThick.setColor(QColor("#a020f0"));
                     break;
                 }
                 cont++;
@@ -538,6 +562,30 @@ int contador=0;
                 case 3:
                     colorFigure.setColor(Qt::red);
                     break;
+                case 4:
+                    colorFigure.setColor(QColor("#ff69b4"));
+                    break;
+                case 5:
+                    colorFigure.setColor(QColor("#8b4513"));
+                    break;
+                case 6:
+                    colorFigure.setColor(Qt::black);
+                    break;
+                case 7:
+                    colorFigure.setColor(Qt::white);
+                    break;
+                case 8:
+                    colorFigure.setColor(Qt::green);
+                    break;
+                case 9:
+                    colorFigure.setColor(Qt::gray);
+                    break;
+                case 10:
+                    colorFigure.setColor(QColor("#ffa500"));
+                    break;
+                case 11:
+                    colorFigure.setColor(QColor("#a020f0"));
+                    break;
                 }
                 cont++;
                 break;
@@ -549,25 +597,25 @@ int contador=0;
                 case 42:
                     break;
                 case 43:
-                    dibujaFigura(33, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    dibujaFigura(33, x_position, y_position, rotate, scale, colorFigure, colorThick);
                     break;
                 case 44:
-                    dibujaFigura(34, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    dibujaFigura(34, x_position, y_position, rotate, scale, colorFigure, colorThick);
                     break;
                 case 45:
-                    dibujaFigura(35, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    dibujaFigura(35, x_position, y_position, rotate, scale, colorFigure, colorThick);
                     break;
                 case 46:
-                    dibujaFigura(36, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    dibujaFigura(36, x_position, y_position, rotate, scale, colorFigure, colorThick);
                     break;
                 case 47:
-                    dibujaFigura(37, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    dibujaFigura(37, x_position, y_position, rotate, scale, colorFigure, colorThick);
                     break;
                 case 48:
-                    dibujaFigura(38, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    dibujaFigura(38, x_position, y_position, rotate, scale, colorFigure, colorThick);
                     break;
                 case 49:
-                    dibujaFigura(39, x_position, y_position, rotateRight, rotateLeft, scale, colorFigure, colorThick);
+                    dibujaFigura(39, x_position, y_position, rotate, scale, colorFigure, colorThick);
                     break;
                 }
                 cont++;

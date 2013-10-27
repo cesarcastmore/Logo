@@ -74,7 +74,7 @@ void Parser::PROGRAMA() {
 		Expect(7 /* "}" */);
 		action->endProgram();
 		action->tab->removeAllLocals();
-		action->showCuadruplo();
+		/*action->showCuadruplo();*/
 		
 		action->createObject();
 }
@@ -652,7 +652,7 @@ void Parser::ATRIBUTO_ENTERO() {
 		} else if (la->kind == 44 /* "y_position" */) {
 			Get();
 			attribute=32;
-		} else if (la->kind == 45 /* "rotateRight" */) {
+		} else if (la->kind == 45 /* "rotate" */) {
 			Get();
 			attribute=33;
 		} else if (la->kind == 46 /* "rotateLeft" */) {
@@ -880,7 +880,7 @@ void Errors::SynErr(int line, int col, int n) {
 			case 42: s = coco_string_create(L"\"rhomboid\" expected"); break;
 			case 43: s = coco_string_create(L"\"x_position\" expected"); break;
 			case 44: s = coco_string_create(L"\"y_position\" expected"); break;
-			case 45: s = coco_string_create(L"\"rotateRight\" expected"); break;
+			case 45: s = coco_string_create(L"\"rotate\" expected"); break;
 			case 46: s = coco_string_create(L"\"rotateLeft\" expected"); break;
 			case 47: s = coco_string_create(L"\"size\" expected"); break;
 			case 48: s = coco_string_create(L"\"thick\" expected"); break;

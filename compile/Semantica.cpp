@@ -999,6 +999,22 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 			value_i=2;
 		else if(strcmp(value,"\"red\"") == 0)
 			value_i=3;
+		else if(strcmp(value,"\"pink\"") == 0)
+			value_i=4;
+		else if(strcmp(value,"\"brown\"") == 0)
+			value_i=5;
+		else if(strcmp(value,"\"black\"") == 0)
+			value_i=6;
+		else if(strcmp(value,"\"white\"") == 0)
+			value_i=7;
+		else if(strcmp(value,"\"green\"") == 0)
+			value_i=8;
+		else if(strcmp(value,"\"grey\"") == 0)
+			value_i=9;
+		else if(strcmp(value,"\"orange\"") == 0)
+			value_i=10;
+		else if(strcmp(value,"\"purple\"") == 0)
+			value_i=11;
 		else 
 			wcout<<"The value"<<value<<" was not find\n";
 	}
@@ -1009,6 +1025,22 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 			value_i=2;
 		else if(strcmp(value,"\"red\"") == 0)
 			value_i=3;
+		else if(strcmp(value,"\"pink\"") == 0)
+			value_i=4;
+		else if(strcmp(value,"\"brown\"") == 0)
+			value_i=5;
+		else if(strcmp(value,"\"black\"") == 0)
+			value_i=6;
+		else if(strcmp(value,"\"white\"") == 0)
+			value_i=7;
+		else if(strcmp(value,"\"green\"") == 0)
+			value_i=8;
+		else if(strcmp(value,"\"grey\"") == 0)
+			value_i=9;
+		else if(strcmp(value,"\"orange\"") == 0)
+			value_i=10;
+		else if(strcmp(value,"\"purple\"") == 0)
+			value_i=11;
 		else 
 			wcout<<"The value"<<value<<" was not find\n";
 	}
@@ -1068,7 +1100,6 @@ void Action::createObject(){
   if (file.is_open())
   {
 	for (std::map<int , double >::iterator it=contantes.begin(); it!=contantes.end(); ++it){
-		wcout<<it->first<<"$"<<it->second<<"$\n";
 		file<<it->first<<"$"<<it->second<<"$\n";
 	}
     file.close();

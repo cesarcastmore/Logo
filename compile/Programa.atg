@@ -53,7 +53,7 @@ PROGRAMA =
  BLOQUE '}'			       (. /*action->fun->showStack();*/
 					action->endProgram();
 					action->tab->removeAllLocals();
-					action->showCuadruplo();
+					/*action->showCuadruplo();*/
 				
 					action->createObject();.)
 .
@@ -262,7 +262,7 @@ ATRIBUTOS = ( ATRIBUTO_ENTERO |  ATRIBUTO_STRING ) ";".
 ATRIBUTO_ENTERO = 				(. int attribute; .)
 ( "x_position" 					(. attribute=31;.)
 | "y_position" 					(. attribute=32;.)
-| "rotateRight" 				(. attribute=33;.)
+| "rotate" 				(. attribute=33;.)
 | "rotateLeft" 					(. attribute=34;.)
 ) 				
 '=' EXP						(. action->addAtributeInt(attribute);.).			

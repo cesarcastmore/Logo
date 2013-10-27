@@ -276,3 +276,66 @@ a=a+120;
 }
 }
 }
+
+/**********UNA BONITA ESTRELLA DE COLORES************************/
+
+
+
+program {
+module void dibujarCirculoColor(int num){
+  if(num%5 == 0){
+      draw square:
+           colorFigure="red";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 1){
+      draw square:
+           colorFigure="blue";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 2){
+      draw square:
+           colorFigure="yellow";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 3){
+      draw square:
+           colorFigure="green";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 4){
+      draw square:
+           colorFigure="pink";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 5){
+      draw square:
+           colorFigure="yellow";
+          rotate= num*10;
+     end
+  }
+
+}
+main(){
+int a;
+a=1;
+while(a < 40){
+   dibujarCirculoColor(a);
+  a=a+1;
+}
+
+
+}
+}
+
+/***********************************************************/

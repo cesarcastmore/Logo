@@ -1,4 +1,4 @@
-/****************DIBUJANDO UNA FIJURA CON EL IF Y READ*********************************************/
+/****************DIBUJANDO UNA FIGURA CON EL IF Y READ*********************************************/
 program {
 main(){
 int a,b;
@@ -255,3 +255,26 @@ total=suma(a,b)+ suma(a,b);
 print(total);
 }
 }
+
+/*********************EJEMPLO DE DO Y WHILE*************************/
+
+
+program {
+main(){
+int a, b;
+a=0;
+while(a  < 480){
+b=1;
+    do{
+        draw square:
+             x_position=a;
+              rotateRight=b*10;
+        end
+      b=b+1;
+    } while( b < 40);
+a=a+120;
+}
+}
+}
+
+/**********UNA BONITA ESTRELLA DE COLORES************************/

@@ -104,7 +104,7 @@ PARAM_COMA
  }. 
 /*---------------------------------------------------------*/
 PARAM_COMA = 				(. wchar_t* name; int type; int can; .)
- TIPO<type> IDENTI<name>		(. action->addLocal(name, type, var);
+ TIPO<type> IDENTI<name>		(. action->addLocal(name, type, para);
 					  action->addParameter(type); .)
 .
 /*---------------------------------------------------------------------------*/
@@ -262,7 +262,7 @@ ATRIBUTOS = ( ATRIBUTO_ENTERO |  ATRIBUTO_STRING ) ";".
 ATRIBUTO_ENTERO = 				(. int attribute; .)
 ( "x_position" 					(. attribute=31;.)
 | "y_position" 					(. attribute=32;.)
-| "rotateRight" 				(. attribute=33;.)
+| "rotate" 				(. attribute=33;.)
 | "rotateLeft" 					(. attribute=34;.)
 ) 				
 '=' EXP						(. action->addAtributeInt(attribute);.).			

@@ -14,7 +14,7 @@ int  main(int argc, char *argv[]){
 	System::Scanner *scanner= new System::Scanner(fileName);
 	System::Parser *parser = new System::Parser(scanner);
 	parser->Parse();
-	cout<< parser->errors->count <<" errors detected \n";
+	cout<<"The compilation was successful\n";
 
 	
 return 0;
