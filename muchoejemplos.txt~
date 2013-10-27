@@ -145,6 +145,44 @@ print(k | j | i);
 }
 }
 
+/********************DIBUJANDO FIGURAS CON IF Y MODULOS**************************/
+program {
+module void drawFigure(int a){
+ 	if(a == 0){
+	draw circle :
+	 	 x_position =0;
+	  	 y_position =0;
+	 end
+	}	
+	if(a == 1){
+	draw star :
+	 	 x_position =0;
+	  	 y_position =0;
+		colorFigure="blue";
+	 end
+	}
+	if(a == 2){
+	draw square :
+	 	 x_position =0;
+	  	 y_position =0;
+		thick="DashLine";
+	 end
+	}
+	if(a == 3){
+	draw triangle :
+	 	 x_position =0;
+	  	 y_position =0;
+		colorThick="yellow";
+	 end
+	}
+}
+main(){
+drawFigure(4);
+}
+}
+}
+
+
 /********************HACIENDO UN DO-WHILE**********************************/
 
 program {

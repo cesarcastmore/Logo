@@ -13,6 +13,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsPolygonItem>
 #include <QGraphicsScene>
+#include <QTransform>
 #include "virtualmemory.h"
 
 
@@ -122,38 +123,45 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotateRight, int rotateLef
         break;
     case 33:
         triangle = scene->addPolygon(polytri,colorThi,colorFig);
-        triangle->setRotation(rotateRight);
+        triangle->resetTransform();
         triangle->setPos(x,y);
+        triangle->setRotation(rotateRight);
         break;
     case 34:
-       rectangle = scene->addRect(x, y, 50, 50, colorThi, colorFig);
+       rectangle = scene->addRect(0, 0, 50, 50, colorThi, colorFig);
+       rectangle->resetTransform();
+       rectangle->setPos(x,y);
        rectangle->setRotation(rotateRight);
         break;
     case 35:
-        ellipse = scene->addEllipse(x,y,100,100, colorThi, colorFig);
+        ellipse = scene->addEllipse(0,0,100,100, colorThi, colorFig);
+        ellipse->resetTransform();
+        ellipse->setPos(x,y);
         ellipse->setRotation(rotateRight);
         break;
     case 36:
         star = scene->addPolygon(polystar,colorThi,colorFig);
-        star->setRotation(rotateRight);
-       // star->setRotation(rotateLeft);
+        star->resetTransform();
         star->setPos(x,y);
-        //star->setScale(scale);
+        star->setRotation(rotateRight);
         break;
     case 37:
         pentagon = scene->addPolygon(polypenta,colorThi,colorFig);
-        pentagon->setRotation(rotateRight);
+        pentagon->resetTransform();
         pentagon->setPos(x,y);
+        pentagon->setRotation(rotateRight);
         break;
     case 38:
         hexagon = scene->addPolygon(polyhex,colorThi,colorFig);
-        hexagon->setRotation(rotateRight);
+        hexagon->resetTransform();
         hexagon->setPos(x,y);
+        hexagon->setRotation(rotateRight);
         break;
     case 39:
         rhomboid = scene->addPolygon(polyrhom,colorThi,colorFig);
-        rhomboid->setRotation(rotateRight);
+        rhomboid->resetTransform();
         rhomboid->setPos(x,y);
+        rhomboid->setRotation(rotateRight);
         break;
     }
 
