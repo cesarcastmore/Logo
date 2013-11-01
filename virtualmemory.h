@@ -11,37 +11,61 @@ class Memoria;
 class MemoriaLocales;
 }
 
+class Instancia{
+public: 	
+	int direccion;
+	double valor;
+	Instancia *next;
+	Instancia();
+
+};
+
+class ListaInstancias{
+public:
+	Instancia *actual;
+	ListaInstancias();
+	void save(int direccion, double valor);
+	double get(int direccion);
+ 	void mostrarInstancias();
+};
+
+
 class MemoriaLocales{
-public :
-    std::map<int , double> locales;
+	public :
+	ListaInstancias *temporales;
+	ListaInstancias *locales;
+	MemoriaLocales *next;
     int instruccion;
     int direccionFuncion;
-    MemoriaLocales *next;
-    MemoriaLocales();
-    void save(int direccion, int value);
-    void save(int direccion, bool value);
-    void save(int direccion, double value);
-    double get(int direccion);
-
+	MemoriaLocales();
+	void save(int direccion, int value);
+	void save(int direccion, bool value);
+	void save(int direccion, double value);
+	double get(int direccion);
+	
 };
 
 
 class Memoria{
-public:
-    std::map<int , double> glob_cons;
-    MemoriaLocales *memoriaActual;
-    Memoria();
-    void save(int direccion, int value);
-    void save(int direccion, bool value);
-    void save(int direccion, double value);
-    void salvarConstantes();
-    void dormirMemoria();
-    void colocarMemoria(MemoriaLocales *memoria);
-    void despertarMemoria();
-    double get(int direccion);
-
-
+	public:
+	ListaInstancias *globales;
+	ListaInstancias *contantes;
+	ListaInstancias *funciones;
+	MemoriaLocales *memoriaActual;
+	Memoria();
+	void save(int direccion, int value);
+	void save(int direccion, bool value);
+	void save(int direccion, double value);
+	void salvarConstantes();
+	void dormirMemoria();
+	void colocarMemoria(MemoriaLocales *memoria);
+	void despertarMemoria();
+	double get(int direccion);
+	
 };
+
+
+
 
 
 #endif // VIRTUALMEMORY_H

@@ -181,7 +181,7 @@ int contador=0;
     memoria->salvarConstantes();
 
     double re;QString doc, s1;//allocation
-    double value1, value2, temp, resul; int mod1, mod2;//expresiones
+    double value1, value2, temp, resul; int mod1, mod2, direccion;//expresiones
     bool logica;
     Input *read;//lectura
     int seguir; //entero donde seguira la funcion
@@ -361,11 +361,9 @@ int contador=0;
                 break;
             //allocation
             case 14:
-                double valor;
-                valor= memoria->get(program[cont][1]);
-                int direccion;
-                direccion= program[cont][3];
-                memoria->save(direccion, valor);
+                value1= memoria->get(program[cont][1]);
+                direccion=program[cont][3];
+                memoria->save(direccion, value1);
                 cont++;
                 break;
             //read
@@ -395,7 +393,7 @@ int contador=0;
                 break;
            //gotoFin
             case 18:
-                 cont=program[cont][1];
+                 cont=program[cont][3];
                 break;
            //gotoRetorno
             case 19:
