@@ -1,0 +1,42 @@
+
+program {
+global int i,j,k;
+global float x,y,z;
+
+module int uno(int j){
+	int k;
+	k=j*i;
+	print(k | j*3);
+	return (k+j);
+	
+}	
+
+
+module void dos(){
+	int j;
+	i=uno(j+k);
+	while( j >= k){
+		j=j-2;
+		print(i | uno(j));
+
+	}
+}
+
+main(){
+	k=5;
+	j=k+3;
+	i=j*k;
+	while(i >= k + j){
+		i=i-1;
+		if(k > j){
+			print(j+k);
+			dos(k-j);
+		}
+		else {	
+			dos(k);
+			print(k + i*j);
+		}
+	}
+print(k | j | i);
+}
+}

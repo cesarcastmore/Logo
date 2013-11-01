@@ -1,0 +1,341 @@
+/****************DIBUJANDO UNA FIGURA CON EL IF Y READ*********************************************/
+program {
+main(){
+int a,b;
+read(a);
+b=12;
+if( a > b){
+ draw circle:
+    y_position=0;
+   x_position=0;
+ end
+}
+else{
+ draw square:
+    y_position=0;
+   x_position=0;
+ end
+}
+}
+}
+
+
+/*****************DIBUJANDO FIGURAS CON UN WHILE******************************/
+
+
+program {
+main(){
+int a,b;
+b=1;
+while( b < 12){
+print(b);
+draw circle:
+   x_position=12*b;
+  y_position=0;
+end
+
+print(b);
+b=b+1;
+}
+}
+}
+
+
+
+/*****************DIBUJANDO UNA FIGURAS CON WHILE*************************************/
+
+program {
+main(){
+int a,b;
+b=1;
+while( b < 12){
+print(b);
+draw square:
+   x_position=12*b;
+  y_position=0;
+  rotateRight=-4*b;
+ colorFigure="blue";
+end
+draw square:
+   x_position=12*b;
+  y_position=0;
+  rotateRight=4*b;
+ colorFigure="blue";
+end
+print(b);
+b=b+1;
+}
+}
+}
+
+
+/***********************EJEMPLO DE LA MAESTRA************************************/
+
+program {
+global int i, j;
+
+module  void uno(int a){
+int i;
+	i=a*2;
+	if(i < a+4){
+		uno(a+1);
+	}
+	print(i);
+}
+
+module int dos(int b){
+	b=b*i+j;
+	return (b*2);
+
+}
+
+main(){
+	i=2;
+	j=i*2-1;
+	uno(j);
+	print(i + dos(i+j));
+
+}
+
+
+}
+
+
+/*************************UN EJERCICIO HECHO EN CLASE************************************/
+
+program {
+global int i,j,k;
+global float x,y,z;
+
+module int uno(int j){
+	int k;
+	k=j*i;
+	print(k | j*3);
+	return (k+j);
+	
+}	
+
+
+module void dos(){
+	int j;
+	i=uno(j+k);
+	while( j >= k){
+		j=j-2;
+		print(i | uno(j));
+
+	}
+}
+
+main(){
+	k=5;
+	j=k+3;
+	i=j*k;
+	while(i >= k + j){
+		i=i-1;
+		if(k > j){
+			print(j+k);
+			dos();
+		}
+		else {	
+			dos();
+			print(k + i*j);
+		}
+	}
+print(k | j | i);
+}
+}
+
+/********************DIBUJANDO FIGURAS CON IF Y MODULOS**************************/
+program {
+module void drawFigure(int a){
+ 	if(a == 0){
+	draw circle :
+	 	 x_position =0;
+	  	 y_position =0;
+	 end
+	}	
+	if(a == 1){
+	draw star :
+	 	 x_position =0;
+	  	 y_position =0;
+		colorFigure="blue";
+	 end
+	}
+	if(a == 2){
+	draw square :
+	 	 x_position =0;
+	  	 y_position =0;
+		thick="DashLine";
+	 end
+	}
+	if(a == 3){
+	draw triangle :
+	 	 x_position =0;
+	  	 y_position =0;
+		colorThick="yellow";
+	 end
+	}
+}
+main(){
+drawFigure(4);
+}
+}
+}
+
+
+/********************HACIENDO UN DO-WHILE**********************************/
+
+program {
+global int i,j,k;
+global float x,y,z;
+
+
+
+main(){
+ do{
+print(z);
+if( x > y){
+print(x);
+}
+
+print(j);
+}
+while( x > y);
+}
+}
+
+/***********************USANDO RECURSIVIDAD*********************/
+
+program {
+module void cesar (int a){
+	print(a);
+	if(a > 0){
+		a=a-1;
+  		cesar(a);
+	}
+
+
+}
+
+main(){
+
+	cesar(5);
+}
+}
+
+
+/**************USANDO RETORNO***************************************/
+
+
+
+program {
+module int suma (int a , int b){
+	return a+b;
+}
+
+main(){
+	int x, y, total;
+	x=10; y=10;
+	total=suma( x, y );
+	print(total);
+}
+}
+
+***********************LLAMANDO DOS VECES EL RETURN**********************)
+
+program {
+module int suma(int x, int y){
+return x+y;
+}
+
+main(){
+int a,b, total;
+a=5; b=5;
+total=suma(a,b)+ suma(a,b);
+print(total);
+}
+}
+
+/*********************EJEMPLO DE DO Y WHILE*************************/
+
+
+program {
+main(){
+int a, b;
+a=0;
+while(a  < 480){
+b=1;
+    do{
+        draw square:
+             x_position=a;
+              rotateRight=b*10;
+        end
+      b=b+1;
+    } while( b < 40);
+a=a+120;
+}
+}
+}
+
+/**********UNA BONITA ESTRELLA DE COLORES************************/
+
+
+
+program {
+module void dibujarCirculoColor(int num){
+  if(num%5 == 0){
+      draw square:
+           colorFigure="red";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 1){
+      draw square:
+           colorFigure="blue";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 2){
+      draw square:
+           colorFigure="yellow";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 3){
+      draw square:
+           colorFigure="green";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 4){
+      draw square:
+           colorFigure="pink";
+          rotate= num*10;
+     end
+  }
+
+  if(num%5 == 5){
+      draw square:
+           colorFigure="yellow";
+          rotate= num*10;
+     end
+  }
+
+}
+main(){
+int a;
+a=1;
+while(a < 40){
+   dibujarCirculoColor(a);
+  a=a+1;
+}
+
+
+}
+}
+
+/***********************************************************/
