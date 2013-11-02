@@ -69,7 +69,7 @@ void Logo::on_compileButton_clicked()
 
 void Logo::compeling(){
     QString document=ui->textProgram->toPlainText();
-    QFile file("/home/ubuntu/Logo-master/in.pr");
+    QFile file("/home/ubuntu/Logo/in.pr");
     if (!file.open(QIODevice::WriteOnly))
         cout<<"no encontro el archivo";
     QTextStream out(&file);
@@ -77,7 +77,7 @@ void Logo::compeling(){
 }
 
 void Logo::setExamples(){
-    QFile in("/home/ubuntu/Logo-master/muchoejemplos.txt");
+    QFile in("/home/ubuntu/Logo/muchoejemplos.txt");
     if (!in.open(QFile::ReadOnly | QFile::Text))
         cout<<"no encontro el archivo";
     QTextStream ReadFile(&in);
@@ -85,14 +85,14 @@ void Logo::setExamples(){
 }
 
 void Logo::createMessage(){
-    system("/home/ubuntu/Logo-master/compile/run /home/ubuntu/Logo-master/in.pr > /home/ubuntu/Logo-master/message.txt");
+    system("/home/ubuntu/Logo/compile/run /home/ubuntu/Logo-master/in.pr > /home/ubuntu/Logo-master/message.txt");
 
 
 }
 
 
 void Logo::setMessage(){
-    QFile in("/home/ubuntu/Logo-master/message.txt");
+    QFile in("/home/ubuntu/Logo/message.txt");
     if (!in.open(QFile::ReadOnly | QFile::Text))
         cout<<"no encontro el archivo";
     QTextStream ReadFile(&in);
@@ -101,7 +101,7 @@ void Logo::setMessage(){
 }
 void Logo::clearMessage(){
     ui->textMessage->setText("");
-    QFile file("/home/ubuntu/Logo-master/message.txt");
+    QFile file("/home/ubuntu/Logo/message.txt");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         cout<<"no encontro el archivo";
     QTextStream out(&file);
@@ -186,57 +186,6 @@ bool Logo::atob(double a){
 }
 
 
-void Logo::MachineVirtual(){
-//int contador=0;
-
-    MemoriaLocales *memoria_locales;
-
-    memoria->salvarConstantes();
-
-    double re; QString doc, s1; //allocation
-    double value1, value2, temp, resul; int mod1, mod2, direccion; //expresiones
-    bool logica;
-    Input *read; //lectura
-    int seguir; //entero donde seguira la funcion
-
-    //donde se llena los cuadruplos
-    int program[1000][4];
-    int instr = 0;
-    string line;
-    ifstream myfile ("/home/ubuntu/Logo-master/Objecto.txt");
-    if (myfile.is_open())
-    {
-        while (getline(myfile,line))
-        {
-            int lon = line.find("$");
-            string operator_s = line.substr(0,lon);
-
-            line = line.substr(line.find("$")+1);
-            lon = line.find("$");
-            string operando_1s = line.substr(0,lon);
-
-            line = line.substr(line.find("$")+1);
-            lon = line.find("$");
-            string operando_2s = line.substr(0,lon);
-
-            line = line.substr(line.find("$")+1);
-            lon = line.find("$");
-            string resul_s = line.substr(0,lon);
-
-            int operator_i= atoi(operator_s.c_str());
-            int operando_1i= atoi(operando_1s.c_str());
-            int operando_2i= atoi(operando_2s.c_str());
-            int resul_i= atoi(resul_s.c_str());
-
-            program[instr][0]=operator_i;
-            program[instr][1]=operando_1i;
-            program[instr][2]=operando_2i;
-            program[instr][3]=resul_i;
-
-            instr++;
-        }
-        myfile.close();
-
 
 void Logo::MachineVirtual(){
 int contador=0;
@@ -247,12 +196,13 @@ int contador=0;
     bool logica;
     Input *read;//lectura
     int seguir; //entero donde seguira la funcion
+    MemoriaLocales *memoria_locales;
 
     int program[1000][4];
     int instr=0;
     string line;
     ifstream myfile ("/home/castillo/Logo/Objecto.txt");
-    MemoriaLocales *memoria_locales;
+
     if (myfile.is_open())
     {
       while ( getline (myfile,line) )
@@ -301,19 +251,6 @@ int contador=0;
     QPen colorThick(Qt::black);
 
     //en cuanto ejecuta MemoriaVirtual() se limpia la ventana principal
-    scene->clear();
-
-    int cont=0;
-    while(cont != 10000){
-        int instruccion = program[cont][0];
-
-        switch(instruccion){
-        //GOtoMain
-        case 0:
-            cont = program[cont][3];
-            break;
-        //plus "+"
-=======
         scene->clear();
 
         int cont=0;
@@ -321,7 +258,7 @@ int contador=0;
             int instruccion = program[cont][0];
 
             switch(instruccion){
- //GOtoMain
+        //GOtoMain
             case 0:
                 cont=program[cont][3];
                 break;
