@@ -256,8 +256,6 @@ void Logo::MachineVirtual(){
         while(cont != 10000){
             int instruccion = program[cont][0];
 
-            cout<<instruccion<<" la instruccion"<<"\n";
-
             switch(instruccion){
         //GOtoMain
             case 0:
