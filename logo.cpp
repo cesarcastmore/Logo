@@ -204,42 +204,39 @@ void Logo::MachineVirtual(){
     ifstream myfile ("/home/ubuntu/Logo-master/Objecto.txt");
     if (myfile.is_open())
     {
-      while ( getline (myfile,line) )
-      {
-          int lon = line.find("$");
-          string operator_s = line.substr(0,lon);
+        while (getline(myfile,line))
+        {
+            int lon = line.find("$");
+            string operator_s = line.substr(0,lon);
 
-          line=line.substr(line.find("$")+1);
-          lon=line.find("$");
-          string operando_1s = line.substr(0,lon);
+            line = line.substr(line.find("$")+1);
+            lon = line.find("$");
+            string operando_1s = line.substr(0,lon);
 
-          line=line.substr(line.find("$")+1);
-          lon=line.find("$");
-          string operando_2s = line.substr(0,lon);
+            line = line.substr(line.find("$")+1);
+            lon = line.find("$");
+            string operando_2s = line.substr(0,lon);
 
-          line=line.substr(line.find("$")+1);
-          lon=line.find("$");
-          string resul_s = line.substr(0,lon);
+            line = line.substr(line.find("$")+1);
+            lon = line.find("$");
+            string resul_s = line.substr(0,lon);
 
-          int operator_i= atoi(operator_s.c_str());
-          int operando_1i= atoi(operando_1s.c_str());
-          int operando_2i= atoi(operando_2s.c_str());
-          int resul_i= atoi(resul_s.c_str());
+            int operator_i= atoi(operator_s.c_str());
+            int operando_1i= atoi(operando_1s.c_str());
+            int operando_2i= atoi(operando_2s.c_str());
+            int resul_i= atoi(resul_s.c_str());
 
-          program[instr][0]=operator_i;
-          program[instr][1]=operando_1i;
-          program[instr][2]=operando_2i;
-          program[instr][3]=resul_i;
+            program[instr][0]=operator_i;
+            program[instr][1]=operando_1i;
+            program[instr][2]=operando_2i;
+            program[instr][3]=resul_i;
 
-          instr++;
-
-
-      }
-      myfile.close();
+            instr++;
+        }
+        myfile.close();
     }
 
     else cout << "Unable to open file";
-
 
     //initializa atributos
     int x_position=0;
@@ -251,18 +248,18 @@ void Logo::MachineVirtual(){
     QPen colorThick(Qt::black);
 
     //en cuanto ejecuta MemoriaVirtual() se limpia la ventana principal
-        scene->clear();
+    scene->clear();
 
-        int cont=0;
-        while(cont != 10000){
-            int instruccion = program[cont][0];
+    int cont=0;
+    while(cont != 10000){
+        int instruccion = program[cont][0];
 
-            switch(instruccion){
-            //GOtoMain
-            case 0:
-                cont=program[cont][3];
-                break;
-            //plus "+"
+        switch(instruccion){
+        //GOtoMain
+        case 0:
+            cont = program[cont][3];
+            break;
+        //plus "+"
             case 1:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -289,7 +286,7 @@ void Logo::MachineVirtual(){
                 memoria->save(temp,resul);
                 cont++;
                 break;
-            //divide
+            //divide "/"
             case 4:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -298,7 +295,7 @@ void Logo::MachineVirtual(){
                 memoria->save(temp,resul);
                 cont++;
                 break;
-            //module
+            //module "%"
             case 5:;
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -327,7 +324,7 @@ void Logo::MachineVirtual(){
                 memoria->save(temp,logica);
                 cont++;
                 break;
-            //greater than
+            //greater than ">"
             case 8:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -336,7 +333,7 @@ void Logo::MachineVirtual(){
                 memoria->save(temp,logica);
                 cont++;
                 break;
-            //less than
+            //less than "<"
             case 9:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -345,7 +342,7 @@ void Logo::MachineVirtual(){
                 memoria->save(temp,logica);
                 cont++;
                 break;
-            //greater or equal than
+            //greater or equal than ">="
             case 10:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -354,7 +351,7 @@ void Logo::MachineVirtual(){
                 memoria->save(temp,logica);
                 cont++;
                 break;
-            //less or equal than
+            //less or equal than "<="
             case 11:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -437,31 +434,31 @@ void Logo::MachineVirtual(){
                 memoria->save(direccion, value1);
                 cont++;
                 break;
-            //assig
+            //assig, asigna el valor del retorno del subproceso correspondiente a una temporal
             case 22:
                 value1=memoria->get(program[cont][1]);
                 direccion=program[cont][3];
                 memoria->save(direccion, value1);
                 cont++;
                 break;
-            //RET
+            //RET, sale del subproceso
             case 23:
                 memoria->despertarMemoria();
                 cont=memoria->memoriaActual->instruccion;
                 break;
-            //ERA
+            //ERA, crea memoria
             case 24:
                 memoria_locales=new MemoriaLocales();
                 //memoria_locales->direccionFuncion=program[cont][1];
                 cont++;
                 break;
-            //PARA
+            //PARA, parametros para funciones que loss requieran
             case 25:
                 value1=memoria->get(program[cont][1]);
                 memoria_locales->save(program[cont][3]-18000,value1);
                 cont++;
                 break;
-            //GOTOSUB
+            //GOTOSUB, va al subproceso
             case 26:
                 seguir = cont+1;
                 memoria->memoriaActual->instruccion=seguir;
@@ -571,7 +568,7 @@ void Logo::MachineVirtual(){
                 }
                 cont++;
                 break;
-            //colorFIgure
+            //colorFigure
             case 38:
                 switch(program[cont][1]){
                 case 1:
