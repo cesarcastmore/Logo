@@ -1,33 +1,3 @@
-<<<<<<< HEAD
-program {
-global int i, j;
-
-module  void uno(int a){
-int i;
-	i=a*2;
-	if(i < a+4){
-		uno(a+1);
-	}
-	print(i);
-}
-
-module int dos(int b){
-	b=b*i+j;
-	return (b*2);
-
-}
-
-main(){
-	i=2;
-	j=i*2-1;
-	uno(j);
-	print(i + dos(i+j));
-
-}
-
-
-=======
-
 program {
 module void dibujarCirculoColor(int num){
   if(num%5 == 0){
@@ -83,5 +53,4 @@ while(a < 40){
 
 
 }
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
 }

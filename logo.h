@@ -49,7 +49,7 @@ private:
     void MachineVirtual();
     void saveRead(int dir, double value);
     void setExamples();
-    void dibujaFigura(int figura, int x, int y,  int rotate, int scale, QBrush &colorFig, QPen &colorThi);D
+    void dibujaFigura(int figura, int x, int y,  int rotate, int scale, QBrush &colorFig, QPen &colorThi);
     bool atob(double a);
 
 };

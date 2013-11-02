@@ -1096,7 +1096,6 @@ void Action::createObject(){
     myfile.close();
   }
   else wcout<<"cannot open the file\n";
-  D
   ofstream file ("/home/ubuntu/Logo/Constantes.txt");
   if (file.is_open())
   {

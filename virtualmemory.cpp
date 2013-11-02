@@ -172,7 +172,7 @@ void Memoria::save(int direccion, bool value){
 
 void Memoria::salvarConstantes(){
 	string line;
-    ifstream myfile ("/home/ubuntu/Logo-master/Constantes.txt");
+    ifstream myfile ("/home/ubuntu/Logo/Constantes.txt");
 
     if (myfile.is_open())
     {

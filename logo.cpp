@@ -188,7 +188,6 @@ bool Logo::atob(double a){
 
 
 void Logo::MachineVirtual(){
-int contador=0;
     memoria->salvarConstantes();
 
     double re;QString doc, s1;//allocation
@@ -201,7 +200,7 @@ int contador=0;
     int program[1000][4];
     int instr=0;
     string line;
-    ifstream myfile ("/home/castillo/Logo/Objecto.txt");
+    ifstream myfile ("/home/ubuntu/Logo/Objecto.txt");
 
     if (myfile.is_open())
     {
@@ -257,6 +256,8 @@ int contador=0;
         while(cont != 10000){
             int instruccion = program[cont][0];
 
+            cout<<instruccion<<" la instruccion"<<"\n";
+
             switch(instruccion){
         //GOtoMain
             case 0:
@@ -271,9 +272,7 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-                
             //minus "-"
-            
             case 2:;
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -300,9 +299,7 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-                
             //module "%"
-            
             case 5:;
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -313,9 +310,7 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-                
             //equal "=="
-            
             case 6:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -324,9 +319,7 @@ int contador=0;
                 memoria->save(temp,logica);
                 cont++;
                 break;
-                
             //no equal "!="
-            
             case 7:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -539,7 +532,7 @@ int contador=0;
 
             }
                 cont++;
-                break;D
+                break;
                //colorThick
             case 37:
                 switch(program[cont][1]){
