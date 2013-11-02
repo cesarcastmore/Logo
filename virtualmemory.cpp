@@ -78,19 +78,12 @@ void ListaInstancias::mostrarInstancias(){
 MemoriaLocales::MemoriaLocales(){
 	locales = new ListaInstancias();
 	temporales = new ListaInstancias();
-<<<<<<< HEAD
     instruccion=0; //bandera en caso de dormir memoria
     direccionFuncion=0;
 }
 
 //6000 --> 7999 son enteras, 8000 --> 9999 son flotantes, 10000 --> 11999 son booleanas
 //6000 --> 11999 son locales, 12000 --> 17999 son temporales
-=======
-    instruccion=0;
-    direccionFuncion=0;
-}
-
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
 void MemoriaLocales::save(int direccion, double value){
     if(6000 <= direccion and direccion < 12000 ){
 	locales->save(direccion, value);
@@ -137,11 +130,9 @@ Memoria::Memoria(){
 	funciones = new ListaInstancias();
 }	
 
-<<<<<<< HEAD
+
 //0 --> 5999 son globales, 18000 --> 23999 son constantes, 30000 --> 31999 son funciones
 
-=======
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
 void Memoria::save(int direccion, double value){
 	if(0 <= direccion and direccion < 6000){
 		globales->save(direccion, value);
@@ -181,11 +172,8 @@ void Memoria::save(int direccion, bool value){
 
 void Memoria::salvarConstantes(){
 	string line;
-<<<<<<< HEAD
     ifstream myfile ("/home/ubuntu/Logo-master/Constantes.txt");
-=======
-    ifstream myfile ("/home/castillo/Logo/Constantes.txt");
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
+
     if (myfile.is_open())
     {
       while ( getline (myfile,line) )
