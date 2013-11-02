@@ -85,7 +85,7 @@ void Logo::setExamples(){
 }
 
 void Logo::createMessage(){
-    system("/home/ubuntu/Logo/compile/run /home/ubuntu/Logo-master/in.pr > /home/ubuntu/Logo-master/message.txt");
+    system("/home/ubuntu/Logo/compile/run /home/ubuntu/Logo/in.pr > /home/ubuntu/Logo/message.txt");
 
 
 }
