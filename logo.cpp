@@ -76,6 +76,7 @@ void Logo::compeling(){
     out<<document;
 }
 
+//esta funcion es para colocar ejemplos en el tab de examples, los ejemplos estan en un archivo
 void Logo::setExamples(){
     QFile in("/home/ubuntu/Logo/muchoejemplos.txt");
     if (!in.open(QFile::ReadOnly | QFile::Text))
@@ -84,6 +85,7 @@ void Logo::setExamples(){
     ui->examplesText->setText(ReadFile.readAll());
 }
 
+//ejecuta desde comando nuestro compilador y lo manda a un archivo que contiene errores o si la funcion fue exitosa
 void Logo::createMessage(){
     system("/home/ubuntu/Logo/compile/run /home/ubuntu/Logo/in.pr > /home/ubuntu/Logo/message.txt");
 
@@ -91,6 +93,7 @@ void Logo::createMessage(){
 }
 
 
+//abre el archivo message.txt y coloca los mensajes de error, print o compilacion exitosa en el tab de messages
 void Logo::setMessage(){
     QFile in("/home/ubuntu/Logo/message.txt");
     if (!in.open(QFile::ReadOnly | QFile::Text))
@@ -99,6 +102,8 @@ void Logo::setMessage(){
     ui->textMessage->setText(ReadFile.readAll());
 
 }
+
+//Limpia el contenido del tab messages
 void Logo::clearMessage(){
     ui->textMessage->setText("");
     QFile file("/home/ubuntu/Logo/message.txt");
@@ -108,6 +113,7 @@ void Logo::clearMessage(){
     out <<"";
 }
 
+//esta funcion de ejecuta cuando se le hace click a boton run
 void Logo::on_runButton_clicked()
 {
    MachineVirtual();
@@ -115,7 +121,7 @@ void Logo::on_runButton_clicked()
 
 
 
-
+//dibuja las figuras dependiendo de los parametros que se le den, es usada en la maquina virtual
 void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush &colorFig,   QPen &colorThi){
     switch(figura){
     case 31:
