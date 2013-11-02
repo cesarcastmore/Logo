@@ -69,11 +69,7 @@ void Logo::on_compileButton_clicked()
 
 void Logo::compeling(){
     QString document=ui->textProgram->toPlainText();
-<<<<<<< HEAD
     QFile file("/home/ubuntu/Logo-master/in.pr");
-=======
-    QFile file("/home/castillo/Logo/in.pr");
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
     if (!file.open(QIODevice::WriteOnly))
         cout<<"no encontro el archivo";
     QTextStream out(&file);
@@ -81,11 +77,7 @@ void Logo::compeling(){
 }
 
 void Logo::setExamples(){
-<<<<<<< HEAD
     QFile in("/home/ubuntu/Logo-master/muchoejemplos.txt");
-=======
-    QFile in("/home/castillo/Logo/muchoejemplos.txt");
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
     if (!in.open(QFile::ReadOnly | QFile::Text))
         cout<<"no encontro el archivo";
     QTextStream ReadFile(&in);
@@ -93,21 +85,14 @@ void Logo::setExamples(){
 }
 
 void Logo::createMessage(){
-<<<<<<< HEAD
     system("/home/ubuntu/Logo-master/compile/run /home/ubuntu/Logo-master/in.pr > /home/ubuntu/Logo-master/message.txt");
-=======
-    system("/home/castillo/Logo/compile/run /home/castillo/Logo/in.pr > /home/castillo/Logo/message.txt");
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
+
 
 }
 
 
 void Logo::setMessage(){
-<<<<<<< HEAD
     QFile in("/home/ubuntu/Logo-master/message.txt");
-=======
-    QFile in("/home/castillo/Logo/message.txt");
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
     if (!in.open(QFile::ReadOnly | QFile::Text))
         cout<<"no encontro el archivo";
     QTextStream ReadFile(&in);
@@ -116,11 +101,7 @@ void Logo::setMessage(){
 }
 void Logo::clearMessage(){
     ui->textMessage->setText("");
-<<<<<<< HEAD
     QFile file("/home/ubuntu/Logo-master/message.txt");
-=======
-    QFile file("/home/castillo/Logo/compile/message.txt");
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         cout<<"no encontro el archivo";
     QTextStream out(&file);
@@ -195,7 +176,7 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush 
 
 }
 
-<<<<<<< HEAD
+
 bool Logo::atob(double a){
     if(a >= 1.0){
         return true;
@@ -255,7 +236,7 @@ void Logo::MachineVirtual(){
             instr++;
         }
         myfile.close();
-=======
+
 
 void Logo::MachineVirtual(){
 int contador=0;
@@ -306,17 +287,11 @@ int contador=0;
 
       }
       myfile.close();
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
     }
 
     else cout << "Unable to open file";
 
-<<<<<<< HEAD
     //initializa atributos
-=======
-
-        //initializa atributos
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
     int x_position=0;
     int y_position=0;
     int rotate=0;
@@ -325,7 +300,6 @@ int contador=0;
     QBrush colorFigure(Qt::yellow);
     QPen colorThick(Qt::black);
 
-<<<<<<< HEAD
     //en cuanto ejecuta MemoriaVirtual() se limpia la ventana principal
     scene->clear();
 
@@ -352,7 +326,6 @@ int contador=0;
                 cont=program[cont][3];
                 break;
             //plus
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 1:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -361,11 +334,9 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-<<<<<<< HEAD
+                
             //minus "-"
-=======
-            //minus
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
+            
             case 2:;
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -374,11 +345,7 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-<<<<<<< HEAD
             //multiply "*"
-=======
-            //multiply
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 3:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -387,11 +354,7 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-<<<<<<< HEAD
             //divide "/"
-=======
-            //divide
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 4:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -400,11 +363,9 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-<<<<<<< HEAD
+                
             //module "%"
-=======
-            //module
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
+            
             case 5:;
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -415,11 +376,9 @@ int contador=0;
                 memoria->save(temp,resul);
                 cont++;
                 break;
-<<<<<<< HEAD
+                
             //equal "=="
-=======
-            //equal
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
+            
             case 6:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -428,11 +387,9 @@ int contador=0;
                 memoria->save(temp,logica);
                 cont++;
                 break;
-<<<<<<< HEAD
+                
             //no equal "!="
-=======
-            //no equal
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
+            
             case 7:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -441,11 +398,7 @@ int contador=0;
                 memoria->save(temp,logica);
                 cont++;
                 break;
-<<<<<<< HEAD
             //greater than ">"
-=======
-            //greater than
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 8:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -454,11 +407,7 @@ int contador=0;
                 memoria->save(temp,logica);
                 cont++;
                 break;
-<<<<<<< HEAD
             //less than "<"
-=======
-            //less than
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 9:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -467,11 +416,7 @@ int contador=0;
                 memoria->save(temp,logica);
                 cont++;
                 break;
-<<<<<<< HEAD
             //greater or equal than ">="
-=======
-            //greater or equal than
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 10:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -480,11 +425,7 @@ int contador=0;
                 memoria->save(temp,logica);
                 cont++;
                 break;
-<<<<<<< HEAD
             //less or equal than "<="
-=======
-            //less or equal than
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 11:
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
@@ -495,19 +436,15 @@ int contador=0;
                 break;
             //and
             case 12:
-<<<<<<< HEAD
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
                 logica=(atob(value1) && atob(value2));
                 memoria->save(temp,logica);
-=======
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
                 cont++;
                 break;
             //or
             case 13:
-<<<<<<< HEAD
                 value1=memoria->get(program[cont][1]);
                 value2=memoria->get(program[cont][2]);
                 temp=program[cont][3];
@@ -516,11 +453,6 @@ int contador=0;
                 cont++;
                 break;
             //allocation "="
-=======
-                cont++;
-                break;
-            //allocation
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 14:
                 value1= memoria->get(program[cont][1]);
                 direccion=program[cont][3];
@@ -535,11 +467,7 @@ int contador=0;
                 delete read;
                 cont++;
                 break;
-<<<<<<< HEAD
             //print
-=======
-            //write
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 16:
                re=memoria->get(program[cont][1]);
                doc=ui->textMessage->toPlainText();
@@ -556,7 +484,6 @@ int contador=0;
                 else
                     cont++;
                 break;
-<<<<<<< HEAD
            //gotoFin en caso de IF ELSE y no entre al ELSE
             case 18:
                  cont=program[cont][3];
@@ -566,17 +493,6 @@ int contador=0;
                 cont=program[cont][3];
                 break;
             //GotoTrue tambien en case de DO WHILE
-=======
-           //gotoFin
-            case 18:
-                 cont=program[cont][3];
-                break;
-           //gotoRetorno
-            case 19:
-                cont=program[cont][3];
-                break;
-            //GotoTrue
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 20:
                 value1=memoria->get(program[cont][1]);
                 value2=1;
@@ -592,27 +508,18 @@ int contador=0;
                 memoria->save(direccion, value1);
                 cont++;
                 break;
-<<<<<<< HEAD
             //assig, asigna el valor del retorno del subproceso correspondiente a una temporal
-=======
-            //assig
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 22:
                 value1=memoria->get(program[cont][1]);
                 direccion=program[cont][3];
                 memoria->save(direccion, value1);
                 cont++;
                 break;
-<<<<<<< HEAD
             //RET, sale del subproceso
-=======
-            //RET
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 23:
                 memoria->despertarMemoria();
                 cont=memoria->memoriaActual->instruccion;
                 break;
-<<<<<<< HEAD
             //ERA, crea memoria
             case 24:
                 memoria_locales=new MemoriaLocales();
@@ -620,25 +527,12 @@ int contador=0;
                 cont++;
                 break;
             //PARA, parametros para funciones que loss requieran
-=======
-            //ERA
-            case 24:
-                memoria_locales=new MemoriaLocales();
-                memoria_locales->direccionFuncion=program[cont][1];
-                cont++;
-                break;
-            //PARA
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 25:
                 value1=memoria->get(program[cont][1]);
                 memoria_locales->save(program[cont][3]-18000,value1);
                 cont++;
                 break;
-<<<<<<< HEAD
             //GOTOSUB, va al subproceso
-=======
-            //GOTOSUB
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 26:
                 seguir = cont+1;
                 memoria->memoriaActual->instruccion=seguir;
@@ -646,12 +540,8 @@ int contador=0;
                 memoria->colocarMemoria(memoria_locales);
                 cont=program[cont][1];
                 break;
-<<<<<<< HEAD
             //ESTA CASE VA SER PARA INICIALIZAR LA FIGURA Y COLCARLA EN EL SCENE
             //DRAW
-=======
-//ESTA CASE VA SER PARA INICIALIZAR LA FIGURA Y COLCARLA EN EL SCENE
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 30:
                 x_position=0;
                 y_position=0;
@@ -661,49 +551,28 @@ int contador=0;
                 colorThick.setColor(Qt::black);
                 cont++;
                 break;
-<<<<<<< HEAD
             //A PARTIR DE AQUI SE CAMBIAN LOS ATRIBUTOS DEPENDIENTE DE LOS QUE SE HAYA SALECCIONADO
             //x_position
-=======
- //A PARTIR DE AQUI SE CAMBIAN LOS ATRIBUTOS DEPENDIENTE DE LOS QUE SE HAYA SALECCIONADO
-//x_position
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 31:
                 x_position=(int)memoria->get(program[cont][1]);
                 cont++;
                 break;
-<<<<<<< HEAD
             //y_position
-=======
-//y_position
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 32:
                 y_position=(int)memoria->get(program[cont][1]);
                 cont++;
                 break;
-<<<<<<< HEAD
             //rotate, antes rotateRight
-=======
-//rotateRight
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 33:
                 rotate=(int)memoria->get(program[cont][1]);
                  cont++;
                 break;
-<<<<<<< HEAD
             //rotateLeft -- ATENCION NO SIRVE
-=======
-//rotateLeft
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 34:
                 //rotateLeft=(int)memoria->get(program[cont][1]);
                 cont++;
                 break;
-<<<<<<< HEAD
             //size
-=======
-//size
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 35:
                 switch(program[cont][1]){
                 case 1:
@@ -718,11 +587,7 @@ int contador=0;
                 }
                 cont++;
                 break;
-<<<<<<< HEAD
             //thick
-=======
-//thick
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 36:
                  switch(program[cont][1]){
                  case 1:
@@ -737,12 +602,8 @@ int contador=0;
 
             }
                 cont++;
-                break;
-<<<<<<< HEAD
+                break;D
                //colorThick
-=======
-//colorThick
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 37:
                 switch(program[cont][1]){
                 case 1:
@@ -755,17 +616,10 @@ int contador=0;
                     colorThick.setColor(Qt::red);
                     break;
                 case 4:
-<<<<<<< HEAD
                     colorThick.setColor(QColor("#ff69b4")); //pink
                     break;
                 case 5:
                     colorThick.setColor(QColor("#8b4513")); //brown
-=======
-                    colorThick.setColor(QColor("#ff69b4"));
-                    break;
-                case 5:
-                    colorThick.setColor(QColor("#8b4513"));
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
                     break;
                 case 6:
                     colorThick.setColor(Qt::black);
@@ -780,26 +634,15 @@ int contador=0;
                     colorThick.setColor(Qt::gray);
                     break;
                 case 10:
-<<<<<<< HEAD
                     colorThick.setColor(QColor("#ffa500")); //orange
                     break;
                 case 11:
                     colorThick.setColor(QColor("#a020f0")); //purple
-=======
-                    colorThick.setColor(QColor("#ffa500"));
-                    break;
-                case 11:
-                    colorThick.setColor(QColor("#a020f0"));
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
                     break;
                 }
                 cont++;
                 break;
-<<<<<<< HEAD
             //colorFigure
-=======
- //colorFIgure
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 38:
                 switch(program[cont][1]){
                 case 1:
@@ -812,17 +655,10 @@ int contador=0;
                     colorFigure.setColor(Qt::red);
                     break;
                 case 4:
-<<<<<<< HEAD
                     colorFigure.setColor(QColor("#ff69b4")); //pink
                     break;
                 case 5:
                     colorFigure.setColor(QColor("#8b4513")); //brown
-=======
-                    colorFigure.setColor(QColor("#ff69b4"));
-                    break;
-                case 5:
-                    colorFigure.setColor(QColor("#8b4513"));
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
                     break;
                 case 6:
                     colorFigure.setColor(Qt::black);
@@ -837,27 +673,16 @@ int contador=0;
                     colorFigure.setColor(Qt::gray);
                     break;
                 case 10:
-<<<<<<< HEAD
                     colorFigure.setColor(QColor("#ffa500")); //orange
                     break;
                 case 11:
                     colorFigure.setColor(QColor("#a020f0")); //purple
-=======
-                    colorFigure.setColor(QColor("#ffa500"));
-                    break;
-                case 11:
-                    colorFigure.setColor(QColor("#a020f0"));
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
                     break;
                 }
                 cont++;
                 break;
-<<<<<<< HEAD
             //END
             //finalmente se dibujan las figuras en la ventana
-=======
-//END
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
             case 50:
                 switch(program[cont][1]){
                 case 41:
@@ -892,20 +717,12 @@ int contador=0;
             case 99:
                 cont=10000;
                 break;
-<<<<<<< HEAD
             default:
-=======
-             default:
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
                 cont++;
                 break;
 
             }
-<<<<<<< HEAD
             //contador++;
-=======
-            contador++;
->>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
         }
 
 }
