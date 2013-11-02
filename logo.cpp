@@ -188,6 +188,7 @@ void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush 
 }
 
 
+//hace una conversion de double a boolean para hacer comparaciones
 bool Logo::atob(double a){
     if(a >= 1.0){
         return true;
