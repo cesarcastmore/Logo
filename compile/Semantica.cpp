@@ -1086,7 +1086,11 @@ void Action::endProgram(){
 }
 
 void Action::createObject(){
+<<<<<<< HEAD
 	ofstream myfile ("/home/ubuntu/Logo-master/Objecto.txt");
+=======
+	ofstream myfile ("/home/castillo/Logo/Objecto.txt");
+>>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
   if (myfile.is_open())
   {
 	for (std::map<int , Cuadruplo* >::iterator it=record.begin(); it!=record.end(); ++it){
@@ -1096,7 +1100,11 @@ void Action::createObject(){
   }
   else wcout<<"cannot open the file\n";
   
+<<<<<<< HEAD
   ofstream file ("/home/ubuntu/Logo-master/Constantes.txt");
+=======
+  ofstream file ("/home/castillo/Logo/Constantes.txt");
+>>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
   if (file.is_open())
   {
 	for (std::map<int , double >::iterator it=contantes.begin(); it!=contantes.end(); ++it){

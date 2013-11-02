@@ -53,7 +53,11 @@ PROGRAMA =
  BLOQUE '}'			       (. /*action->fun->showStack();*/
 					action->endProgram();
 					action->tab->removeAllLocals();
+<<<<<<< HEAD
 					action->showCuadruplo();
+=======
+					/*action->showCuadruplo();*/
+>>>>>>> 82b17707f2aee85209224db4403e72be6eb179f1
 				
 					action->createObject();.)
 .
