@@ -9,6 +9,7 @@
 
 using namespace std;
 
+//es un objecto que sera usado como instancia donde guardara direccion y valor
 Instancia::Instancia(){
 	direccion=0;
 	valor=0;
