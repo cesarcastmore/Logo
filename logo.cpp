@@ -46,10 +46,12 @@ Logo::~Logo()
     delete ui;
 }
 
+//Esta funcion es para abrir un ventana emergente, es tulizado como un read en la maquina virtual
 void Logo::saveRead(int dir, double value){
    memoria->save(dir, value);
 }
 
+//limpia la ventana cuando se le hace click a boton clear 
 void Logo::on_clearButton_clicked()
 {
 
@@ -57,6 +59,7 @@ void Logo::on_clearButton_clicked()
 
 }
 
+//compila el codigo cuando se le hace click a boton compile
 void Logo::on_compileButton_clicked()
 {
     compeling();
@@ -67,6 +70,8 @@ void Logo::on_compileButton_clicked()
 
 }
 
+
+//todos lo escrito en el text lo convierte en un archivo
 void Logo::compeling(){
     QString document=ui->textProgram->toPlainText();
     QFile file("/home/ubuntu/Logo/in.pr");
