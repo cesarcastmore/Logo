@@ -338,4 +338,17 @@ while(a < 40){
 }
 }
 
-/***********************************************************/
+/*********************UNA LINEA*********************/
+program {
+main(){
+draw line:
+  x_position=0;
+  y_position=0;
+  sizeX=100;
+  sizeY=100;
+  colorThick="red";
+end
+}
+}
+
+

@@ -30,6 +30,8 @@ private:
     QGraphicsScene *scene;
     QGraphicsEllipseItem * ellipse;
     QGraphicsRectItem *rectangle;
+    QGraphicsLineItem *dot;
+    QGraphicsLineItem *line;
     QPolygonF polytri;
     QGraphicsItem *triangle;
     QPolygonF polypenta;
@@ -49,7 +51,7 @@ private:
     void MachineVirtual();
     void saveRead(int dir, double value);
     void setExamples();
-    void dibujaFigura(int figura, int x, int y,  int rotate, int scale, QBrush &colorFig, QPen &colorThi);
+    void dibujaFigura(int figura, int x, int y,  int rotate, int scale, QBrush &colorFig, QPen &colorThi, int sizex, int sizey);
     bool atob(double a);
 
 };

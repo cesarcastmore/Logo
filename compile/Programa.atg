@@ -263,7 +263,8 @@ ATRIBUTO_ENTERO = 				(. int attribute; .)
 ( "x_position" 					(. attribute=31;.)
 | "y_position" 					(. attribute=32;.)
 | "rotate" 				(. attribute=33;.)
-| "rotateLeft" 					(. attribute=34;.)
+| "sizeX" 					(. attribute=61;.)
+| "sizeY"					(. attribute=62;.)
 ) 				
 '=' EXP						(. action->addAtributeInt(attribute);.).			
 /*------------------------------------------------------------------------------------------------*/

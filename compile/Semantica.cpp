@@ -108,14 +108,14 @@ Variable* TablaVariables::find(const wchar_t* n){
 
 
 void TablaVariables::displayLocals(){
-  wcout << "tabla local contains:\n";
+  wcout << "Local Variables Table contains:\n";
   for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it)
     wcout << it->first << " => " << it->second->type << "--" << it->second->slope <<"---direction--"<<it->second->dir->direction<<'\n';
 }
 
 
 void TablaVariables::displayGlobals(){
-  cout << "tabla global contains:\n";
+  cout << "Global Variables Table contains:\n";
   for (std::map<std::wstring , Variable* >::iterator it=tablaGlobals.begin(); it!=tablaGlobals.end(); ++it){
     wcout << it->first << " => type " << it->second->type << "-- function" << it->second->slope <<'\n';
 	}
@@ -175,10 +175,10 @@ StackParameter* StackParameter::invert(){
 
 
 void StackParameter::showStack(){
-	wcout<<"\tla pila contiene StackParameter\n";
+	wcout<<"\tThe stack contains StackParameter\n";
 	Parameter *par=actual;
 	while(par->next != NULL){
-		wcout<<"\tel type es "<< par->type<<"\n";
+		wcout<<"\tthe type is "<< par->type<<"\n";
 		par=par->next;
 	} 
 }
@@ -237,14 +237,14 @@ Function* StackFunction::find(const wchar_t* n){
 	}
 
 void StackFunction::showStack(){
-	wcout<<"la pila contiene StackFunction\n";
+	wcout<<"The Stack contains StackFunction\n";
 	Function *fun=actual;
 	while(fun->next != NULL){
-		wcout<<"el name es "<< fun->name<<"\n";
-		wcout<<"el type es "<< fun->type<<"\n";
-		wcout<<"el varLoc es "<< fun->varLoc<<"\n";;
-		wcout<<"el begin es "<< fun->begin<<"\n";
-		wcout<<"el parametro es "<< fun->parametro<<"\n";
+		wcout<<"the name is "<< fun->name<<"\n";
+		wcout<<"the type is "<< fun->type<<"\n";
+		wcout<<"the varLoc is "<< fun->varLoc<<"\n";;
+		wcout<<"the begin is "<< fun->begin<<"\n";
+		wcout<<"the parameter is "<< fun->parametro<<"\n";
 		fun->par->showStack();
 		fun=fun->next;
 	} 
@@ -317,10 +317,10 @@ int StackDirection::getType2(){
 }
 	
 void StackDirection::showStack(){
-	wcout<<"la pila contiene StackDirection\n";
+	wcout<<"The Stack contains StackDirection\n";
 	Direction *dis=actual;
 	while(dis != NULL){
-		wcout<<"el valor es "<< dis->direction;
+		wcout<<"the value is "<< dis->direction;
 		wcout<<"----"<< dis->type<<"\n";
 		dis=dis->next;
 	} 
@@ -383,10 +383,10 @@ void StackOperator::popFake(){
 }
 
 void StackOperator::showStack(){
-	wcout<<"la pila contiene  StackOperator\n";
+	wcout<<"The Stack contains StackOperator\n";
 	Operator *op=actual;
 	while(op != NULL){
-		wcout<<"el valor es "<< op->oper<<"\n";
+		wcout<<"the value is "<< op->oper<<"\n";
 		op=op->next;
 	} 	
 }
@@ -433,10 +433,10 @@ Leap* StackLeap::get(){
 
 /*
 void StackLeap::showLeap(){
-	wcout<<"la pila contiene  StackLeap\n";
+	wcout<<"The Stack contains StackLeap\n";
 	 Leap *leap=actual;
 	while(leap != NULL){
-		wcout<<"el valor es "<< leap->leaps<<"\n";
+		wcout<<"the value is "<< leap->leaps<<"\n";
 		leap=leap->next;
 	} 	
 }	*/
@@ -546,8 +546,6 @@ Direction* Memory::save(int partition, int type, double value){
 		func++;
 		return new_dir;
 	}
-	
-	
 	return new Direction(-1, 0);
 }
 
@@ -762,7 +760,7 @@ void Action::createCuadroOpe(){
 		dir->push(temp);
 	}
 	else{
-		wcout<<"incompatible types\n";
+		wcout<<"Error: Types do not match...\n";
 	}
 }
 
@@ -832,7 +830,7 @@ void  Action::createGotoFalseCond(){
 		cont++;
 	}
 	else 
-	wcout<<"The expresion was waiting a boolean\n";
+	wcout<<"The expression was waiting a boolean value\n";
 	
 }
 
@@ -877,7 +875,7 @@ void Action::createGotoFalWhile(){
 		cont++;
 	}
 	else 
-	wcout<<"The expresion was waiting a boolean\n";
+	wcout<<"The expression was waiting a boolean value\n";
 }
 
 void Action::createEndWhile(){
@@ -921,7 +919,7 @@ void Action::createCuadrAlloca(){
 		cont++;
 	}
 	else{
-		wcout<<"Allocation failure: incompatible types\n";
+		wcout<<"Allocation failure: types do not match\n";
 	}
 	
 }
@@ -978,7 +976,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value,"\"bigger\"") == 0)
 			value_i=3;
 		else
-			wcout<<"The value"<<value<<" was not find\n";
+			wcout<<"The value "<<value<<" was not found\n";
 		
 	}
 	else if(attribute == 36){
@@ -990,7 +988,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value, "\"DotLine\"") == 0)
 			value_i=3;
 		else
-			wcout<<"The value"<<value<<" was not find\n";
+			wcout<<"The value "<<value<<" was not found\n";
 	}
 	else if(attribute == 37){
 		if(strcmp(value,"\"blue\"") == 0)
@@ -1016,7 +1014,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value,"\"purple\"") == 0)
 			value_i=11;
 		else 
-			wcout<<"The value"<<value<<" was not find\n";
+			wcout<<"The value "<<value<<" was not found\n";
 	}
 	else if(attribute == 38){
 		if(strcmp(value, "\"blue\"") == 0)
@@ -1042,7 +1040,7 @@ void Action::addAtributeString(int attribute, const wchar_t* n){
 		else if(strcmp(value,"\"purple\"") == 0)
 			value_i=11;
 		else 
-			wcout<<"The value"<<value<<" was not find\n";
+			wcout<<"The value "<<value<<" was not found\n";
 	}
 	
 	Cuadruplo *draw;
@@ -1086,16 +1084,15 @@ void Action::endProgram(){
 }
 
 void Action::createObject(){
-	ofstream myfile ("/home/ubuntu/Logo/Objecto.txt");
-
-  if (myfile.is_open())
-  {
+   ofstream myfile ("/home/ubuntu/Logo/Objecto.txt");
+   if (myfile.is_open()){
 	for (std::map<int , Cuadruplo* >::iterator it=record.begin(); it!=record.end(); ++it){
 		myfile<<it->second->op<<"$"<<it->second->oper1<<"$"<<it->second->oper2<<"$"<<it->second->rec<<"$\n";
 	}
     myfile.close();
   }
-  else wcout<<"cannot open the file\n";
+  else wcout<<"Error: file cannot be open...\n";
+  
   ofstream file ("/home/ubuntu/Logo/Constantes.txt");
   if (file.is_open())
   {
@@ -1104,7 +1101,7 @@ void Action::createObject(){
 	}
     file.close();
   }
-  else wcout<<"cannot open the file\n";
+  else wcout<<"Error: file cannot be open...\n";
 }
 
 void Action::addNameFunction(const wchar_t* n){
@@ -1154,10 +1151,10 @@ void Action::generateRetorno(){
 			cont++;
 		}
 		else if(regresa->type == 0){
-			wcout<<"There are not return value in the function "<<inifun->name<<" \n";
+			wcout<<"There is no return value in the function "<<inifun->name<<" \n";
 		}
 		else if(regresa->type != inifun->type and regresa->type != 0){
-			wcout<<"Return failture: incompatible types in the function "<<inifun->name<<" \n";
+			wcout<<"Return failure: incompatible types in the function "<<inifun->name<<" \n";
 		    }
 		}
 	
@@ -1168,7 +1165,7 @@ void Action::generateRetorno(){
 		cont++;
 	}
 	else {
-		wcout<<"Return unnecessary\n";
+		wcout<<"Return not necessary\n";
 	}
 	
 	Cuadruplo *vacio;

@@ -1,16 +1,11 @@
 program {
-module void cesar (int a){
-	print(a);
-	if(a > 0){
-		a=a-1;
-  		cesar(a);
-	}
-
-
-}
-
 main(){
-
-	cesar(5);
+draw line:
+  x_position=0;
+  y_position=0;
+  sizeX=100;
+  sizeY=100;
+  colorThick="red";
+end
 }
 }

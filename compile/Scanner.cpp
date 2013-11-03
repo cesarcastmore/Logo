@@ -422,8 +422,8 @@ Scanner::~Scanner() {
 void Scanner::Init() {
 	EOL    = '\n';
 	eofSym = 0;
-	maxT = 62;
-	noSym = 62;
+	maxT = 63;
+	noSym = 63;
 	int i;
 	for (i = 48; i <= 57; ++i) start.set(i, 7);
 	for (i = 65; i <= 90; ++i) start.set(i, 6);
@@ -476,13 +476,14 @@ void Scanner::Init() {
 	keywords.set(L"x_position", 43);
 	keywords.set(L"y_position", 44);
 	keywords.set(L"rotate", 45);
-	keywords.set(L"rotateLeft", 46);
-	keywords.set(L"size", 47);
-	keywords.set(L"thick", 48);
-	keywords.set(L"colorThick", 49);
-	keywords.set(L"colorFigure", 50);
-	keywords.set(L"and", 57);
-	keywords.set(L"or", 58);
+	keywords.set(L"sizeX", 46);
+	keywords.set(L"sizeY", 47);
+	keywords.set(L"size", 48);
+	keywords.set(L"thick", 49);
+	keywords.set(L"colorThick", 50);
+	keywords.set(L"colorFigure", 51);
+	keywords.set(L"and", 58);
+	keywords.set(L"or", 59);
 
 
 	tvalLength = 128;
@@ -675,35 +676,35 @@ Token* Scanner::NextToken() {
 			{t->kind = 32; break;}
 		case 20:
 			case_20:
-			{t->kind = 51; break;}
+			{t->kind = 52; break;}
 		case 21:
 			case_21:
-			{t->kind = 52; break;}
+			{t->kind = 53; break;}
 		case 22:
 			case_22:
-			{t->kind = 53; break;}
+			{t->kind = 54; break;}
 		case 23:
 			case_23:
-			{t->kind = 54; break;}
+			{t->kind = 55; break;}
 		case 24:
-			{t->kind = 59; break;}
-		case 25:
 			{t->kind = 60; break;}
-		case 26:
+		case 25:
 			{t->kind = 61; break;}
+		case 26:
+			{t->kind = 62; break;}
 		case 27:
 			recEnd = pos; recKind = 25;
 			if (ch == L'=') {AddCh(); goto case_20;}
 			else {t->kind = 25; break;}
 		case 28:
-			recEnd = pos; recKind = 55;
+			recEnd = pos; recKind = 56;
 			if (ch == L'>') {AddCh(); goto case_21;}
 			else if (ch == L'=') {AddCh(); goto case_22;}
-			else {t->kind = 55; break;}
-		case 29:
-			recEnd = pos; recKind = 56;
-			if (ch == L'=') {AddCh(); goto case_23;}
 			else {t->kind = 56; break;}
+		case 29:
+			recEnd = pos; recKind = 57;
+			if (ch == L'=') {AddCh(); goto case_23;}
+			else {t->kind = 57; break;}
 
 	}
 	AppendVal(t);

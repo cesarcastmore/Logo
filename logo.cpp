@@ -127,11 +127,20 @@ void Logo::on_runButton_clicked()
 
 
 //dibuja las figuras dependiendo de los parametros que se le den, es usada en la maquina virtual
-void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush &colorFig,   QPen &colorThi){
+void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush &colorFig,   QPen &colorThi, int sizex, int sizey){
     switch(figura){
     case 31:
+        dot = scene->addLine(0, 0, 0.1, 0, colorThi);
+        dot->resetTransform();
+        dot->setPos(x,y);
+        dot->setScale(scale);
+        dot->setRotation(rotate);
         break;
     case 32:
+        line = scene->addLine(x, y, sizex,sizey, colorThi);
+        line->resetTransform();
+        line->setScale(scale);
+        line->setRotation(rotate);
         break;
     case 33:
         triangle = scene->addPolygon(polytri,colorThi,colorFig);
@@ -255,6 +264,8 @@ void Logo::MachineVirtual(){
     //initializa atributos
     int x_position=0;
     int y_position=0;
+    int sizex=0;
+    int sizey=0;
     int rotate=0;
     int scale=1;
 
@@ -485,6 +496,8 @@ void Logo::MachineVirtual(){
             case 30:
                 x_position=0;
                 y_position=0;
+                sizex=0;
+                sizey=0;
                 rotate=0;
                 scale=1;
                 colorFigure.setColor(Qt::white);
@@ -621,34 +634,46 @@ void Logo::MachineVirtual(){
                 }
                 cont++;
                 break;
+            //sizeX
+            case 61:
+                sizex=(int)memoria->get(program[cont][1]);
+                cont++;
+                break;
+            //sizeY
+            case 62:
+                sizey=(int)memoria->get(program[cont][1]);
+                cont++;
+                break;
             //END
             //finalmente se dibujan las figuras en la ventana
             case 50:
                 switch(program[cont][1]){
                 case 41:
+                    dibujaFigura(31, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 42:
+                     dibujaFigura(32, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 43:
-                    dibujaFigura(33, x_position, y_position, rotate, scale, colorFigure, colorThick);
+                    dibujaFigura(33, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 44:
-                    dibujaFigura(34, x_position, y_position, rotate, scale, colorFigure, colorThick);
+                    dibujaFigura(34, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 45:
-                    dibujaFigura(35, x_position, y_position, rotate, scale, colorFigure, colorThick);
+                    dibujaFigura(35, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 46:
-                    dibujaFigura(36, x_position, y_position, rotate, scale, colorFigure, colorThick);
+                    dibujaFigura(36, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 47:
-                    dibujaFigura(37, x_position, y_position, rotate, scale, colorFigure, colorThick);
+                    dibujaFigura(37, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 48:
-                    dibujaFigura(38, x_position, y_position, rotate, scale, colorFigure, colorThick);
+                    dibujaFigura(38, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 case 49:
-                    dibujaFigura(39, x_position, y_position, rotate, scale, colorFigure, colorThick);
+                    dibujaFigura(39, x_position, y_position, rotate, scale, colorFigure, colorThick, sizex, sizey);
                     break;
                 }
                 cont++;

@@ -117,7 +117,7 @@ void Parser::TIPO(int  &type) {
 		} else if (la->kind == 14 /* "float" */) {
 			Get();
 			type=flotante; 
-		} else SynErr(63);
+		} else SynErr(64);
 }
 
 void Parser::IDENTI(wchar_t* &name) {
@@ -225,7 +225,7 @@ void Parser::ESTATUTO() {
 			CICLO_DO();
 			break;
 		}
-		default: SynErr(64); break;
+		default: SynErr(65); break;
 		}
 }
 
@@ -237,7 +237,7 @@ void Parser::TIPO_MOD(int &typemod) {
 		} else if (la->kind == 19 /* "void" */) {
 			Get();
 			typemod = undefined; 
-		} else SynErr(65);
+		} else SynErr(66);
 }
 
 void Parser::PARAMETROS() {
@@ -292,7 +292,7 @@ void Parser::VARCTE() {
 			Get();
 			number=wcstof((coco_string_create(t->val)), NULL);
 			tipo=flotante; 
-		} else SynErr(66);
+		} else SynErr(67);
 		dir=action->memory->save(3,tipo, number*signo);
 		action->dir->push(dir); 
 }
@@ -331,7 +331,7 @@ void Parser::ASIGMODULO() {
 			obj=action->find(name);
 			action->addStackDir(obj->dir->direction,obj->type); 
 			ASIGNACION();
-		} else SynErr(67);
+		} else SynErr(68);
 }
 
 void Parser::CONDICION() {
@@ -405,7 +405,7 @@ void Parser::CICLO_DO() {
 void Parser::EXPRESION() {
 		int log; 
 		EXP_LOG();
-		while (la->kind == 57 /* "and" */ || la->kind == 58 /* "or" */) {
+		while (la->kind == 58 /* "and" */ || la->kind == 59 /* "or" */) {
 			LOG_OPE(log);
 			action->addStackOpe(log); 
 			EXP_LOG();
@@ -425,48 +425,48 @@ void Parser::EXP_LOG() {
 }
 
 void Parser::LOG_OPE(int &log) {
-		if (la->kind == 57 /* "and" */) {
+		if (la->kind == 58 /* "and" */) {
 			Get();
 			log=log_and;
-		} else if (la->kind == 58 /* "or" */) {
+		} else if (la->kind == 59 /* "or" */) {
 			Get();
 			log=log_or; 
-		} else SynErr(68);
+		} else SynErr(69);
 }
 
 void Parser::RELACIONAL(int &rel) {
 		switch (la->kind) {
-		case 51 /* "==" */: {
+		case 52 /* "==" */: {
 			Get();
 			rel=eq;
 			break;
 		}
-		case 52 /* "<>" */: {
+		case 53 /* "<>" */: {
 			Get();
 			rel=ne;
 			break;
 		}
-		case 53 /* "<=" */: {
+		case 54 /* "<=" */: {
 			Get();
 			rel=lte;
 			break;
 		}
-		case 54 /* ">=" */: {
+		case 55 /* ">=" */: {
 			Get();
 			rel=gte;
 			break;
 		}
-		case 55 /* "<" */: {
+		case 56 /* "<" */: {
 			Get();
 			rel=lt;
 			break;
 		}
-		case 56 /* ">" */: {
+		case 57 /* ">" */: {
 			Get();
 			rel=gt;;
 			break;
 		}
-		default: SynErr(69); break;
+		default: SynErr(70); break;
 		}
 }
 
@@ -496,7 +496,7 @@ void Parser::ASIGNACION() {
 				IDENTI(name);
 			} else if (la->kind == _integer) {
 				Get();
-			} else SynErr(70);
+			} else SynErr(71);
 			Expect(10 /* "]" */);
 		}
 		Expect(25 /* "=" */);
@@ -527,7 +527,7 @@ void Parser::PARENTESIS() {
 void Parser::TERMINO() {
 		int fact; 
 		FACTOR();
-		if (la->kind == 59 /* "*" */ || la->kind == 60 /* "/" */ || la->kind == 61 /* "%" */) {
+		if (la->kind == 60 /* "*" */ || la->kind == 61 /* "/" */ || la->kind == 62 /* "%" */) {
 			FACTOR_OP(fact);
 			action->addStackOpe(fact); 
 			TERMINO();
@@ -542,7 +542,7 @@ void Parser::TERM_OP(int &term) {
 		} else if (la->kind == 21 /* "-" */) {
 			Get();
 			term=minus;
-		} else SynErr(71);
+		} else SynErr(72);
 }
 
 void Parser::FACTOR() {
@@ -556,20 +556,20 @@ void Parser::FACTOR() {
 			action->removeFake(); 
 		} else if (StartOf(5)) {
 			VARCTE();
-		} else SynErr(72);
+		} else SynErr(73);
 }
 
 void Parser::FACTOR_OP(int &fact) {
-		if (la->kind == 59 /* "*" */) {
+		if (la->kind == 60 /* "*" */) {
 			Get();
 			fact=multiply;
-		} else if (la->kind == 60 /* "/" */) {
+		} else if (la->kind == 61 /* "/" */) {
 			Get();
 			fact=divide;
-		} else if (la->kind == 61 /* "%" */) {
+		} else if (la->kind == 62 /* "%" */) {
 			Get();
 			fact=module;
-		} else SynErr(73);
+		} else SynErr(74);
 }
 
 void Parser::IDENTIFICADOR_I() {
@@ -581,7 +581,7 @@ void Parser::IDENTIFICADOR_I() {
 		} else if (la->kind == 16 /* "(" */) {
 			action->findFunction(name); 
 			PARENTESIS();
-		} else SynErr(74);
+		} else SynErr(75);
 }
 
 void Parser::FIGURA(int &figure) {
@@ -631,7 +631,7 @@ void Parser::FIGURA(int &figure) {
 			figure=49;
 			break;
 		}
-		default: SynErr(75); break;
+		default: SynErr(76); break;
 		}
 }
 
@@ -640,7 +640,7 @@ void Parser::ATRIBUTOS() {
 			ATRIBUTO_ENTERO();
 		} else if (StartOf(8)) {
 			ATRIBUTO_STRING();
-		} else SynErr(76);
+		} else SynErr(77);
 		Expect(12 /* ";" */);
 }
 
@@ -655,10 +655,13 @@ void Parser::ATRIBUTO_ENTERO() {
 		} else if (la->kind == 45 /* "rotate" */) {
 			Get();
 			attribute=33;
-		} else if (la->kind == 46 /* "rotateLeft" */) {
+		} else if (la->kind == 46 /* "sizeX" */) {
 			Get();
-			attribute=34;
-		} else SynErr(77);
+			attribute=61;
+		} else if (la->kind == 47 /* "sizeY" */) {
+			Get();
+			attribute=62;
+		} else SynErr(78);
 		Expect(25 /* "=" */);
 		EXP();
 		action->addAtributeInt(attribute);
@@ -666,19 +669,19 @@ void Parser::ATRIBUTO_ENTERO() {
 
 void Parser::ATRIBUTO_STRING() {
 		wchar_t* name; int attribute; 
-		if (la->kind == 47 /* "size" */) {
+		if (la->kind == 48 /* "size" */) {
 			Get();
 			attribute=35;
-		} else if (la->kind == 48 /* "thick" */) {
+		} else if (la->kind == 49 /* "thick" */) {
 			Get();
 			attribute=36;
-		} else if (la->kind == 49 /* "colorThick" */) {
+		} else if (la->kind == 50 /* "colorThick" */) {
 			Get();
 			attribute=37;
-		} else if (la->kind == 50 /* "colorFigure" */) {
+		} else if (la->kind == 51 /* "colorFigure" */) {
 			Get();
 			attribute=38;
-		} else SynErr(78);
+		} else SynErr(79);
 		Expect(25 /* "=" */);
 		CADENA(name);
 		action->addAtributeString(attribute, name);
@@ -790,7 +793,7 @@ void Parser::Parse() {
 }
 
 Parser::Parser(Scanner *scanner) {
-	maxT = 62;
+	maxT = 63;
 
 	ParserInitCaller<Parser>::CallInit(this);
 	dummyToken = NULL;
@@ -805,16 +808,16 @@ bool Parser::StartOf(int s) {
 	const bool T = true;
 	const bool x = false;
 
-	static bool set[9][64] = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, T,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,x,x,x, x,x,x,x},
-		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,x,x, x,T,T,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,T, T,T,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x},
-		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x}
+	static bool set[9][65] = {
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, T,T,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,x,x, x,x,x,x, x},
+		{x,T,T,x, T,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,T,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,T, T,x,x,x, x,T,x,x, x,T,T,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, T,T,T,T, T,T,T,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x},
+		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x}
 	};
 
 
@@ -881,39 +884,40 @@ void Errors::SynErr(int line, int col, int n) {
 			case 43: s = coco_string_create(L"\"x_position\" expected"); break;
 			case 44: s = coco_string_create(L"\"y_position\" expected"); break;
 			case 45: s = coco_string_create(L"\"rotate\" expected"); break;
-			case 46: s = coco_string_create(L"\"rotateLeft\" expected"); break;
-			case 47: s = coco_string_create(L"\"size\" expected"); break;
-			case 48: s = coco_string_create(L"\"thick\" expected"); break;
-			case 49: s = coco_string_create(L"\"colorThick\" expected"); break;
-			case 50: s = coco_string_create(L"\"colorFigure\" expected"); break;
-			case 51: s = coco_string_create(L"\"==\" expected"); break;
-			case 52: s = coco_string_create(L"\"<>\" expected"); break;
-			case 53: s = coco_string_create(L"\"<=\" expected"); break;
-			case 54: s = coco_string_create(L"\">=\" expected"); break;
-			case 55: s = coco_string_create(L"\"<\" expected"); break;
-			case 56: s = coco_string_create(L"\">\" expected"); break;
-			case 57: s = coco_string_create(L"\"and\" expected"); break;
-			case 58: s = coco_string_create(L"\"or\" expected"); break;
-			case 59: s = coco_string_create(L"\"*\" expected"); break;
-			case 60: s = coco_string_create(L"\"/\" expected"); break;
-			case 61: s = coco_string_create(L"\"%\" expected"); break;
-			case 62: s = coco_string_create(L"??? expected"); break;
-			case 63: s = coco_string_create(L"invalid TIPO"); break;
-			case 64: s = coco_string_create(L"invalid ESTATUTO"); break;
-			case 65: s = coco_string_create(L"invalid TIPO_MOD"); break;
-			case 66: s = coco_string_create(L"invalid VARCTE"); break;
-			case 67: s = coco_string_create(L"invalid ASIGMODULO"); break;
-			case 68: s = coco_string_create(L"invalid LOG_OPE"); break;
-			case 69: s = coco_string_create(L"invalid RELACIONAL"); break;
-			case 70: s = coco_string_create(L"invalid ASIGNACION"); break;
-			case 71: s = coco_string_create(L"invalid TERM_OP"); break;
-			case 72: s = coco_string_create(L"invalid FACTOR"); break;
-			case 73: s = coco_string_create(L"invalid FACTOR_OP"); break;
-			case 74: s = coco_string_create(L"invalid IDENTIFICADOR_I"); break;
-			case 75: s = coco_string_create(L"invalid FIGURA"); break;
-			case 76: s = coco_string_create(L"invalid ATRIBUTOS"); break;
-			case 77: s = coco_string_create(L"invalid ATRIBUTO_ENTERO"); break;
-			case 78: s = coco_string_create(L"invalid ATRIBUTO_STRING"); break;
+			case 46: s = coco_string_create(L"\"sizeX\" expected"); break;
+			case 47: s = coco_string_create(L"\"sizeY\" expected"); break;
+			case 48: s = coco_string_create(L"\"size\" expected"); break;
+			case 49: s = coco_string_create(L"\"thick\" expected"); break;
+			case 50: s = coco_string_create(L"\"colorThick\" expected"); break;
+			case 51: s = coco_string_create(L"\"colorFigure\" expected"); break;
+			case 52: s = coco_string_create(L"\"==\" expected"); break;
+			case 53: s = coco_string_create(L"\"<>\" expected"); break;
+			case 54: s = coco_string_create(L"\"<=\" expected"); break;
+			case 55: s = coco_string_create(L"\">=\" expected"); break;
+			case 56: s = coco_string_create(L"\"<\" expected"); break;
+			case 57: s = coco_string_create(L"\">\" expected"); break;
+			case 58: s = coco_string_create(L"\"and\" expected"); break;
+			case 59: s = coco_string_create(L"\"or\" expected"); break;
+			case 60: s = coco_string_create(L"\"*\" expected"); break;
+			case 61: s = coco_string_create(L"\"/\" expected"); break;
+			case 62: s = coco_string_create(L"\"%\" expected"); break;
+			case 63: s = coco_string_create(L"??? expected"); break;
+			case 64: s = coco_string_create(L"invalid TIPO"); break;
+			case 65: s = coco_string_create(L"invalid ESTATUTO"); break;
+			case 66: s = coco_string_create(L"invalid TIPO_MOD"); break;
+			case 67: s = coco_string_create(L"invalid VARCTE"); break;
+			case 68: s = coco_string_create(L"invalid ASIGMODULO"); break;
+			case 69: s = coco_string_create(L"invalid LOG_OPE"); break;
+			case 70: s = coco_string_create(L"invalid RELACIONAL"); break;
+			case 71: s = coco_string_create(L"invalid ASIGNACION"); break;
+			case 72: s = coco_string_create(L"invalid TERM_OP"); break;
+			case 73: s = coco_string_create(L"invalid FACTOR"); break;
+			case 74: s = coco_string_create(L"invalid FACTOR_OP"); break;
+			case 75: s = coco_string_create(L"invalid IDENTIFICADOR_I"); break;
+			case 76: s = coco_string_create(L"invalid FIGURA"); break;
+			case 77: s = coco_string_create(L"invalid ATRIBUTOS"); break;
+			case 78: s = coco_string_create(L"invalid ATRIBUTO_ENTERO"); break;
+			case 79: s = coco_string_create(L"invalid ATRIBUTO_STRING"); break;
 
 		default:
 		{
