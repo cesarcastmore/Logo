@@ -127,11 +127,7 @@ void Logo::on_runButton_clicked()
 
 
 //dibuja las figuras dependiendo de los parametros que se le den, es usada en la maquina virtual
-<<<<<<< HEAD
 void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush &colorFig,   QPen &colorThi, int sizex, int sizey){
-=======
-void Logo::dibujaFigura(int figura, int x, int y, int rotate, int scale, QBrush &colorFig,   QPen &colorThi){
->>>>>>> 7ee7e3f35a35b1a6e56f94bfb4ad18799c781b5c
     switch(figura){
     case 31:
         dot = scene->addLine(0, 0, 0.1, 0, colorThi);
