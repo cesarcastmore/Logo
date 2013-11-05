@@ -1,6 +1,6 @@
 #include "logo.h"
 #include "ui_logo.h"
-
+//librerias
 #include <QFile>
 #include <iostream>
 #include <QTextStream>
