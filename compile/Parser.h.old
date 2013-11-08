@@ -115,8 +115,8 @@ void InitDeclarations() {
 	void LOG_OPE(int &log);
 	void RELACIONAL(int &rel);
 	void LLAMAR_MODULO();
-	void ASIGNACION();
 	void ARREGLO_LLAM();
+	void ASIGNACION();
 	void PARENTESIS();
 	void TERMINO();
 	void TERM_OP(int &term);

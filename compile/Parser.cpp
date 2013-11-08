@@ -349,6 +349,10 @@ void Parser::ASIGMODULO() {
 		} else if (la->kind == 11 /* "[" */ || la->kind == 26 /* "=" */) {
 			obj=action->find(name);
 			action->addStackDir(obj->dir->direction,obj->type); 
+			if (la->kind == 11 /* "[" */) {
+				action->getDimensionId(obj); 
+				ARREGLO_LLAM();
+			}
 			ASIGNACION();
 		} else SynErr(69);
 }
@@ -507,25 +511,24 @@ void Parser::LLAMAR_MODULO() {
 		Expect(10 /* ";" */);
 }
 
+void Parser::ARREGLO_LLAM() {
+		Expect(11 /* "[" */);
+		EXP();
+		action->generateVerifica(); 
+		while (la->kind == 9 /* "," */) {
+			Get();
+			EXP();
+			action->generateVerifica(); 
+		}
+		Expect(13 /* "]" */);
+}
+
 void Parser::ASIGNACION() {
 		wchar_t* name; 
-		if (la->kind == 11 /* "[" */) {
-			ARREGLO_LLAM();
-		}
 		Expect(26 /* "=" */);
 		EXP();
 		Expect(10 /* ";" */);
 		action->createCuadrAlloca(); 
-}
-
-void Parser::ARREGLO_LLAM() {
-		Expect(11 /* "[" */);
-		EXP();
-		while (la->kind == 9 /* "," */) {
-			Get();
-			EXP();
-		}
-		Expect(13 /* "]" */);
 }
 
 void Parser::PARENTESIS() {
@@ -602,6 +605,7 @@ void Parser::IDENTIFICADOR_I() {
 			obj=action->find(name); 
 			action->addStackDir(obj->dir->direction,obj->type); 
 			if (la->kind == 11 /* "[" */) {
+				action->getDimensionId(obj); 
 				ARREGLO_LLAM();
 			}
 		} else if (la->kind == 17 /* "(" */) {

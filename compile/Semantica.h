@@ -41,6 +41,26 @@ public:
 	void sacarDirBase(int dir);
 };
 
+class DimensionLlamar{
+public:	
+	int dim;
+	std::wstring id; 
+	DimensionLlamar *next;
+	DimensionLlamar();
+	DimensionLlamar(int d, std::wstring id);
+
+};
+
+class StackDimeLlam{
+public:
+	DimensionLlamar *actual;
+	StackDimeLlam();
+	void push(int d, std::wstring id);
+	void pop();
+	DimensionLlamar* get();
+	void showStackDimLlam();
+
+};
 class Direction{
 public:
 	int direction;
@@ -245,7 +265,8 @@ public:
 	Memory *memory;
 	Dimensiones *listaDimensiones;
 	Dimension *dimension;
-	Variable *varDim;
+	StackDimeLlam *stackDim;
+	Dimensiones *llam_ListDimen;
 	int cant_loc;
 	int cant_para;
 	Action();
@@ -305,6 +326,8 @@ public:
 	void getNextDirection();
 	void addDimensionLocal(const wchar_t* n);
 	void addDimensionGlobal(const wchar_t* n);
+	void getDimensionId(Variable* var);
+	void generateVerifica();
 	
 };
 

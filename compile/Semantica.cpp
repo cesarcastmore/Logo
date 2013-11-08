@@ -635,6 +635,7 @@ const char* Cuadruplo::translate(int a){
 		case 48: return "hexagon";
 		case 49: return "rhomboid";
 		case 50: return "endDraw";
+		case 51: return "Verifica";
 		case 99: return "end";
 		
 	}
@@ -761,6 +762,57 @@ void Dimensiones::sacarDirBase(int dir){
 }
 
 
+DimensionLlamar::DimensionLlamar(){
+	dim=0;
+	next=NULL;
+}
+
+DimensionLlamar::DimensionLlamar(int d, std::wstring name){
+	dim=d;
+	id=name;
+	next=NULL;
+}
+
+
+StackDimeLlam::StackDimeLlam(){
+	actual=NULL;
+}
+
+void StackDimeLlam::push(int t, std::wstring id){
+	DimensionLlamar *new_node;
+	new_node=new DimensionLlamar(t, id);
+   if(!actual){
+   actual=new_node;
+}	 
+      else{
+      new_node->next = actual;
+      actual = new_node;
+      }	
+		
+}
+
+void StackDimeLlam::pop(){
+	actual = actual->next;	
+	}
+	
+DimensionLlamar* StackDimeLlam::get(){
+	DimensionLlamar *new_node;
+	new_node=new DimensionLlamar(actual->dim, actual->id);
+	return new_node;
+}
+
+void StackDimeLlam::showStackDimLlam(){
+	wcout<<"The Stack contains StackDimeLlam\n";
+	DimensionLlamar *dis=actual;
+	while(dis != NULL){
+		wcout<<"the id is "<<dis->id << "\n";
+		wcout<<"the dimension----"<<dis->dim<<"\n";
+		dis=dis->next;
+	} 
+	
+}
+
+
 Action::Action(){
 	tab=new TablaVariables();
 	op=new StackOperator();
@@ -785,11 +837,13 @@ Action::Action(){
 	cant_loc=0;
 	cant_para=0;
 	
-	//Control de dimensiones 
+	//inicializacion de dimensiones 
 	listaDimensiones = new Dimensiones();
 	dimension = new Dimension();
-	varDim = new Variable();
 	
+	//llamado de dimensiones
+	stackDim= new StackDimeLlam();
+	llam_ListDimen= new Dimensiones();
 	}
 	
 void Action::addGlobal(const wchar_t* n, int  t, int slope){
@@ -1394,6 +1448,34 @@ void Action::addDimensionLocal(const wchar_t* n){
 
 void Action::getNextDirection(){
 	memory->temp_int=memory->temp_int+listaDimensiones->tam;
+	
+}
+
+void Action::getDimensionId(Variable* var){
+	if( var->dimensiones != NULL){
+		llam_ListDimen = var->dimensiones;
+		Direction *direccion =dir->get(); dir->pop();
+		stackDim->push(1, var->name);
+		addFake(); 
+	}
+	else wcout<<"The Variable  is not dimension "<<var->name<<"\n";
+	
+}
+
+void Action::generateVerifica(){
+	int dimActual = stackDim->actual->dim;
+	Dimension *desp= llam_ListDimen->getDimension(dimActual);
+	Cuadruplo *verif;
+	Direction *direccion =dir->get();
+	if(direccion->type == 1){
+		verif = new Cuadruplo(51, direccion->direction , desp->Li, desp->Ls );
+		record.insert(std::make_pair(cont, verif));
+		cont++;
+	}
+	else wcout<<"The indexes should be integer";
+	
+	dimActual=dimActual+1;
+	stackDim->actual->dim=dimActual;
 	
 }
 

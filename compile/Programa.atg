@@ -174,11 +174,14 @@ IDENTI<name>
 LLAMAR_MODULO 	
 | 			 		(.  obj=action->find(name);
 					action->addStackDir(obj->dir->direction,obj->type); .)
-  ASIGNACION
+[					(. action->getDimensionId(obj); .)
+ ARREGLO_LLAM ] ASIGNACION
 ).
 /*------------------------------------------------------------------*/
 ARREGLO_LLAM = 
-'[' EXP { ',' EXP } ']' .
+'[' EXP 				(. action->generateVerifica(); .)
+{ ',' EXP				(. action->generateVerifica(); .)
+ } ']' .
 
 /*-----------------------------------------------------------------*/
 LLAMAR_MODULO = '(' 			(. action->createERA(); .)
@@ -199,7 +202,7 @@ PARENTESIS =  '(' 			(. action->addFake();
 .
 /*---------------------------------------------------------------------*/
 ASIGNACION = 				(. wchar_t* name; .)
-[ ARREGLO_LLAM ] '='
+'='
  EXP ';'				(. action->createCuadrAlloca(); .)
 .
 /*-------------------------------------------------------------------*/
@@ -228,7 +231,8 @@ IDENTIFICADOR_I=			(. wchar_t* name; Variable *obj; int signo; Direction *dir; .
 IDENTI<name>  					
 ( 					(. obj=action->find(name); 
 					 action->addStackDir(obj->dir->direction,obj->type); .)
-[ ARREGLO_LLAM ]
+[					(. action->getDimensionId(obj); .)
+ ARREGLO_LLAM ]
 |					(.  action->findFunction(name); .)
 PARENTESIS 			
 ). 
