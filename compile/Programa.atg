@@ -54,6 +54,7 @@ PROGRAMA =
 					action->endProgram();
 					action->tab->removeAllLocals();
 					/*action->showCuadruplo();*/
+					/*action->tab->displayGlobals();*/
 				
 					action->createObject();.)
 .
@@ -62,11 +63,26 @@ PROGRAMA =
 GLOBAL = 				(. wchar_t* name; int type; .)
 "global" TIPO<type> 
 IDENTI<name> 				(. action->addGlobal(name, type, var);  .)
-[ '[' integer ']' ] 
+[ ARREGLO_INIT 				(. action->addDimensionGlobal(name); .)
+] 
 { ',' IDENTI<name>  			(.  action->addGlobal(name, type, var); .)
-[ '[' integer ']' ] } 			
+[ ARREGLO_INIT 				(. action->addDimensionGlobal(name); .)
+] } 			
 ';'.
 /*----------------------------------------------------------------------*/
+ARREGLO_INIT = 				(. double inferior, superior; .)
+'[' 					(. action->isDimension(); action->getDimension(); .)
+integer 				(. inferior=wcstof((coco_string_create(t->val)), NULL); action->saveInferior((int)(inferior));  .)
+".."
+ integer				(. superior=wcstof((coco_string_create(t->val)), NULL); action->saveSuperior((int)(superior));  .)
+ {   ','				(. action->getNewDimension(); .) 
+integer  				(. inferior=wcstof((coco_string_create(t->val)), NULL); action->saveInferior((int)(inferior));  .)
+".."
+ integer  				(. superior=wcstof((coco_string_create(t->val)), NULL); action->saveSuperior((int)(superior));  .)
+}					(. action->getNewDimension();  action->getKCons(); .)
+']'
+.
+/*---------------------------------------------------------------------*/
 TIPO<int  &type> =  
 ( "int" 				(. type =entero; .)
 | "float" 				(. type=flotante; .)
@@ -110,9 +126,11 @@ PARAM_COMA = 				(. wchar_t* name; int type; int can; .)
 /*---------------------------------------------------------------------------*/
 LOCAL= 					(. wchar_t* name; int type; .)
 TIPO<type> IDENTI<name>  		(.  action->addLocal(name, type, var);  .)
-[ '[' integer ']' ]   	 		
+[ ARREGLO_INIT 				(. action->addDimensionLocal(name); .)
+]   	 		
 { ',' IDENTI<name>  			(. action->addLocal(name, type, var); .)
-[ '[' integer ']' ]  		
+[ ARREGLO_INIT 				(. action->addDimensionLocal(name); .)
+]  		
 } ';' .
 /*-------------------------------------------------------------------------*/
 RETORNO = "return" EXP ';'.
@@ -156,9 +174,13 @@ IDENTI<name>
 LLAMAR_MODULO 	
 | 			 		(.  obj=action->find(name);
 					action->addStackDir(obj->dir->direction,obj->type); .)
-ASIGNACION 	
+  ASIGNACION
 ).
 /*------------------------------------------------------------------*/
+ARREGLO_LLAM = 
+'[' EXP { ',' EXP } ']' .
+
+/*-----------------------------------------------------------------*/
 LLAMAR_MODULO = '(' 			(. action->createERA(); .)
 [  EXP 					(. action->createParameter(); .)
 { ',' EXP				(. action->createParameter(); .)
@@ -176,11 +198,8 @@ PARENTESIS =  '(' 			(. action->addFake();
 					action->createGotoSub();  .)
 .
 /*---------------------------------------------------------------------*/
-ASIGNACION = 			(. wchar_t* name; .)
-[ '[' 
-(IDENTI<name>		 
-| integer)
-']' ] '='
+ASIGNACION = 				(. wchar_t* name; .)
+[ ARREGLO_LLAM ] '='
  EXP ';'				(. action->createCuadrAlloca(); .)
 .
 /*-------------------------------------------------------------------*/
@@ -209,6 +228,7 @@ IDENTIFICADOR_I=			(. wchar_t* name; Variable *obj; int signo; Direction *dir; .
 IDENTI<name>  					
 ( 					(. obj=action->find(name); 
 					 action->addStackDir(obj->dir->direction,obj->type); .)
+[ ARREGLO_LLAM ]
 |					(.  action->findFunction(name); .)
 PARENTESIS 			
 ). 

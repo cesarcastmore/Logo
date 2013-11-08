@@ -14,6 +14,33 @@ namespace System {
 class Parser;
 class Errors;
 
+class Dimension{
+public:
+	int Li;
+	int Ls;
+	int Mdim;
+	int Mdim;
+	Dimension *next;
+	Dimension();
+};
+
+class Dimensiones{
+public:
+	int R;
+	int Dim;
+	Dimension *actual;
+	int tam;
+	int K;
+	int dirBase;
+	Dimensiones();
+	void agregar(Dimension* dim);
+	Dimension * getDimension(int Dim);
+	void invertir();
+	void sacarK();
+	void mostrarResultados();
+	void sacarDirBase(int dir);
+};
+
 class Direction{
 public:
 	int direction;
@@ -44,6 +71,7 @@ public :
 	Direction *dir;
 	int type; 
 	int slope;
+	Dimensiones *dimensiones;
 	Variable();
 	Variable(std::wstring n, int t, int slope, Direction *d);	
 
@@ -197,6 +225,8 @@ public :
 
 };
 
+
+
 class Action{
 public:
 	LogicCube *cube;
@@ -213,6 +243,9 @@ public:
 	StackParameter *llam_para;
 	int contPara;
 	Memory *memory;
+	Dimensiones *listaDimensiones;
+	Dimension *dimension;
+	Variable *varDim;
 	int cant_loc;
 	int cant_para;
 	Action();
@@ -238,6 +271,7 @@ public:
 	void addStackLeapActual();
 	void createGotoFalWhile();
 	void createEndWhile();
+	void createWhileDo();
 	void createCuadrAlloca();
 	void createCuadrRead(int d, int t);
 	void createCuadrPrint();
@@ -262,8 +296,15 @@ public:
 	void createParameter();
 	void checkParameter();
 	void createGotoSub();
-
-
+	void isDimension();
+	void getDimension();
+	void saveInferior(int i);
+	void saveSuperior(int s);
+	void getNewDimension();
+	void getKCons();
+	void getNextDirection();
+	void addDimensionLocal(const wchar_t* n);
+	void addDimensionGlobal(const wchar_t* n);
 	
 };
 

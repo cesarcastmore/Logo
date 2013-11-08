@@ -26,6 +26,7 @@ type=t;
 name=n;
 slope=slope;
 dir=d; 
+dimensiones=NULL;
 }
 
 
@@ -109,8 +110,11 @@ Variable* TablaVariables::find(const wchar_t* n){
 
 void TablaVariables::displayLocals(){
   wcout << "Local Variables Table contains:\n";
-  for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it)
+  for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it){
     wcout << it->first << " => " << it->second->type << "--" << it->second->slope <<"---direction--"<<it->second->dir->direction<<'\n';
+    wcout<<"MOSTRANDO DIMENSION\n";
+    it->second->dimensiones->mostrarResultados();
+}
 }
 
 
@@ -118,6 +122,8 @@ void TablaVariables::displayGlobals(){
   cout << "Global Variables Table contains:\n";
   for (std::map<std::wstring , Variable* >::iterator it=tablaGlobals.begin(); it!=tablaGlobals.end(); ++it){
     wcout << it->first << " => type " << it->second->type << "-- function" << it->second->slope <<'\n';
+    wcout<<"MOSTRANDO DIMENSION\n";
+    it->second->dimensiones->mostrarResultados();
 	}
 }
 
@@ -666,6 +672,95 @@ int LogicCube::allowed(int a, int b, int c){
 	return cube[a][b][c];
 }
 
+Dimension::Dimension(){
+	next=NULL;
+	Li=0;
+	Ls=0;
+	Mdim=0;
+}
+
+
+Dimensiones::Dimensiones(){
+	Dim=0;
+	actual=NULL;
+}
+
+
+void Dimensiones::agregar(Dimension* dim){
+	R= ( dim->Ls - dim->Li + 1) * R;
+	if(actual == NULL)
+	actual=dim;
+	else{
+		dim->next=actual;
+		actual=dim;
+	}
+}
+
+
+Dimension* Dimensiones::getDimension(int Dim){
+	Dimension *busqueda, *retorno;
+	retorno = new Dimension();
+	busqueda= actual; 
+	while(busqueda != NULL){
+		if(busqueda->Dim == Dim){
+			retorno->Dim=busqueda->Dim;
+			retorno->Li=busqueda->Li;
+			retorno->Ls=busqueda->Ls;
+			retorno->Mdim=busqueda->Mdim;
+			return retorno;
+			}
+		busqueda=busqueda->next;
+	}
+	return NULL;
+}
+
+void Dimensiones::sacarK(){
+	invertir();
+	tam=R;
+	Dimension *temp=actual;
+	while(temp !=  NULL){
+		temp->Mdim= (R / (temp->Ls  - temp->Li + 1));
+		R=temp->Mdim;
+		K= K + temp->Li * temp->Mdim;
+		temp=temp->next;
+	}
+	K=(K * -1);	
+}
+
+
+void Dimensiones::invertir(){
+	Dimensiones *invertir=new Dimensiones();
+	Dimension *temp;
+	while(actual != NULL){
+		temp= new Dimension();
+		temp->Li=actual->Li;
+		temp->Ls=actual->Ls;
+		temp->Dim=actual->Dim;
+		invertir->agregar(temp);
+		actual=actual->next;
+	}
+	actual=invertir->actual;
+}
+
+
+void  Dimensiones::mostrarResultados(){
+	Dimension *temp=actual;
+	wcout<<"K = "<<K<<"\n";
+	wcout<<"tam = "<<tam<<"\n";
+	while(temp != NULL){
+		wcout<<"DIMENSION "<<temp->Dim<<"\n";
+		wcout<<"Li "<<temp->Li<<"\n";
+		wcout<<"Ls "<<temp->Ls<<"\n";
+		wcout<<"Mdim "<<temp->Mdim<<"\n";
+		temp=temp->next;
+	}
+}
+
+void Dimensiones::sacarDirBase(int dir){
+	dirBase=dir+ tam;
+}
+
+
 Action::Action(){
 	tab=new TablaVariables();
 	op=new StackOperator();
@@ -689,6 +784,12 @@ Action::Action(){
 	cont=0;
 	cant_loc=0;
 	cant_para=0;
+	
+	//Control de dimensiones 
+	listaDimensiones = new Dimensiones();
+	dimension = new Dimension();
+	varDim = new Variable();
+	
 	}
 	
 void Action::addGlobal(const wchar_t* n, int  t, int slope){
@@ -1244,7 +1345,57 @@ void Action::createGotoSub(){
 			memory->clearPara();
 }
 
+void Action::isDimension(){
+	listaDimensiones = new Dimensiones();
+}
 
+void Action::getDimension(){
+	dimension = new Dimension();
+	listaDimensiones->Dim=1;
+	listaDimensiones->R=1;
+	dimension->Dim=listaDimensiones->Dim;
+}
+void Action::saveInferior(int i){
+	dimension->Li=i;	
+}
+
+void Action::saveSuperior(int s){
+	dimension->Ls=s;
+}
+
+void Action::getNewDimension(){
+	listaDimensiones->agregar(dimension);
+	dimension = new Dimension();
+	listaDimensiones->Dim=listaDimensiones->Dim+1;
+	dimension->Dim=listaDimensiones->Dim;
+}
+
+void Action::getKCons(){
+	listaDimensiones->sacarK();
+}
+
+void Action::addDimensionGlobal(const wchar_t* n){
+	std::wstring identif=std::wstring(n);
+	for (std::map<std::wstring , Variable* >::iterator it=tablaGlobals.begin(); it!=tablaGlobals.end(); ++it){
+		if(it->first == identif ){
+			it->second->dimensiones=listaDimensiones ;
+			}
+	}
+}
+
+void Action::addDimensionLocal(const wchar_t* n){
+	std::wstring identif=std::wstring(n);
+	for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it){
+		if(it->first == identif ){
+			it->second->dimensiones=listaDimensiones ;
+			}
+	}
+}
+
+void Action::getNextDirection(){
+	memory->temp_int=memory->temp_int+listaDimensiones->tam;
+	
+}
 
 }//termina namespace
 

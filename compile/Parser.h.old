@@ -92,6 +92,7 @@ void InitDeclarations() {
 	void BLOQUE();
 	void TIPO(int  &type);
 	void IDENTI(wchar_t* &name);
+	void ARREGLO_INIT();
 	void MODULE();
 	void MAIN();
 	void LOCAL();
@@ -115,6 +116,7 @@ void InitDeclarations() {
 	void RELACIONAL(int &rel);
 	void LLAMAR_MODULO();
 	void ASIGNACION();
+	void ARREGLO_LLAM();
 	void PARENTESIS();
 	void TERMINO();
 	void TERM_OP(int &term);

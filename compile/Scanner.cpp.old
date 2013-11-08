@@ -422,8 +422,8 @@ Scanner::~Scanner() {
 void Scanner::Init() {
 	EOL    = '\n';
 	eofSym = 0;
-	maxT = 62;
-	noSym = 62;
+	maxT = 64;
+	noSym = 64;
 	int i;
 	for (i = 48; i <= 57; ++i) start.set(i, 7);
 	for (i = 65; i <= 90; ++i) start.set(i, 6);
@@ -431,58 +431,60 @@ void Scanner::Init() {
 	start.set(34, 3);
 	start.set(123, 8);
 	start.set(125, 9);
-	start.set(91, 10);
-	start.set(93, 11);
-	start.set(44, 12);
-	start.set(59, 13);
-	start.set(40, 14);
-	start.set(41, 15);
-	start.set(45, 16);
-	start.set(43, 17);
-	start.set(61, 27);
-	start.set(124, 18);
-	start.set(58, 19);
-	start.set(60, 28);
-	start.set(62, 29);
-	start.set(42, 24);
-	start.set(47, 25);
-	start.set(37, 26);
+	start.set(44, 10);
+	start.set(59, 11);
+	start.set(91, 12);
+	start.set(46, 13);
+	start.set(93, 15);
+	start.set(40, 16);
+	start.set(41, 17);
+	start.set(45, 18);
+	start.set(43, 19);
+	start.set(61, 29);
+	start.set(124, 20);
+	start.set(58, 21);
+	start.set(60, 30);
+	start.set(62, 31);
+	start.set(42, 26);
+	start.set(47, 27);
+	start.set(37, 28);
 		start.set(Buffer::EoF, -1);
 	keywords.set(L"program", 5);
 	keywords.set(L"global", 8);
-	keywords.set(L"int", 13);
-	keywords.set(L"float", 14);
-	keywords.set(L"main", 15);
-	keywords.set(L"module", 18);
-	keywords.set(L"void", 19);
-	keywords.set(L"return", 20);
-	keywords.set(L"if", 23);
-	keywords.set(L"else", 24);
-	keywords.set(L"while", 26);
-	keywords.set(L"do", 27);
-	keywords.set(L"read", 28);
-	keywords.set(L"print", 29);
-	keywords.set(L"draw", 31);
-	keywords.set(L"end", 33);
-	keywords.set(L"point", 34);
-	keywords.set(L"line", 35);
-	keywords.set(L"triangle", 36);
-	keywords.set(L"square", 37);
-	keywords.set(L"circle", 38);
-	keywords.set(L"star", 39);
-	keywords.set(L"pentagon", 40);
-	keywords.set(L"hexagon", 41);
-	keywords.set(L"rhomboid", 42);
-	keywords.set(L"x_position", 43);
-	keywords.set(L"y_position", 44);
-	keywords.set(L"rotate", 45);
-	keywords.set(L"rotateLeft", 46);
-	keywords.set(L"size", 47);
-	keywords.set(L"thick", 48);
-	keywords.set(L"colorThick", 49);
-	keywords.set(L"colorFigure", 50);
-	keywords.set(L"and", 57);
-	keywords.set(L"or", 58);
+	keywords.set(L"int", 14);
+	keywords.set(L"float", 15);
+	keywords.set(L"main", 16);
+	keywords.set(L"module", 19);
+	keywords.set(L"void", 20);
+	keywords.set(L"return", 21);
+	keywords.set(L"if", 24);
+	keywords.set(L"else", 25);
+	keywords.set(L"while", 27);
+	keywords.set(L"do", 28);
+	keywords.set(L"read", 29);
+	keywords.set(L"print", 30);
+	keywords.set(L"draw", 32);
+	keywords.set(L"end", 34);
+	keywords.set(L"point", 35);
+	keywords.set(L"line", 36);
+	keywords.set(L"triangle", 37);
+	keywords.set(L"square", 38);
+	keywords.set(L"circle", 39);
+	keywords.set(L"star", 40);
+	keywords.set(L"pentagon", 41);
+	keywords.set(L"hexagon", 42);
+	keywords.set(L"rhomboid", 43);
+	keywords.set(L"x_position", 44);
+	keywords.set(L"y_position", 45);
+	keywords.set(L"rotate", 46);
+	keywords.set(L"sizeX", 47);
+	keywords.set(L"sizeY", 48);
+	keywords.set(L"size", 49);
+	keywords.set(L"thick", 50);
+	keywords.set(L"colorThick", 51);
+	keywords.set(L"colorFigure", 52);
+	keywords.set(L"and", 59);
+	keywords.set(L"or", 60);
 
 
 	tvalLength = 128;
@@ -660,25 +662,25 @@ Token* Scanner::NextToken() {
 		case 12:
 			{t->kind = 11; break;}
 		case 13:
-			{t->kind = 12; break;}
+			if (ch == L'.') {AddCh(); goto case_14;}
+			else {goto case_0;}
 		case 14:
-			{t->kind = 16; break;}
+			case_14:
+			{t->kind = 12; break;}
 		case 15:
-			{t->kind = 17; break;}
+			{t->kind = 13; break;}
 		case 16:
-			{t->kind = 21; break;}
+			{t->kind = 17; break;}
 		case 17:
-			{t->kind = 22; break;}
+			{t->kind = 18; break;}
 		case 18:
-			{t->kind = 30; break;}
+			{t->kind = 22; break;}
 		case 19:
-			{t->kind = 32; break;}
+			{t->kind = 23; break;}
 		case 20:
-			case_20:
-			{t->kind = 51; break;}
+			{t->kind = 31; break;}
 		case 21:
-			case_21:
-			{t->kind = 52; break;}
+			{t->kind = 33; break;}
 		case 22:
 			case_22:
 			{t->kind = 53; break;}
@@ -686,24 +688,30 @@ Token* Scanner::NextToken() {
 			case_23:
 			{t->kind = 54; break;}
 		case 24:
-			{t->kind = 59; break;}
+			case_24:
+			{t->kind = 55; break;}
 		case 25:
-			{t->kind = 60; break;}
+			case_25:
+			{t->kind = 56; break;}
 		case 26:
 			{t->kind = 61; break;}
 		case 27:
-			recEnd = pos; recKind = 25;
-			if (ch == L'=') {AddCh(); goto case_20;}
-			else {t->kind = 25; break;}
+			{t->kind = 62; break;}
 		case 28:
-			recEnd = pos; recKind = 55;
-			if (ch == L'>') {AddCh(); goto case_21;}
-			else if (ch == L'=') {AddCh(); goto case_22;}
-			else {t->kind = 55; break;}
+			{t->kind = 63; break;}
 		case 29:
-			recEnd = pos; recKind = 56;
-			if (ch == L'=') {AddCh(); goto case_23;}
-			else {t->kind = 56; break;}
+			recEnd = pos; recKind = 26;
+			if (ch == L'=') {AddCh(); goto case_22;}
+			else {t->kind = 26; break;}
+		case 30:
+			recEnd = pos; recKind = 57;
+			if (ch == L'>') {AddCh(); goto case_23;}
+			else if (ch == L'=') {AddCh(); goto case_24;}
+			else {t->kind = 57; break;}
+		case 31:
+			recEnd = pos; recKind = 58;
+			if (ch == L'=') {AddCh(); goto case_25;}
+			else {t->kind = 58; break;}
 
 	}
 	AppendVal(t);
