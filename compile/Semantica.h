@@ -34,33 +34,14 @@ public:
 	int dirBase;
 	Dimensiones();
 	void agregar(Dimension* dim);
-	Dimension * getDimension(int Dim);
+	void pop();
+	Dimension *getDimension(int num);
 	void invertir();
 	void sacarK();
 	void mostrarResultados();
 	void sacarDirBase(int dir);
 };
 
-class DimensionLlamar{
-public:	
-	int dim;
-	std::wstring id; 
-	DimensionLlamar *next;
-	DimensionLlamar();
-	DimensionLlamar(int d, std::wstring id);
-
-};
-
-class StackDimeLlam{
-public:
-	DimensionLlamar *actual;
-	StackDimeLlam();
-	void push(int d, std::wstring id);
-	void pop();
-	DimensionLlamar* get();
-	void showStackDimLlam();
-
-};
 class Direction{
 public:
 	int direction;
@@ -69,6 +50,46 @@ public:
 	Direction();
 	Direction(int d, int t);
 };
+
+class Variable
+{
+public :
+	std::wstring name;
+	Direction *dir;
+	int type; 
+	int slope;
+	Dimensiones *dimensiones;
+	Variable();
+	Variable(std::wstring n, int t, int slope, Direction *d);	
+
+};
+
+class DimensionLlamar{
+public:	
+	Dimensiones *id;
+	int num; 
+	int type;
+	DimensionLlamar *next;
+	DimensionLlamar();
+	DimensionLlamar(int num, Dimensiones *id, int type);
+
+};
+
+class StackDimeLlam{
+public:
+	DimensionLlamar *actual;
+	StackDimeLlam();
+	void push(int num, Dimensiones *id, int type);
+	void pop();
+	int getNum();
+	int getType();
+	void setNum(int no);
+	Dimensiones* getDimensiones(); 
+	void showStackDimLlam();
+
+
+};
+
 
 class StackDirection{
 public:	
@@ -84,18 +105,6 @@ public:
 
 };
 
-class Variable
-{
-public :
-	std::wstring name;
-	Direction *dir;
-	int type; 
-	int slope;
-	Dimensiones *dimensiones;
-	Variable();
-	Variable(std::wstring n, int t, int slope, Direction *d);	
-
-};
 
 class TablaVariables{
 public:
@@ -237,6 +246,7 @@ public :
 	int para_flo;
 	int para_bool;
 	int func;
+	int apunt;
 	Memory();
 	Direction* save(int partition, int type, double value);
 	void clearLocal();
@@ -266,7 +276,6 @@ public:
 	Dimensiones *listaDimensiones;
 	Dimension *dimension;
 	StackDimeLlam *stackDim;
-	Dimensiones *llam_ListDimen;
 	int cant_loc;
 	int cant_para;
 	Action();
@@ -323,12 +332,13 @@ public:
 	void saveSuperior(int s);
 	void getNewDimension();
 	void getKCons();
-	void getNextDirection();
+	void getNextDirection(int partition, int type);
 	void addDimensionLocal(const wchar_t* n);
 	void addDimensionGlobal(const wchar_t* n);
 	void getDimensionId(Variable* var);
 	void generateVerifica();
-	
+	void updateStackDim();
+	void getDirSumK();
 };
 
 

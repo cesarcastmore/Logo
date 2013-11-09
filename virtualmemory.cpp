@@ -113,7 +113,6 @@ void MemoriaLocales::save(int direccion, bool value){
 double MemoriaLocales::get(int direccion){
 	double valor;
     if(6000 <= direccion and direccion < 12000 ){
-        
 		valor=locales->get(direccion);
 	}
     else if(12000 <= direccion and direccion < 18000){
@@ -129,6 +128,7 @@ Memoria::Memoria(){
 	globales= new ListaInstancias();
 	contantes= new ListaInstancias();
 	funciones = new ListaInstancias();
+    apuntadores = new ListaInstancias();
 }	
 
 
@@ -145,8 +145,11 @@ void Memoria::save(int direccion, double value){
 	else if (30000 <= direccion and direccion < 32000){
 		funciones->save(direccion, value);
 	}
+    else if	(32000 <= direccion and direccion < 34000){
+        int dirValor=(int) (apuntadores->get(direccion));
+        save(dirValor, value);
+    }
 	else if	(6000 <= direccion and direccion < 18000){
-
 		memoriaActual->save(direccion, value);
 	}
 	
@@ -169,6 +172,10 @@ void Memoria::save(int direccion, bool value){
 	}
 	
 }
+
+ void  Memoria::saveApuntador(int apuntador, int  direccion){
+     apuntadores->save(apuntador, direccion);
+ }
 
 
 void Memoria::salvarConstantes(){
@@ -224,6 +231,10 @@ double  Memoria::get(int direccion){
 	else if (30000 <= direccion and direccion < 32000){
 		valor=funciones->get(direccion);
 	}
+    else if (32000 <= direccion and direccion < 34000){
+        int dirValor= (int)(apuntadores->get(direccion));
+        valor=get(dirValor);
+    }
 	else if	(6000 <= direccion and direccion < 18000){
 		valor=memoriaActual->get(direccion);
 	}

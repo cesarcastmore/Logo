@@ -51,11 +51,13 @@ class Memoria{
 	ListaInstancias *globales;
 	ListaInstancias *contantes;
 	ListaInstancias *funciones;
+    ListaInstancias *apuntadores;
 	MemoriaLocales *memoriaActual;
 	Memoria();
 	void save(int direccion, int value);
 	void save(int direccion, bool value);
 	void save(int direccion, double value);
+    void saveApuntador(int apuntador, int  direccion);
 	void salvarConstantes();
 	void dormirMemoria();
 	void colocarMemoria(MemoriaLocales *memoria);

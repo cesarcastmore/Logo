@@ -1,6 +1,28 @@
-program {
+program{
 main(){
-int d [ 2..5 , 4..7, 3..8 ], g;
-d[2, 4, 7]=12;
+int i, b, cont;
+i=0;
+cont=0;
+while(i < 5){
+ j=0;
+     while(j < 5){ 
+        a[i, j]=cont;
+        cont=cont+1;
+      j=j+1;
+     }
+i=i+1;
+}
+
+i=0;
+while(i < 5){
+  j=0;
+     while(j < 5){ 
+      print(a[i, j]);
+      j=j+1;
+     }
+i=i+1;
+}
+
+
 }
 }

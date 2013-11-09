@@ -19,6 +19,7 @@ Variable::Variable(){
 type=0;
 slope=0;
 dir=new Direction();
+dimensiones=NULL;
 }
 
 Variable::Variable(wstring n, int t, int slope, Direction *d){
@@ -112,8 +113,10 @@ void TablaVariables::displayLocals(){
   wcout << "Local Variables Table contains:\n";
   for (std::map<std::wstring , Variable* >::iterator it=tablaLocals.begin(); it!=tablaLocals.end(); ++it){
     wcout << it->first << " => " << it->second->type << "--" << it->second->slope <<"---direction--"<<it->second->dir->direction<<'\n';
-    wcout<<"MOSTRANDO DIMENSION\n";
-    it->second->dimensiones->mostrarResultados();
+    if(it->second->dimensiones != NULL){
+		wcout<<"MOSTRANDO DIMENSION\n";
+		it->second->dimensiones->mostrarResultados();
+	}
 }
 }
 
@@ -122,8 +125,10 @@ void TablaVariables::displayGlobals(){
   cout << "Global Variables Table contains:\n";
   for (std::map<std::wstring , Variable* >::iterator it=tablaGlobals.begin(); it!=tablaGlobals.end(); ++it){
     wcout << it->first << " => type " << it->second->type << "-- function" << it->second->slope <<'\n';
-    wcout<<"MOSTRANDO DIMENSION\n";
-    it->second->dimensiones->mostrarResultados();
+		if(it->second->dimensiones != NULL){
+			wcout<<"MOSTRANDO DIMENSION\n";
+			it->second->dimensiones->mostrarResultados();
+		}
 	}
 }
 
@@ -464,6 +469,7 @@ Memory::Memory(){
 	para_flo=26000;
 	para_bool=28000;
 	func=30000;
+	apunt=32000;
 }
 
 
@@ -552,6 +558,11 @@ Direction* Memory::save(int partition, int type, double value){
 		func++;
 		return new_dir;
 	}
+	else if(partition == 6){
+		Direction *new_dir=new Direction(apunt, type);
+		apunt++;
+		return new_dir;
+	}
 	return new Direction(-1, 0);
 }
 
@@ -636,6 +647,10 @@ const char* Cuadruplo::translate(int a){
 		case 49: return "rhomboid";
 		case 50: return "endDraw";
 		case 51: return "Verifica";
+		case 52: return "multiArray";
+		case 53: return "sumaArray";
+		case 54: return "sumaK";
+		case 55: return "obtieneDir";
 		case 99: return "end";
 		
 	}
@@ -682,7 +697,8 @@ Dimension::Dimension(){
 
 
 Dimensiones::Dimensiones(){
-	Dim=0;
+	Dim=1;
+	dirBase=0;
 	actual=NULL;
 }
 
@@ -698,21 +714,22 @@ void Dimensiones::agregar(Dimension* dim){
 }
 
 
-Dimension* Dimensiones::getDimension(int Dim){
+Dimension* Dimensiones::getDimension(int num){
 	Dimension *busqueda, *retorno;
 	retorno = new Dimension();
-	busqueda= actual; 
+	busqueda= actual;
 	while(busqueda != NULL){
-		if(busqueda->Dim == Dim){
+		if(busqueda->Dim == num){
 			retorno->Dim=busqueda->Dim;
 			retorno->Li=busqueda->Li;
 			retorno->Ls=busqueda->Ls;
 			retorno->Mdim=busqueda->Mdim;
 			return retorno;
 			}
-		busqueda=busqueda->next;
-	}
-	return NULL;
+			busqueda=busqueda->next;
+			}
+			return NULL;
+
 }
 
 void Dimensiones::sacarK(){
@@ -744,8 +761,10 @@ void Dimensiones::invertir(){
 }
 
 
+
 void  Dimensiones::mostrarResultados(){
 	Dimension *temp=actual;
+	wcout<<"Numero Dimensiones"<<Dim<<"\n";
 	wcout<<"K = "<<K<<"\n";
 	wcout<<"tam = "<<tam<<"\n";
 	while(temp != NULL){
@@ -761,15 +780,21 @@ void Dimensiones::sacarDirBase(int dir){
 	dirBase=dir+ tam;
 }
 
+void Dimensiones::pop(){
+	actual=actual->next;
+}
+
+
 
 DimensionLlamar::DimensionLlamar(){
-	dim=0;
+	id=NULL;
 	next=NULL;
 }
 
-DimensionLlamar::DimensionLlamar(int d, std::wstring name){
-	dim=d;
+DimensionLlamar::DimensionLlamar(int numero, Dimensiones *name, int t){
+	num=numero;
 	id=name;
+	type=t;
 	next=NULL;
 }
 
@@ -778,9 +803,10 @@ StackDimeLlam::StackDimeLlam(){
 	actual=NULL;
 }
 
-void StackDimeLlam::push(int t, std::wstring id){
+
+void StackDimeLlam::push(int numero, Dimensiones *id, int t){
 	DimensionLlamar *new_node;
-	new_node=new DimensionLlamar(t, id);
+	new_node=new DimensionLlamar(numero, id, t);
    if(!actual){
    actual=new_node;
 }	 
@@ -795,18 +821,32 @@ void StackDimeLlam::pop(){
 	actual = actual->next;	
 	}
 	
-DimensionLlamar* StackDimeLlam::get(){
-	DimensionLlamar *new_node;
-	new_node=new DimensionLlamar(actual->dim, actual->id);
-	return new_node;
+int StackDimeLlam::getNum(){
+	int no=actual->num;
+	return no;
+	}
+	
+int StackDimeLlam::getType(){
+	int tipo=actual->type;
+	return tipo;
+	}
+	
+void StackDimeLlam::setNum(int no){
+	actual->num=no;
+}
+	
+Dimensiones* StackDimeLlam::getDimensiones(){
+	Dimensiones *dimen=actual->id;
+	return dimen;
 }
 
 void StackDimeLlam::showStackDimLlam(){
+	
 	wcout<<"The Stack contains StackDimeLlam\n";
 	DimensionLlamar *dis=actual;
 	while(dis != NULL){
-		wcout<<"the id is "<<dis->id << "\n";
-		wcout<<"the dimension----"<<dis->dim<<"\n";
+		dis->id->mostrarResultados();
+		wcout<<"the dimension----"<<dis->num<<"\n";
 		dis=dis->next;
 	} 
 	
@@ -843,7 +883,6 @@ Action::Action(){
 	
 	//llamado de dimensiones
 	stackDim= new StackDimeLlam();
-	llam_ListDimen= new Dimensiones();
 	}
 	
 void Action::addGlobal(const wchar_t* n, int  t, int slope){
@@ -1405,7 +1444,7 @@ void Action::isDimension(){
 
 void Action::getDimension(){
 	dimension = new Dimension();
-	listaDimensiones->Dim=1;
+	listaDimensiones->Dim=0;
 	listaDimensiones->R=1;
 	dimension->Dim=listaDimensiones->Dim;
 }
@@ -1446,38 +1485,114 @@ void Action::addDimensionLocal(const wchar_t* n){
 	}
 }
 
-void Action::getNextDirection(){
-	memory->temp_int=memory->temp_int+listaDimensiones->tam;
+void Action::getNextDirection(int partition, int type){
+	if(partition == 0){
+		if(type == 1 ){
+			memory->glob_int=memory->glob_int+listaDimensiones->tam;
+		}
+		else if(type == 2){
+			memory->glob_flo=memory->glob_flo+listaDimensiones->tam;
+		}
+	}
+	else if(partition == 1){
+		if(type == 1 ){
+			memory->local_int=memory->local_int+listaDimensiones->tam;
+		}
+		else if(type == 2){
+			memory->local_flo=memory->local_flo+listaDimensiones->tam;
+		}
+	}
 	
 }
 
 void Action::getDimensionId(Variable* var){
-	if( var->dimensiones != NULL){
-		llam_ListDimen = var->dimensiones;
+	if(var->dimensiones == NULL ){
+		exit(0);
+	}
+	if( var->dimensiones != NULL && var != NULL){
 		Direction *direccion =dir->get(); dir->pop();
-		stackDim->push(1, var->name);
+		var->dimensiones->dirBase=direccion->direction;
+		stackDim->push(1, var->dimensiones, var->type);
 		addFake(); 
 	}
-	else wcout<<"The Variable  is not dimension "<<var->name<<"\n";
+	else wcout<<"A Variable is not dimension "<<var->name<<"\n";
 	
 }
 
 void Action::generateVerifica(){
-	int dimActual = stackDim->actual->dim;
-	Dimension *desp= llam_ListDimen->getDimension(dimActual);
-	Cuadruplo *verif;
-	Direction *direccion =dir->get();
-	if(direccion->type == 1){
-		verif = new Cuadruplo(51, direccion->direction , desp->Li, desp->Ls );
-		record.insert(std::make_pair(cont, verif));
-		cont++;
-	}
+	if(stackDim != NULL){
+		int num= stackDim->getNum();
+		Dimensiones *listaDim= stackDim->getDimensiones();
+		Dimension *desp= listaDim->getDimension(num-1);
+		Direction *direccion =dir->get();
+
+		if(direccion->type == 1){
+			Cuadruplo *verif;
+			verif = new Cuadruplo(51, direccion->direction , desp->Li, desp->Ls );
+			record.insert(std::make_pair(cont, verif));
+			cont++;
+		
+			if(num < listaDim->Dim ){
+				Cuadruplo *factor;
+				Direction *aux = dir->get();
+				dir->pop();
+				Direction *temp= memory->save(2, 1 , -1);
+				factor= new Cuadruplo(52, aux->direction, desp->Mdim, temp->direction );
+				record.insert(std::make_pair(cont, factor));
+				cont++;
+				dir->push(temp);
+			}
+		
+			if(num > 1){
+				Direction *aux2 = dir->get(); dir->pop();
+				Direction *aux1= dir->get(); dir->pop();
+				Direction *temp1= memory->save(2, 1 , -1);
+				Cuadruplo *suma;
+				suma = new Cuadruplo(53, aux1->direction,  aux2->direction, temp1->direction );
+				record.insert(std::make_pair(cont, suma));
+				cont++;
+				dir->push(temp1);
+				}
+		}
+	
 	else wcout<<"The indexes should be integer";
-	
-	dimActual=dimActual+1;
-	stackDim->actual->dim=dimActual;
-	
+	}
+else wcout<<"The Variable Dimension have been initialzed\n";
 }
+
+
+void Action::updateStackDim(){
+	if(stackDim != NULL){
+		int num= stackDim->getNum();
+		num=num+1;
+		stackDim->setNum(num);
+	}
+}
+
+void Action::getDirSumK(){
+	if(stackDim != NULL){
+		Dimensiones *listaDim= stackDim->getDimensiones();
+		
+		Direction *aux= dir->get(); dir->pop();
+		Direction *temp= memory->save(2, 1 , -1);
+		Cuadruplo *sumaK;
+		sumaK = new Cuadruplo(54, aux->direction,  listaDim->K, temp->direction );
+		record.insert(std::make_pair(cont, sumaK));
+		cont++;
+		
+		Direction *apunt= memory->save(6, stackDim->getType() , -1);
+		Cuadruplo *sumaBase;
+		sumaBase = new Cuadruplo(55, temp->direction,  listaDim->dirBase, apunt->direction );
+		record.insert(std::make_pair(cont, sumaBase));
+		cont++;
+		dir->push(apunt);
+		removeFake();
+		stackDim->pop();
+	}
+}
+
+
+
 
 }//termina namespace
 

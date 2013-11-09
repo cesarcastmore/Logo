@@ -216,6 +216,8 @@ void Logo::MachineVirtual(){
     Input *read;//lectura
     int seguir; //entero donde seguira la funcion
     MemoriaLocales *memoria_locales;
+    int Li, Ls;//Limites de los arreglos
+    int valor1, valor2; //arreglos
 
     int program[1000][4];
     int instr=0;
@@ -677,6 +679,50 @@ void Logo::MachineVirtual(){
                 }
                 cont++;
                 break;
+            //Verifica
+            case 51:
+                value1=memoria->get(program[cont][1]);
+                Li=program[cont][2];
+                Ls=program[cont][3];
+                if(!(value1 >= Li && value1 <= Ls)){
+                    doc=ui->textMessage->toPlainText();
+                    ui->textMessage->setText(doc +"Error de limite de memoria\n");
+                    cont=10000;
+                }
+                else cont++;
+                break;
+            //multiplica Array
+            case 52:
+                valor1=(int)(memoria->get(program[cont][1]));
+                valor2=program[cont][2];
+                resul=valor1*valor2;
+                memoria->save(program[cont][3], resul);
+                cont++;
+                break;
+            //suma Array
+            case 53:
+                valor1=(int)(memoria->get(program[cont][1]));
+                valor2=(int)(memoria->get(program[cont][2]));
+                resul=valor1+valor2;
+                memoria->save(program[cont][3], resul);
+                cont++;
+                break;
+            //Suma K
+            case 54:
+                valor1=(int)(memoria->get(program[cont][1]));
+                valor2=program[cont][2];
+                resul=valor1+valor2;
+                memoria->save(program[cont][3], resul);
+                cont++;
+                break;
+            case 55:
+                valor1=(int)(memoria->get(program[cont][1]));
+                valor2=program[cont][2];
+                resul=valor1+valor2;
+                cout<<"la direccion local es "<<resul<<"\n";
+                memoria->saveApuntador(program[cont][3], resul);
+                cont++;
+                break;
             //end program
             case 99:
                 cont=10000;
@@ -688,5 +734,4 @@ void Logo::MachineVirtual(){
             }
             //contador++;
         }
-
 }

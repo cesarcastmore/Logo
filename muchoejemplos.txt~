@@ -346,7 +346,7 @@ draw line:
   y_position=0;
   sizeX=100;
   sizeY=100;
-  colorFigure="red";
+  colorThick="red";
 end
 }
 }

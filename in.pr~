@@ -1,4 +1,6 @@
-program {
+program{
 main(){
+int i, j;
+a=12;
 }
 }

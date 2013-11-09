@@ -53,7 +53,7 @@ PROGRAMA =
  BLOQUE '}'			       (. /*action->fun->showStack();*/
 					action->endProgram();
 					action->tab->removeAllLocals();
-					action->showCuadruplo();
+					/*action->showCuadruplo();*/
 					/*action->tab->displayGlobals();*/
 				
 					action->createObject();.)
@@ -63,10 +63,10 @@ PROGRAMA =
 GLOBAL = 				(. wchar_t* name; int type; .)
 "global" TIPO<type> 
 IDENTI<name> 				(. action->addGlobal(name, type, var);  .)
-[ ARREGLO_INIT 				(. action->addDimensionGlobal(name); .)
+[ ARREGLO_INIT 				(. action->addDimensionGlobal(name); action->getNextDirection(0,type); .)
 ] 
 { ',' IDENTI<name>  			(.  action->addGlobal(name, type, var); .)
-[ ARREGLO_INIT 				(. action->addDimensionGlobal(name); .)
+[ ARREGLO_INIT 				(. action->addDimensionGlobal(name); action->getNextDirection(0,type); .)
 ] } 			
 ';'.
 /*----------------------------------------------------------------------*/
@@ -79,8 +79,8 @@ integer 				(. inferior=wcstof((coco_string_create(t->val)), NULL); action->save
 integer  				(. inferior=wcstof((coco_string_create(t->val)), NULL); action->saveInferior((int)(inferior));  .)
 ".."
  integer  				(. superior=wcstof((coco_string_create(t->val)), NULL); action->saveSuperior((int)(superior));  .)
-}					(. action->getNewDimension();  action->getKCons(); .)
-']'
+}					(. action->getNewDimension();  action->getKCons();  .)
+']'					
 .
 /*---------------------------------------------------------------------*/
 TIPO<int  &type> =  
@@ -94,7 +94,7 @@ MAIN = "main" '(' ')' 			(. int can;   .)
 '{' 					(. action->beginMain(); .)
  { LOCAL} 
 { ESTATUTO } 
-'}'					(./*action->tab->displayLocals();*/
+'}'					(. /*action->tab->displayLocals();*/
 					 action->removeLocals(); .).
 /*------------------------------------------------------------------------------*/
 MODULE = 				(. wchar_t* name; int typemod; int no; int can; .)
@@ -126,10 +126,10 @@ PARAM_COMA = 				(. wchar_t* name; int type; int can; .)
 /*---------------------------------------------------------------------------*/
 LOCAL= 					(. wchar_t* name; int type; .)
 TIPO<type> IDENTI<name>  		(.  action->addLocal(name, type, var);  .)
-[ ARREGLO_INIT 				(. action->addDimensionLocal(name); .)
+[ ARREGLO_INIT 				(. action->addDimensionLocal(name); action->getNextDirection(1,type); .)
 ]   	 		
 { ',' IDENTI<name>  			(. action->addLocal(name, type, var); .)
-[ ARREGLO_INIT 				(. action->addDimensionLocal(name); .)
+[ ARREGLO_INIT 				(. action->addDimensionLocal(name); action->getNextDirection(1,type);  .)
 ]  		
 } ';' .
 /*-------------------------------------------------------------------------*/
@@ -174,14 +174,16 @@ IDENTI<name>
 LLAMAR_MODULO 	
 | 			 		(.  obj=action->find(name);
 					action->addStackDir(obj->dir->direction,obj->type); .)
-[					(. action->getDimensionId(obj); .)
+[					(. /*action->getDimensionId(obj);*/ .)
  ARREGLO_LLAM ] ASIGNACION
 ).
 /*------------------------------------------------------------------*/
 ARREGLO_LLAM = 
-'[' EXP 				(. action->generateVerifica(); .)
-{ ',' EXP				(. action->generateVerifica(); .)
- } ']' .
+'[' EXP 				(. /*action->generateVerifica();*/ .)
+{ ','					(. /*action->updateStackDim(); */.)
+ EXP					(./* action->generateVerifica();*/ .)
+ } 					(./* action->getDirSumK();*/ .)
+']' .
 
 /*-----------------------------------------------------------------*/
 LLAMAR_MODULO = '(' 			(. action->createERA(); .)

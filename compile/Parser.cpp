@@ -88,7 +88,7 @@ void Parser::GLOBAL() {
 		action->addGlobal(name, type, var);  
 		if (la->kind == 11 /* "[" */) {
 			ARREGLO_INIT();
-			action->addDimensionGlobal(name); 
+			action->addDimensionGlobal(name); action->getNextDirection(0,type); 
 		}
 		while (la->kind == 9 /* "," */) {
 			Get();
@@ -96,7 +96,7 @@ void Parser::GLOBAL() {
 			action->addGlobal(name, type, var); 
 			if (la->kind == 11 /* "[" */) {
 				ARREGLO_INIT();
-				action->addDimensionGlobal(name); 
+				action->addDimensionGlobal(name); action->getNextDirection(0,type); 
 			}
 		}
 		Expect(10 /* ";" */);
@@ -142,7 +142,7 @@ void Parser::ARREGLO_INIT() {
 			Expect(_integer);
 			superior=wcstof((coco_string_create(t->val)), NULL); action->saveSuperior((int)(superior));  
 		}
-		action->getNewDimension();  action->getKCons(); 
+		action->getNewDimension();  action->getKCons();  
 		Expect(13 /* "]" */);
 }
 
@@ -200,7 +200,7 @@ void Parser::LOCAL() {
 		action->addLocal(name, type, var);  
 		if (la->kind == 11 /* "[" */) {
 			ARREGLO_INIT();
-			action->addDimensionLocal(name); 
+			action->addDimensionLocal(name); action->getNextDirection(1,type); 
 		}
 		while (la->kind == 9 /* "," */) {
 			Get();
@@ -208,7 +208,7 @@ void Parser::LOCAL() {
 			action->addLocal(name, type, var); 
 			if (la->kind == 11 /* "[" */) {
 				ARREGLO_INIT();
-				action->addDimensionLocal(name); 
+				action->addDimensionLocal(name); action->getNextDirection(1,type);  
 			}
 		}
 		Expect(10 /* ";" */);
@@ -517,9 +517,11 @@ void Parser::ARREGLO_LLAM() {
 		action->generateVerifica(); 
 		while (la->kind == 9 /* "," */) {
 			Get();
+			action->updateStackDim(); 
 			EXP();
 			action->generateVerifica(); 
 		}
+		action->getDirSumK(); 
 		Expect(13 /* "]" */);
 }
 
