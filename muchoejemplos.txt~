@@ -352,3 +352,116 @@ end
 }
 
 
+/***************ARREGLOS *****************/
+program{
+main(){
+int i, j, cont, a[0..4, 0..4];
+i=0;
+cont=1;
+while(i < 5){
+ j=0;
+     while(j < 5){ 
+        a[i, j]=cont;
+        cont=cont+1;
+      j=j+1;
+     }
+i=i+1;
+}
+
+i=0;
+while(i < 5){
+  j=0;
+     while(j < 5){ 
+      print(a[i, j]);
+      j=j+1;
+     }
+i=i+1;
+}
+
+
+}
+}
+
+/*********FUNCION CON ARREGLOS***************(
+
+program {
+  global int a[0..1];
+  module int suma(int x, int y){
+    a[0]=x;
+    a[1]=y;
+    return a[0]+a[1];
+
+  }
+  main(){
+    int total;
+    total = suma(2,2);
+    print(total);
+  }
+}
+
+
+/*******FIBONACCI RECURSIVO  *****/
+program {
+  module int fibonacci(int n){
+  int a;
+   if(n == 1){
+      a=1;
+   }
+   if(n == 2){
+      a=1;
+   }
+   if( n > 2){
+      a=fibonacci(n-1)+fibonacci(n-2);
+   }
+  return a;
+  }
+ 
+  main(){
+    int total;
+    total=fibonacci(1);
+    print(total);
+  }
+}
+
+/***FIBONACCI SECUENCIAL ****/
+
+program {
+  module int fibonacci(int n){
+  int i, j, t, cont;
+  cont=0;
+  i=1;
+  j=0;
+  do { 
+     cont=cont+1;
+     t=i+j;
+     i=j;
+     j=t;
+    } while(cont < n);
+  return j;
+  }
+ 
+  main(){
+    int total;
+    total=fibonacci(6);
+    print(total);
+  }
+
+/*****EXPONENCIAL RECURSIVO******/
+program{
+module int exp(int valor, int n){
+int temp;
+temp=valor;
+if(n > 1){
+    temp=valor*exp(valor, n-1); 
+  }
+return temp;
+}
+main(){
+int total;
+total=exp(2,3);
+print(total);
+}
+}
+
+
+

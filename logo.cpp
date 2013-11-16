@@ -208,6 +208,9 @@ bool Logo::atob(double a){
 
 
 void Logo::MachineVirtual(){
+
+    ui->textMessage->setText("Running...\n");
+
     memoria->salvarConstantes();
 
     double re;QString doc, s1;//allocation
@@ -687,7 +690,7 @@ void Logo::MachineVirtual(){
                 if(!(value1 >= Li && value1 <= Ls)){
                     doc=ui->textMessage->toPlainText();
                     ui->textMessage->setText(doc +"Error de limite de memoria\n");
-                    cont=10000;
+                    cont=99;
                 }
                 else cont++;
                 break;
@@ -719,12 +722,13 @@ void Logo::MachineVirtual(){
                 valor1=(int)(memoria->get(program[cont][1]));
                 valor2=program[cont][2];
                 resul=valor1+valor2;
-                cout<<"la direccion local es "<<resul<<"\n";
                 memoria->saveApuntador(program[cont][3], resul);
                 cont++;
                 break;
             //end program
             case 99:
+                doc=ui->textMessage->toPlainText();
+                ui->textMessage->setText(doc + "end running");
                 cont=10000;
                 break;
             default:
